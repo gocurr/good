@@ -91,5 +91,5 @@ func Encrypt(secret, msg string) (string, error) {
 	stream := cipher.NewCFBEncrypter(block, iv)
 	stream.XORKeyStream(ciphertext[aes.BlockSize:], plaintext)
 
-	return fmt.Sprintf("%x\n", ciphertext), nil
+	return fmt.Sprintf("%x", ciphertext), nil
 }
