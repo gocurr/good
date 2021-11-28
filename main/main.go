@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gocurr/good"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 )
 
 var nameFns = good.NameFns{
@@ -27,9 +26,9 @@ func main() {
 	}
 
 	// good.ServerMux(http.NewServeMux())
-	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
+	/*good.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
-	})
+	})*/
 
 	good.Fire()
 }

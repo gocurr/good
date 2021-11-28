@@ -29,8 +29,14 @@ func Fire() {
 		log.Infof(fmt.Sprintf("http server listening at [::%v]", port))
 	}
 
-	if err := http.ListenAndServe(":"+strconv.Itoa(port), serverMux); err != nil {
-		log.Errorf("http server: %v", err)
+	if serverMux != nil {
+		if err := http.ListenAndServe(":"+strconv.Itoa(port), serverMux); err != nil {
+			log.Errorf("http server: %v", err)
+		}
+	} else {
+		if err := http.ListenAndServe(":"+strconv.Itoa(port), nil); err != nil {
+			log.Errorf("http server: %v", err)
+		}
 	}
 }
 
