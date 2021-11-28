@@ -13,27 +13,27 @@ logrus:
 db:
   driver: godror
   user: abc
-  password: 12345
+  password: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
   datasource: 127.0.0.1:1521/testdb
 
 redis:
   host: 127.0.0.1
   port: 6379
   db: 1
-  password: enc(f80a78c6688ba43430e628539a4c6445b6ed5d9bf3)
+  password: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
 
 rocket-mq:
   addr:
     - 127.0.0.1:9876
   retry: 2
-  access-key: abc
-  secret-key: 12345
+  access-key: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
+  secret-key: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
 
 table-store:
   end-point: 127.0.0.1
   instance-name: abc
-  access-key-id: 123
-  access-key-secret: 12345
+  access-key-id: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
+  access-key-secret: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
 
 crontab:
   demo1:
@@ -42,4 +42,4 @@ crontab:
       spec: "*/2 * * * * ?"
 
 secure:
-  key: 9253a3c25e69cd7e469877b0c6005604
+  key: 651589a9bab91314783c1c7b6102a823
