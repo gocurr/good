@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gocurr/cronctl"
 	"github.com/gocurr/good"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -9,18 +10,21 @@ import (
 
 var nameFns = good.NameFns{
 	{"demo1", func() {
-		fmt.Println("demo1...")
+		redis, ctx := good.Redis()
+		result, _ := redis.Get(ctx, "a").Result()
+		fmt.Println(result)
 	}},
-
 	{"demo2", func() {
-		fmt.Println("demo2...")
+		redis, ctx := good.Redis()
+		result, _ := redis.Get(ctx, "b").Result()
+		fmt.Println(result)
 	}},
 }
 
 func main() {
 	c := good.Configure("./app.yml", false)
-	if err := good.StartCrontab(nameFns); err != nil {
-		log.Fatalln(err)
+	if err := good.StartCrontab(nameFns, cronctl.DefaultLogger{}); err != nil {
+		log.Errorf("%v", err)
 	}
 
 	good.ServerMux(http.NewServeMux())

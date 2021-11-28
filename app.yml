@@ -19,7 +19,7 @@ db:
 redis:
   host: 127.0.0.1
   port: 6379
-  db: 1
+  db: 0
   password: password
 
 rocket-mq:
@@ -39,7 +39,7 @@ crontab:
   demo1:
       spec: "*/1 * * * * ?"
   demo2:
-      spec: "*/2 * * * * ?"
+      spec: "*/5 * * * * ?"
 
 secure:
   key: 651589a9bab91314783c1c7b6102a823

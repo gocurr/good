@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gocurr/cronctl"
 	"github.com/gocurr/good/conf"
+	"github.com/robfig/cron/v3"
 )
 
 // jobs global crontab
@@ -20,9 +21,17 @@ func Init(c *conf.Configuration) {
 }
 
 // StartCrontab starts up crontab
-func StartCrontab() error {
+func StartCrontab(customLogger cron.Logger) error {
+	// filter bad jobs
+	var goodJobs = make(map[string]cronctl.Job)
+	for k, v := range jobs {
+		if k != "" && v.Spec != "" && v.Fn != nil {
+			goodJobs[k] = v
+		}
+	}
+
 	// create a crontab
-	crontab, err := cronctl.Create(jobs, cronctl.DefaultLogger{})
+	crontab, err := cronctl.Create(goodJobs, customLogger)
 	if err != nil {
 		return err
 	}
