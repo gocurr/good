@@ -1,0 +1,36 @@
+server:
+  port: 9090
+
+logrus:
+  tty: true
+  graylog:
+    host: 127.0.0.1
+    port: 5555
+    extra:
+      tag: abc
+      image: 123
+
+db:
+  driver: godror
+  user: abc
+  password: 12345
+  datasource: 127.0.0.1:1521/testdb
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  db: 1
+  password: 12345
+
+rocket-mq:
+  addr:
+    - 127.0.0.1:9876
+  retry: 2
+  access-key: abc
+  secret-key: 12345
+
+table-store:
+  end-point: 127.0.0.1
+  instance-name: abc
+  access-key-id: 123
+  access-key-secret: 12345
