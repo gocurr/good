@@ -65,8 +65,6 @@ func ReadYml(filename string) (*Configuration, error) {
 	}
 
 	var c Configuration
-
 	err = yaml.Unmarshal(bytes, &c)
-
 	return &c, err
 }

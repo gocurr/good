@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// GenPasswd generates encrypted string via pw
 func GenPasswd(pw string) string {
 	var secret string
 	filename := "secret.txt"
@@ -21,7 +22,7 @@ func GenPasswd(pw string) string {
 		secret = string(bytes)
 	}
 
-	encrypter, err := crypto.Encrypter(secret, pw)
+	encrypter, err := crypto.Encrypt(secret, pw)
 	if err != nil {
 		panic(err)
 	}

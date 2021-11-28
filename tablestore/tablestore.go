@@ -6,6 +6,7 @@ import (
 	"github.com/gocurr/good/crypto"
 )
 
+// TSC the global tablestore client
 var TSC *tablestore.TableStoreClient
 
 // Init inits tsc

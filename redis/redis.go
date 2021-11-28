@@ -8,7 +8,10 @@ import (
 	"strconv"
 )
 
+// Ctx the global redis context
 var Ctx = context.Background()
+
+// Rdb the global redis client
 var Rdb *redis.Client
 
 // Init inits rdb

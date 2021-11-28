@@ -11,5 +11,5 @@ import (
 func openMysql(c *conf.Configuration, pw string) (*sql.DB, error) {
 	dbConf := c.DB
 	ds := fmt.Sprintf("%s:%s@%s", dbConf.User, pw, dbConf.Datasource)
-	return sql.Open("mysql", ds)
+	return sql.Open(mysql, ds)
 }

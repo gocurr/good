@@ -10,15 +10,14 @@ import (
 
 // Init inits logrus
 func Init(c *conf.Configuration) {
-	logrus := c.Logrus
-	gl := logrus.GrayLog
-	addr := gl.Host + ":" + strconv.Itoa(gl.Port)
-	extra := gl.Extra
-	hook := graylog.NewAsyncGraylogHook(addr, extra)
+	// set graylog
+	gray := c.Logrus.GrayLog
+	hook := graylog.NewAsyncGraylogHook(gray.Host+":"+strconv.Itoa(gray.Port), gray.Extra)
 	defer hook.Flush()
 	log.AddHook(hook)
 
-	if !logrus.TTY {
+	// set tty
+	if !c.Logrus.TTY {
 		log.SetOutput(ioutil.Discard)
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/gocurr/good/crypto"
 )
 
+// Producer the global rocketmq producer
 var Producer rocketmq.Producer
 
 // Init inits rocketMQProducer
@@ -30,6 +31,5 @@ func Init(c *conf.Configuration) error {
 			AccessKey: accessKey,
 			SecretKey: secretKey,
 		}))
-
 	return err
 }

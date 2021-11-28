@@ -7,9 +7,15 @@ import (
 	"strings"
 )
 
+const (
+	mysql  = "mysql"
+	godror = "godror"
+)
+
+// Db the global database object
 var Db *sql.DB
 
-// Init inits Db via driver
+// Init inits Db
 func Init(c *conf.Configuration) error {
 	dbConf := c.DB
 	pw, err := crypto.Decrypt(c.Secure.Key, dbConf.Password)
@@ -18,9 +24,9 @@ func Init(c *conf.Configuration) error {
 	}
 
 	switch strings.ToLower(dbConf.Driver) {
-	case "mysql":
+	case mysql:
 		Db, err = openMysql(c, pw)
-	case "godror":
+	case godror:
 		Db, err = openOracle(c, pw)
 	}
 

@@ -24,9 +24,10 @@ func Decrypt(key, str string) (string, error) {
 	}
 
 	enc := str[len("enc[") : len(str)-1]
-	return Decrypter(key, enc)
+	return decrypt(key, enc)
 }
 
+// isEnc reports str is encrypted
 func isEnc(str string) bool {
 	if str == "" {
 		return false
@@ -42,16 +43,15 @@ func isEnc(str string) bool {
 func CreateSecret() string {
 	mrand.Seed(time.Now().UnixNano())
 	var builder strings.Builder
-	v := "6368616e676520746869732070617373"
-	size := len(v)
-	for i := 0; i < size; i++ {
+	for i := 0; i < len("6368616e676520746869732070617373"); i++ {
 		a := mrand.Intn(len(hexs) - 1)
 		builder.WriteRune(hexs[a])
 	}
 	return builder.String()
 }
 
-func Decrypter(secret, text string) (string, error) {
+// decrypt text with secret
+func decrypt(secret, text string) (string, error) {
 	key, _ := hex.DecodeString(secret)
 	ciphertext, _ := hex.DecodeString(text)
 
@@ -72,7 +72,8 @@ func Decrypter(secret, text string) (string, error) {
 	return fmt.Sprintf("%s", ciphertext), nil
 }
 
-func Encrypter(secret, msg string) (string, error) {
+// Encrypt msg with secret
+func Encrypt(secret, msg string) (string, error) {
 	key, _ := hex.DecodeString(secret)
 	plaintext := []byte(msg)
 

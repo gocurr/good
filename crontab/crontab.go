@@ -42,6 +42,5 @@ func Register(name string, fn func()) error {
 		Spec: job.Spec,
 		Fn:   fn,
 	}
-
 	return nil
 }
