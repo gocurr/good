@@ -11,15 +11,18 @@ import (
 // Init inits logrus
 func Init(c *conf.Configuration) {
 	// set graylog
-	logrus := c.Logrus
-	gray := logrus.GrayLog
-	hook := graylog.NewAsyncGraylogHook(gray.Host+":"+strconv.Itoa(gray.Port), gray.Extra)
-	defer hook.Flush()
-	log.AddHook(hook)
+	l := c.Logrus
+
+	gray := l.GrayLog
+	if gray.Enable {
+		hook := graylog.NewAsyncGraylogHook(gray.Host+":"+strconv.Itoa(gray.Port), gray.Extra)
+		defer hook.Flush()
+		log.AddHook(hook)
+	}
 
 	var format = "2006-01-02 15:04:05"
-	if logrus.Format != "" {
-		format = logrus.Format
+	if l.Format != "" {
+		format = l.Format
 	}
 	log.SetFormatter(&log.TextFormatter{
 		TimestampFormat: format,
@@ -27,7 +30,7 @@ func Init(c *conf.Configuration) {
 	})
 
 	// set tty
-	if !logrus.TTY {
+	if !l.TTY {
 		log.SetOutput(ioutil.Discard)
 	}
 }

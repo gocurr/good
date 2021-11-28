@@ -15,9 +15,10 @@ type Configuration struct {
 		Format  string `yaml:"format"`
 		TTY     bool   `yaml:"tty"`
 		GrayLog struct {
-			Host  string                 `yaml:"host"`
-			Port  int                    `yaml:"port"`
-			Extra map[string]interface{} `yaml:"extra"`
+			Enable bool                   `yaml:"enable"`
+			Host   string                 `yaml:"host"`
+			Port   int                    `yaml:"port"`
+			Extra  map[string]interface{} `yaml:"extra"`
 		} `yaml:"graylog"`
 	}
 
