@@ -2,6 +2,7 @@ package good
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"testing"
 )
@@ -46,7 +47,7 @@ func TestPort(t *testing.T) {
 func TestConfigure(t *testing.T) {
 	Configure("./app.yml", false)
 	if err := StartCrontab(nameFns); err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	ServerMux(http.NewServeMux())

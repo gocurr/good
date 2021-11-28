@@ -10,6 +10,10 @@ go get -u github.com/gocurr/good
 ## Usage
 
 ```go
+import "github.com/gocurr/good"
+```
+
+```go
 var nameFns = NameFns{
 	{"demo1", func() {
 		fmt.Println("demo1...")
