@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crypto"
 	"strings"
@@ -24,6 +25,8 @@ func Init(c *conf.Configuration) error {
 	}
 
 	switch strings.ToLower(dbConf.Driver) {
+	default:
+		return errors.New("unsupported database")
 	case mysql:
 		Db, err = openMysql(c, pw)
 	case godror:

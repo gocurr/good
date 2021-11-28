@@ -11,7 +11,7 @@ logrus:
       image: 123
 
 db:
-  driver: mysql
+  driver: oracle
   user: abc
   password: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
   datasource: 127.0.0.1:1521/testdb
@@ -20,7 +20,7 @@ redis:
   host: 127.0.0.1
   port: 6379
   db: 1
-  password: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
+  password: password
 
 rocket-mq:
   addr:
