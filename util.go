@@ -13,6 +13,8 @@ import (
 
 // DefaultTimeFormat default time format
 const DefaultTimeFormat = "2006-01-02 15:04:05"
+
+// DefaultContentType default Content-Type
 const DefaultContentType = "Content-Type:application/json"
 
 // GenPasswd generates encrypted string via pw
