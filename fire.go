@@ -16,15 +16,15 @@ var serverMux *http.ServeMux
 // Fire http server fire entry
 func Fire() {
 	if !configured {
-		log.Fatalln("Configure the application first!")
+		log.Fatalln("configure the app first")
 	}
 
 	if serverMux == nil {
-		log.Fatalln("Set ServerMux first!")
+		log.Info("default handler has been set")
 	}
 
 	if port < 0 || port > 1<<16-1 {
-		log.Fatalln("Illegal server port!")
+		log.Fatalln("illegal server port")
 	} else {
 		log.Infof(fmt.Sprintf("http server listening at [::%v]", port))
 	}
@@ -41,5 +41,9 @@ func ServerMux(mux *http.ServeMux) {
 
 // Route binds route path to fn
 func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
-	serverMux.HandleFunc(route, fn)
+	if serverMux != nil {
+		serverMux.HandleFunc(route, fn)
+	} else {
+		http.HandleFunc(route, fn)
+	}
 }

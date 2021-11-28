@@ -26,7 +26,7 @@ func main() {
 		log.Errorf("%v", err)
 	}
 
-	good.ServerMux(http.NewServeMux())
+	// good.ServerMux(http.NewServeMux())
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 	})
