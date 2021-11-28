@@ -33,7 +33,7 @@ func Configure(filename string, fastFail bool) *conf.Configuration {
 		crontab.Init(c)
 	}
 
-	if c.TableStore == nil {
+	if c.TableStore != nil {
 		if err := tablestore.Init(c); err != nil {
 			if fastFail {
 				panic(err)
@@ -63,7 +63,7 @@ func Configure(filename string, fastFail bool) *conf.Configuration {
 		}
 	}
 
-	if c.RocketMq == nil {
+	if c.RocketMq != nil {
 		if err := rocketmq.Init(c); err != nil {
 			if fastFail {
 				panic(err)

@@ -9,6 +9,14 @@ import (
 
 var nameFns = good.NameFns{
 	{"demo1", func() {
+		db := good.DB()
+		fmt.Println(db)
+
+		producer := good.RocketMQProducer()
+		fmt.Println(producer)
+
+		client := good.TableStoreClient()
+		fmt.Println(client)
 		fmt.Println("demo1...")
 	}},
 
