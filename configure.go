@@ -15,7 +15,7 @@ import (
 var configured bool
 
 // Configure configures the application
-func Configure(filename string, fastFail bool) *conf.Configuration {
+func Configure(filename string, fastFail bool) {
 	c, err := conf.ReadYml(filename)
 	if err != nil {
 		if fastFail {
@@ -73,6 +73,7 @@ func Configure(filename string, fastFail bool) *conf.Configuration {
 		}
 	}
 
+	// set server bound port
+	port = c.Server.Port
 	configured = true
-	return c
 }

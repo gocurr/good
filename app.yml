@@ -11,7 +11,7 @@ logrus:
       image: 123
 
 db:
-  driver: oracle
+  driver: godror
   user: abc
   password: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
   datasource: 127.0.0.1:1521/testdb

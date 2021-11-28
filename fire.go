@@ -2,16 +2,19 @@ package good
 
 import (
 	"fmt"
-	"github.com/gocurr/good/conf"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
 
+// port server bound port
+var port int
+
+// serverMux the global multiplexer
 var serverMux *http.ServeMux
 
 // Fire http server fire entry
-func Fire(c *conf.Configuration) {
+func Fire() {
 	if !configured {
 		log.Fatalln("Configure the application first!")
 	}
@@ -20,7 +23,6 @@ func Fire(c *conf.Configuration) {
 		log.Fatalln("Set ServerMux first!")
 	}
 
-	port := c.Server.Port
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalln("Illegal server port!")
 	} else {

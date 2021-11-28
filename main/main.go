@@ -21,7 +21,7 @@ var nameFns = good.NameFns{
 }
 
 func main() {
-	c := good.Configure("./app.yml", false)
+	good.Configure("./app.yml", false)
 	if err := good.StartCrontab(nameFns); err != nil {
 		log.Errorf("%v", err)
 	}
@@ -31,5 +31,5 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	})
 
-	good.Fire(c)
+	good.Fire()
 }
