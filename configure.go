@@ -4,16 +4,24 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// conf the global Configuration
 var conf Configuration
 
-func Configure(file string, fastFail bool) {
-	if err := read(file); err != nil {
+// Configure configures the application
+func Configure(filename string, fastFail bool) {
+	if err := readYml(filename); err != nil {
 		if fastFail {
 			panic(err)
 		} else {
-			log.Errorf("read: %v", err)
+			log.Errorf("readYml: %v", err)
 		}
 	}
+
+	initLogurs()
+
+	initCrontab()
+
+	initTableStore()
 
 	if err := initDb(); err != nil {
 		if fastFail {
@@ -38,8 +46,4 @@ func Configure(file string, fastFail bool) {
 			log.Errorf("initRocketMq: %v", err)
 		}
 	}
-
-	initTableStore()
-
-	initLogurs()
 }

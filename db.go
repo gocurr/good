@@ -6,8 +6,9 @@ import (
 	_ "github.com/godror/godror"
 )
 
-var Db *sql.DB
+var db *sql.DB
 
+// initDb inits db
 func initDb() error {
 	dbConf := conf.DB
 	if dbConf == nil {
@@ -16,9 +17,14 @@ func initDb() error {
 
 	var err error
 	ds := `user="` + dbConf.User + `" password="` + dbConf.Password + `" connectString="` + dbConf.Datasource + `"`
-	Db, err = sql.Open(dbConf.Driver, ds)
+	db, err = sql.Open(dbConf.Driver, ds)
 	if err != nil {
 		return err
 	}
-	return Db.Ping()
+	return db.Ping()
+}
+
+// DB return db
+func DB() *sql.DB {
+	return db
 }

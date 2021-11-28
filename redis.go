@@ -6,20 +6,26 @@ import (
 	"strconv"
 )
 
-var RedisContext = context.Background()
-var RedisDB *redis.Client
+var ctx = context.Background()
+var rdb *redis.Client
 
+// initRedis inits rdb
 func initRedis() error {
 	redisConf := conf.Redis
 	if redisConf == nil {
 		return nil
 	}
 
-	RedisDB = redis.NewClient(&redis.Options{
+	rdb = redis.NewClient(&redis.Options{
 		Addr:     redisConf.Host + ":" + strconv.Itoa(redisConf.Port),
 		Password: redisConf.Password,
 		DB:       redisConf.DB,
 	})
-	_, err := RedisDB.Ping(RedisContext).Result()
+	_, err := rdb.Ping(ctx).Result()
 	return err
+}
+
+// RedisDb returns rdb
+func RedisDb() *redis.Client {
+	return rdb
 }

@@ -34,3 +34,9 @@ table-store:
   instance-name: abc
   access-key-id: 123
   access-key-secret: 12345
+
+crontab:
+  demo1:
+      spec: "*/1 * * * * ?"
+  demo2:
+      spec: "*/2 * * * * ?"

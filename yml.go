@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 )
 
+// Configuration represents a yaml configuration
 type Configuration struct {
 	Server struct {
 		Port int `yaml:"port"`
@@ -46,10 +47,17 @@ type Configuration struct {
 		AccessKeyId     string `yaml:"access-key-id"`
 		AccessKeySecret string `yaml:"access-key-secret"`
 	} `yaml:"table-store"`
+
+	Crontab map[string]Cron
 }
 
-func read(file string) error {
-	bytes, err := ioutil.ReadFile(file)
+type Cron struct {
+	Spec string `yaml:"spec"`
+}
+
+// readYml yml-file to conf
+func readYml(filename string) error {
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
 	}

@@ -13,6 +13,7 @@ var accessKey string
 var secretKey string
 var addr []string
 
+// initRocketMq inits rocketMQProducer
 func initRocketMq() error {
 	mqConf := conf.RocketMq
 	if mqConf == nil {
@@ -39,6 +40,7 @@ func RocketMQProducer() rocketmq.Producer {
 	return rocketMQProducer
 }
 
+// CreateRocketMQConsumer creates a rocketmq.PushConsumer via groupname
 func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
 	return rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
