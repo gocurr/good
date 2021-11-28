@@ -16,6 +16,7 @@ import (
 	ts "github.com/gocurr/good/tablestore"
 )
 
+// DB returns db.Db
 func DB() *sql.DB {
 	return db.Db
 }
@@ -54,10 +55,11 @@ type NameFns []struct {
 	Fn   func()
 }
 
+// StartCrontab calls crontab.StartCrontab
 func StartCrontab(nameFns NameFns) error {
-	var nf crontab.NameFns
+	var nfs crontab.NameFns
 	for _, v := range nameFns {
-		nf = append(nf, v)
+		nfs = append(nfs, v)
 	}
-	return crontab.StartCrontab(nf)
+	return crontab.StartCrontab(nfs)
 }
