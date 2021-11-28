@@ -37,9 +37,14 @@ table-store:
 
 crontab:
   demo1:
-      spec: "*/1 * * * * ?"
+    spec: "*/1 * * * * ?"
   demo2:
-      spec: "*/5 * * * * ?"
+    spec: "*/5 * * * * ?"
 
 secure:
   key: 651589a9bab91314783c1c7b6102a823
+
+custom:
+  urls:
+    - 127.0.0.1:9090
+    - 127.0.0.1:9091

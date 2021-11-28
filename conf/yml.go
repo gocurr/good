@@ -55,6 +55,8 @@ type Configuration struct {
 	Secure struct {
 		Key string `yaml:"key"`
 	}
+
+	Custom map[string]interface{}
 }
 
 // ReadYml yml-file to conf

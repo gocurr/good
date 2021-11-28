@@ -1,7 +1,6 @@
 package good
 
 import (
-	"context"
 	"database/sql"
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
 	"github.com/apache/rocketmq-client-go/v2"
@@ -43,22 +42,45 @@ func TableStoreClient() *tablestore.TableStoreClient {
 }
 
 // Redis returns rdb
-func Redis() (*redis.Client, context.Context) {
-	return redisdb.Rdb, redisdb.Ctx
+func Redis() *redis.Client {
+	return redisdb.Rdb
 }
 
 // NameFns name-function pairs
-type NameFns []struct {
+type NameFns struct {
 	Name string
 	Fn   func()
 }
 
+// nameFns name function pairs
+var nameFns []*NameFns
+
+// RegisterCron registers name-function to crontab
+func RegisterCron(name string, fn func()) {
+	nameFns = append(nameFns, &NameFns{
+		Name: name,
+		Fn:   fn,
+	})
+}
+
 // StartCrontab calls crontab.StartCrontab
-func StartCrontab(nameFns NameFns) error {
+func StartCrontab() error {
+	if !configured {
+		reconf()
+	}
 	for _, nf := range nameFns {
 		if err := crontab.Register(nf.Name, nf.Fn); err != nil {
 			return err
 		}
 	}
 	return crontab.StartCrontab()
+}
+
+// Custom returns custom field
+func Custom(name string) interface{} {
+	field, ok := custom[name]
+	if ok {
+		return field
+	}
+	return nil
 }

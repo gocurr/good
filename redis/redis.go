@@ -8,9 +8,6 @@ import (
 	"strconv"
 )
 
-// Ctx the global redis context
-var Ctx = context.Background()
-
 // Rdb the global redis client
 var Rdb *redis.Client
 
@@ -26,6 +23,6 @@ func Init(c *conf.Configuration) error {
 		Password: pw,
 		DB:       redisConf.DB,
 	})
-	_, err = Rdb.Ping(Ctx).Result()
+	_, err = Rdb.Ping(context.Background()).Result()
 	return err
 }

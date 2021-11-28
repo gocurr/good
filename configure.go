@@ -11,11 +11,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// custom represents the same filed in configuration
+var custom map[string]interface{}
+
 // reports Configure has been invoked
 var configured bool
 
 // Configure configures the application
 func Configure(filename string, fastFail bool) {
+	// tag configured
+	configured = true
+
 	c, err := conf.ReadYml(filename)
 	if err != nil {
 		if fastFail {
@@ -75,5 +81,6 @@ func Configure(filename string, fastFail bool) {
 
 	// set server bound port
 	port = c.Server.Port
-	configured = true
+	// set custom field
+	custom = c.Custom
 }

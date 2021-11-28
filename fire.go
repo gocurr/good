@@ -3,8 +3,17 @@ package good
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"io/fs"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
+)
+
+const (
+	appYml         = "app.yml"
+	applicationYml = "application.yml"
 )
 
 // port server bound port
@@ -16,7 +25,7 @@ var serverMux *http.ServeMux
 // Fire http server fire entry
 func Fire() {
 	if !configured {
-		log.Fatalln("configure the app first")
+		reconf()
 	}
 
 	if serverMux == nil {
@@ -38,6 +47,40 @@ func Fire() {
 			log.Errorf("http server: %v", err)
 		}
 	}
+}
+
+// reconf try to configure once more
+func reconf() {
+	filename := confFile()
+	if filename == "" {
+		log.Fatalln("configure the app first")
+	}
+	log.Warnf("[%s] will be configured", filename)
+	Configure(filename, false)
+}
+
+// confFile returns a *.yml or *.yaml filename
+func confFile() string {
+	if _, err := os.Stat(appYml); err == nil {
+		return appYml
+	}
+	if _, err := os.Stat(applicationYml); err == nil {
+		return applicationYml
+	}
+
+	var filename string
+	if err := filepath.Walk(".", func(path string, info fs.FileInfo, err error) error {
+		name := info.Name()
+		if strings.HasSuffix(name, ".yml") ||
+			strings.HasSuffix(name, ".yaml") {
+			filename = path
+		}
+		return nil
+	}); err != nil {
+		return ""
+	}
+
+	return filename
 }
 
 // ServerMux set serverMux
