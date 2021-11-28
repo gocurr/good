@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/gocurr/cronctl"
 	"github.com/gocurr/good"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -23,7 +22,7 @@ var nameFns = good.NameFns{
 
 func main() {
 	c := good.Configure("./app.yml", false)
-	if err := good.StartCrontab(nameFns, cronctl.DefaultLogger{}); err != nil {
+	if err := good.StartCrontab(nameFns); err != nil {
 		log.Errorf("%v", err)
 	}
 

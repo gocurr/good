@@ -14,7 +14,6 @@ import (
 	redisdb "github.com/gocurr/good/redis"
 	mq "github.com/gocurr/good/rocketmq"
 	ts "github.com/gocurr/good/tablestore"
-	"github.com/robfig/cron/v3"
 )
 
 // DB returns db.Db
@@ -57,11 +56,11 @@ type NameFns []struct {
 }
 
 // StartCrontab calls crontab.StartCrontab
-func StartCrontab(nameFns NameFns, customLogger cron.Logger) error {
+func StartCrontab(nameFns NameFns) error {
 	for _, nf := range nameFns {
 		if err := crontab.Register(nf.Name, nf.Fn); err != nil {
 			return err
 		}
 	}
-	return crontab.StartCrontab(customLogger)
+	return crontab.StartCrontab()
 }
