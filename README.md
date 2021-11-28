@@ -14,7 +14,7 @@ import "github.com/gocurr/good"
 ```
 
 ```go
-var nameFns = NameFns{
+var nameFns = good.NameFns{
 	{"demo1", func() {
 		fmt.Println("demo1...")
 	}},
