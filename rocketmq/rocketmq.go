@@ -11,6 +11,8 @@ import (
 // Producer the global rocketmq producer
 var Producer rocketmq.Producer
 
+// exported fields
+
 var AccessKey string
 var SecretKey string
 var Addr []string
@@ -18,13 +20,14 @@ var Addr []string
 // Init inits rocketMQProducer
 func Init(c *conf.Configuration) error {
 	mqConf := c.RocketMq
+	secureKey := c.Secure.Key
 
 	var err error
-	AccessKey, err = crypto.Decrypt(c.Secure.Key, mqConf.AccessKey)
+	AccessKey, err = crypto.Decrypt(secureKey, mqConf.AccessKey)
 	if err != nil {
 		return err
 	}
-	SecretKey, err = crypto.Decrypt(c.Secure.Key, mqConf.SecretKey)
+	SecretKey, err = crypto.Decrypt(secureKey, mqConf.SecretKey)
 	if err != nil {
 		return err
 	}
