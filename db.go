@@ -15,8 +15,11 @@ func initDb() error {
 		return nil
 	}
 
-	var err error
-	ds := `user="` + dbConf.User + `" password="` + dbConf.Password + `" connectString="` + dbConf.Datasource + `"`
+	pw, err := decrypt(dbConf.Password)
+	if err != nil {
+		return err
+	}
+	ds := `user="` + dbConf.User + `" password="` + pw + `" connectString="` + dbConf.Datasource + `"`
 	db, err = sql.Open(dbConf.Driver, ds)
 	if err != nil {
 		return err

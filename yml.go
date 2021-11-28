@@ -48,11 +48,13 @@ type Configuration struct {
 		AccessKeySecret string `yaml:"access-key-secret"`
 	} `yaml:"table-store"`
 
-	Crontab map[string]Cron
-}
+	Crontab map[string]struct {
+		Spec string `yaml:"spec"`
+	}
 
-type Cron struct {
-	Spec string `yaml:"spec"`
+	Secure struct {
+		Key string `yaml:"key"`
+	}
 }
 
 // readYml yml-file to conf
@@ -62,8 +64,5 @@ func readYml(filename string) error {
 		return err
 	}
 
-	if err = yaml.Unmarshal(bytes, &conf); err != nil {
-		return err
-	}
-	return nil
+	return yaml.Unmarshal(bytes, &conf)
 }

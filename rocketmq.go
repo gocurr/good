@@ -20,11 +20,17 @@ func initRocketMq() error {
 		return nil
 	}
 
-	accessKey = mqConf.AccessKey
-	secretKey = mqConf.SecretKey
+	var err error
+	accessKey, err = decrypt(mqConf.AccessKey)
+	if err != nil {
+		return err
+	}
+	secretKey, err = decrypt(mqConf.SecretKey)
+	if err != nil {
+		return err
+	}
 	addr = mqConf.Addr
 
-	var err error
 	rocketMQProducer, err = rocketmq.NewProducer(
 		producer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
 		producer.WithRetry(mqConf.Retry),

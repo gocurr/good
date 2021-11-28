@@ -21,7 +21,13 @@ func Configure(filename string, fastFail bool) {
 
 	initCrontab()
 
-	initTableStore()
+	if err := initTableStore(); err != nil {
+		if fastFail {
+			panic(err)
+		} else {
+			log.Errorf("initDb: %v", err)
+		}
+	}
 
 	if err := initDb(); err != nil {
 		if fastFail {

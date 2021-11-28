@@ -7,12 +7,22 @@ import (
 var tsc *tablestore.TableStoreClient
 
 // initTableStore inits tsc
-func initTableStore() {
+func initTableStore() error {
 	ts := conf.TableStore
 	if ts == nil {
-		return
+		return nil
 	}
-	tsc = tablestore.NewClient(ts.EndPoint, ts.InstanceName, ts.AccessKeyId, ts.AccessKeySecret)
+
+	id, err := decrypt(ts.AccessKeyId)
+	if err != nil {
+		return err
+	}
+	secret, err := decrypt(ts.AccessKeySecret)
+	if err != nil {
+		return err
+	}
+	tsc = tablestore.NewClient(ts.EndPoint, ts.InstanceName, id, secret)
+	return nil
 }
 
 // TableStoreClient returns tsc

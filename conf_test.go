@@ -15,6 +15,29 @@ var nameFns = NameFns{
 	}},
 }
 
+var secret = "9253a3c25e69cd7e469877b0c6005604"
+
+func TestEnPw(t *testing.T) {
+	encrypter, err := Encrypter(secret, "12345")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(encrypter)
+}
+
+func TestDePw(t *testing.T) {
+	decrypter, err := Decrypter(secret, "f80a78c6688ba43430e628539a4c6445b6ed5d9bf3")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(decrypter)
+}
+
+func TestCreateSecret(t *testing.T) {
+	secret = CreateSecret()
+	fmt.Println(secret)
+}
+
 func TestConfigure(t *testing.T) {
 	Configure("./app.yml", false)
 

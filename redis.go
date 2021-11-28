@@ -16,12 +16,16 @@ func initRedis() error {
 		return nil
 	}
 
+	pw, err := decrypt(redisConf.Password)
+	if err != nil {
+		return err
+	}
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     redisConf.Host + ":" + strconv.Itoa(redisConf.Port),
-		Password: redisConf.Password,
+		Password: pw,
 		DB:       redisConf.DB,
 	})
-	_, err := rdb.Ping(ctx).Result()
+	_, err = rdb.Ping(ctx).Result()
 	return err
 }
 
