@@ -17,3 +17,7 @@ func TestCrypto(t *testing.T) {
 	}
 	fmt.Println(decrypt)
 }
+
+func TestRoundFloat(t *testing.T) {
+	fmt.Printf("%v", RoundFloat(1.015, 2))
+}

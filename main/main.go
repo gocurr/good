@@ -5,6 +5,7 @@ import (
 	"github.com/gocurr/good"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"time"
 )
 
 func demo1() {
@@ -16,11 +17,13 @@ func demo2() {
 }
 
 func main() {
-	good.RegisterCron("demo1", demo1)
+	good.Configure("app.yml", false)
+
+	/*good.RegisterCron("demo1", demo1)
 	good.RegisterCron("demo2", demo2)
 	if err := good.StartCrontab(); err != nil {
 		log.Fatalln(err)
-	}
+	}*/
 
 	// good.ServerMux(http.NewServeMux())
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +34,16 @@ func main() {
 				fmt.Println(a.(string))
 			}
 		}
+
+		key := good.Parameters("key", r)
+		if key != nil {
+			fmt.Println(key)
+		}
+
+		bytes := good.JSONBytes(r)
+		fmt.Println(string(bytes))
+
+		println(time.Now().Format(good.DefaultTimeFormat))
 		_, _ = w.Write([]byte("ok"))
 	})
 
