@@ -2,6 +2,7 @@ server:
   port: 9090
 
 logrus:
+  format: "2006-01-02 15:04:05"
   tty: true
   graylog:
     host: 127.0.0.1

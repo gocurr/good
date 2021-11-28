@@ -12,7 +12,8 @@ type Configuration struct {
 	}
 
 	Logrus *struct {
-		TTY     bool `yaml:"tty"`
+		Format  string `yaml:"format"`
+		TTY     bool   `yaml:"tty"`
 		GrayLog struct {
 			Host  string                 `yaml:"host"`
 			Port  int                    `yaml:"port"`

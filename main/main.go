@@ -8,11 +8,11 @@ import (
 )
 
 func demo1() {
-	fmt.Println("demo1...")
+	log.Info("demo1...")
 }
 
 func demo2() {
-	fmt.Println("demo2...")
+	log.Info("demo2...")
 }
 
 func main() {
