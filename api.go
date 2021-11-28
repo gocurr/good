@@ -8,7 +8,6 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/go-redis/redis/v8"
-	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/db"
 	redisdb "github.com/gocurr/good/redis"
@@ -26,15 +25,14 @@ func RocketMQProducer() rocketmq.Producer {
 	return mq.Producer
 }
 
-// CreateRocketMQConsumer creates a rocketmq.PushConsumer via groupname
-func CreateRocketMQConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, error) {
-	rmq := c.RocketMq
+// CreateRocketMQConsumer creates a rocketmq.PushConsumer via group
+func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
 	return rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
-		consumer.WithNsResolver(primitive.NewPassthroughResolver(rmq.Addr)),
+		consumer.WithNsResolver(primitive.NewPassthroughResolver(mq.Addr)),
 		consumer.WithCredentials(primitive.Credentials{
-			AccessKey: rmq.AccessKey,
-			SecretKey: rmq.SecretKey,
+			AccessKey: mq.AccessKey,
+			SecretKey: mq.SecretKey,
 		}),
 	)
 }

@@ -11,25 +11,31 @@ import (
 // Producer the global rocketmq producer
 var Producer rocketmq.Producer
 
+var AccessKey string
+var SecretKey string
+var Addr []string
+
 // Init inits rocketMQProducer
 func Init(c *conf.Configuration) error {
 	mqConf := c.RocketMq
 
-	accessKey, err := crypto.Decrypt(c.Secure.Key, mqConf.AccessKey)
+	var err error
+	AccessKey, err = crypto.Decrypt(c.Secure.Key, mqConf.AccessKey)
 	if err != nil {
 		return err
 	}
-	secretKey, err := crypto.Decrypt(c.Secure.Key, mqConf.SecretKey)
+	SecretKey, err = crypto.Decrypt(c.Secure.Key, mqConf.SecretKey)
 	if err != nil {
 		return err
 	}
+	Addr = mqConf.Addr
 
 	Producer, err = rocketmq.NewProducer(
-		producer.WithNsResolver(primitive.NewPassthroughResolver(mqConf.Addr)),
+		producer.WithNsResolver(primitive.NewPassthroughResolver(Addr)),
 		producer.WithRetry(mqConf.Retry),
 		producer.WithCredentials(primitive.Credentials{
-			AccessKey: accessKey,
-			SecretKey: secretKey,
+			AccessKey: AccessKey,
+			SecretKey: SecretKey,
 		}))
 	return err
 }
