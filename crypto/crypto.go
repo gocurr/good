@@ -1,4 +1,4 @@
-package good
+package crypto
 
 import (
 	"crypto/aes"
@@ -17,14 +17,14 @@ var hexs = []rune{
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
 }
 
-// decrypt decrypts str
-func decrypt(str string) (string, error) {
+// Decrypt decrypts str
+func Decrypt(key, str string) (string, error) {
 	if !isEnc(str) {
 		return str, nil
 	}
 
 	enc := str[len("enc[") : len(str)-1]
-	return Decrypter(conf.Secure.Key, enc)
+	return Decrypter(key, enc)
 }
 
 func isEnc(str string) bool {

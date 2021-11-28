@@ -2,6 +2,7 @@ package good
 
 import (
 	"fmt"
+	"github.com/gocurr/good/crypto"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"testing"
@@ -20,7 +21,7 @@ var nameFns = NameFns{
 var secret = "9253a3c25e69cd7e469877b0c6005604"
 
 func TestEnPw(t *testing.T) {
-	encrypter, err := Encrypter(secret, "12345")
+	encrypter, err := crypto.Encrypter(secret, "12345")
 	if err != nil {
 		panic(err)
 	}
@@ -28,7 +29,7 @@ func TestEnPw(t *testing.T) {
 }
 
 func TestDePw(t *testing.T) {
-	decrypter, err := Decrypter(secret, "f80a78c6688ba43430e628539a4c6445b6ed5d9bf3")
+	decrypter, err := crypto.Decrypter(secret, "f80a78c6688ba43430e628539a4c6445b6ed5d9bf3")
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +37,7 @@ func TestDePw(t *testing.T) {
 }
 
 func TestCreateSecret(t *testing.T) {
-	secret = CreateSecret()
+	secret = crypto.CreateSecret()
 	fmt.Println(secret)
 }
 
@@ -45,7 +46,7 @@ func TestPort(t *testing.T) {
 }
 
 func TestConfigure(t *testing.T) {
-	Configure("./app.yml", false)
+	c := Configure("./app.yml", false)
 	if err := StartCrontab(nameFns); err != nil {
 		log.Fatalln(err)
 	}
@@ -54,5 +55,6 @@ func TestConfigure(t *testing.T) {
 	Route("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 	})
-	Fire()
+
+	Fire(c)
 }

@@ -2,6 +2,7 @@ package good
 
 import (
 	"fmt"
+	"github.com/gocurr/good/crypto"
 	"io/ioutil"
 	"os"
 )
@@ -11,7 +12,7 @@ func GenPasswd(pw string) string {
 	filename := "secret.txt"
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		secret = CreateSecret()
+		secret = crypto.CreateSecret()
 		fmt.Println(secret)
 		if err := ioutil.WriteFile(filename, []byte(secret), os.ModePerm); err != nil {
 			panic(err)
@@ -20,7 +21,7 @@ func GenPasswd(pw string) string {
 		secret = string(bytes)
 	}
 
-	encrypter, err := Encrypter(secret, pw)
+	encrypter, err := crypto.Encrypter(secret, pw)
 	if err != nil {
 		panic(err)
 	}

@@ -1,4 +1,4 @@
-package good
+package conf
 
 import (
 	"gopkg.in/yaml.v3"
@@ -57,12 +57,16 @@ type Configuration struct {
 	}
 }
 
-// readYml yml-file to conf
-func readYml(filename string) error {
+// ReadYml yml-file to conf
+func ReadYml(filename string) (*Configuration, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return yaml.Unmarshal(bytes, &conf)
+	var c Configuration
+
+	err = yaml.Unmarshal(bytes, &c)
+
+	return &c, err
 }

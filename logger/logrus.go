@@ -1,18 +1,16 @@
-package good
+package logger
 
 import (
 	graylog "github.com/gemnasium/logrus-graylog-hook/v3"
+	"github.com/gocurr/good/conf"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strconv"
 )
 
-func initLogurs() {
-	logrus := conf.Logrus
-	if logrus == nil {
-		return
-	}
-
+// Init inits logrus
+func Init(c *conf.Configuration) {
+	logrus := c.Logrus
 	gl := logrus.GrayLog
 	addr := gl.Host + ":" + strconv.Itoa(gl.Port)
 	extra := gl.Extra

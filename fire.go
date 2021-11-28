@@ -2,6 +2,7 @@ package good
 
 import (
 	"fmt"
+	"github.com/gocurr/good/conf"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
@@ -10,7 +11,7 @@ import (
 var serverMux *http.ServeMux
 
 // Fire http server fire entry
-func Fire() {
+func Fire(c *conf.Configuration) {
 	if !configured {
 		log.Fatalln("Configure the application first!")
 	}
@@ -19,7 +20,7 @@ func Fire() {
 		log.Fatalln("Set ServerMux first!")
 	}
 
-	port := conf.Server.Port
+	port := c.Server.Port
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalln("Illegal server port!")
 	} else {

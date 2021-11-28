@@ -1,16 +1,23 @@
 package good
 
 import (
+	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/crontab"
+	"github.com/gocurr/good/db"
+	"github.com/gocurr/good/logger"
+	"github.com/gocurr/good/redis"
+	"github.com/gocurr/good/rocketmq"
+	"github.com/gocurr/good/tablestore"
 	log "github.com/sirupsen/logrus"
 )
 
-// conf the global Configuration
-var conf Configuration
+// reports Configure has been invoked
 var configured bool
 
 // Configure configures the application
-func Configure(filename string, fastFail bool) {
-	if err := readYml(filename); err != nil {
+func Configure(filename string, fastFail bool) *conf.Configuration {
+	c, err := conf.ReadYml(filename)
+	if err != nil {
 		if fastFail {
 			panic(err)
 		} else {
@@ -18,41 +25,54 @@ func Configure(filename string, fastFail bool) {
 		}
 	}
 
-	initLogurs()
+	if c.Logrus != nil {
+		logger.Init(c)
+	}
 
-	initCrontab()
+	if len(c.Crontab) > 0 {
+		crontab.Init(c)
+	}
 
-	if err := initTableStore(); err != nil {
-		if fastFail {
-			panic(err)
-		} else {
-			log.Errorf("initDb: %v", err)
+	if c.TableStore == nil {
+		if err := tablestore.Init(c); err != nil {
+			if fastFail {
+				panic(err)
+			} else {
+				log.Errorf("initDb: %v", err)
+			}
 		}
 	}
 
-	if err := initDb(); err != nil {
-		if fastFail {
-			panic(err)
-		} else {
-			log.Errorf("initDb: %v", err)
+	if c.DB != nil {
+		if err := db.Init(c); err != nil {
+			if fastFail {
+				panic(err)
+			} else {
+				log.Errorf("initDb: %v", err)
+			}
 		}
 	}
 
-	if err := initRedis(); err != nil {
-		if fastFail {
-			panic(err)
-		} else {
-			log.Errorf("initRedis: %v", err)
+	if c.Redis != nil {
+		if err := redis.Init(c); err != nil {
+			if fastFail {
+				panic(err)
+			} else {
+				log.Errorf("initRedis: %v", err)
+			}
 		}
 	}
 
-	if err := initRocketMq(); err != nil {
-		if fastFail {
-			panic(err)
-		} else {
-			log.Errorf("initRocketMq: %v", err)
+	if c.RocketMq == nil {
+		if err := rocketmq.Init(c); err != nil {
+			if fastFail {
+				panic(err)
+			} else {
+				log.Errorf("initRocketMq: %v", err)
+			}
 		}
 	}
 
 	configured = true
+	return c
 }

@@ -1,16 +1,17 @@
-package good
+package crontab
 
 import (
 	"errors"
 	"fmt"
 	"github.com/gocurr/cronctl"
+	"github.com/gocurr/good/conf"
 )
 
 var jobs = make(map[string]cronctl.Job)
 
-// initCrontab inits crontab
-func initCrontab() {
-	for name, c := range conf.Crontab {
+// Init inits crontab
+func Init(c *conf.Configuration) {
+	for name, c := range c.Crontab {
 		jobs[name] = cronctl.Job{
 			Spec: c.Spec,
 		}
