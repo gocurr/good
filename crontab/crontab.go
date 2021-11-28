@@ -7,6 +7,7 @@ import (
 	"github.com/gocurr/good/conf"
 )
 
+// jobs global crontab
 var jobs = make(map[string]cronctl.Job)
 
 // Init inits crontab
@@ -18,19 +19,8 @@ func Init(c *conf.Configuration) {
 	}
 }
 
-// NameFns name-function pairs
-type NameFns []struct {
-	Name string
-	Fn   func()
-}
-
-func StartCrontab(nameFns NameFns) error {
-	for _, pair := range nameFns {
-		if err := register(pair.Name, pair.Fn); err != nil {
-			return err
-		}
-	}
-
+// StartCrontab starts up crontab
+func StartCrontab() error {
 	// create a crontab
 	crontab, err := cronctl.Create(jobs, cronctl.DefaultLogger{})
 	if err != nil {
@@ -41,8 +31,8 @@ func StartCrontab(nameFns NameFns) error {
 	return crontab.Startup()
 }
 
-// register binds cron to function fn
-func register(name string, fn func()) error {
+// Register binds cron to function fn
+func Register(name string, fn func()) error {
 	job, ok := jobs[name]
 	if !ok {
 		return errors.New(fmt.Sprintf("cron [%s] does not exist", name))

@@ -57,9 +57,10 @@ type NameFns []struct {
 
 // StartCrontab calls crontab.StartCrontab
 func StartCrontab(nameFns NameFns) error {
-	var nfs crontab.NameFns
-	for _, v := range nameFns {
-		nfs = append(nfs, v)
+	for _, nf := range nameFns {
+		if err := crontab.Register(nf.Name, nf.Fn); err != nil {
+			return err
+		}
 	}
-	return crontab.StartCrontab(nfs)
+	return crontab.StartCrontab()
 }
