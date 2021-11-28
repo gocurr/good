@@ -2,6 +2,7 @@ package good
 
 import (
 	"fmt"
+	"net/http"
 	"testing"
 )
 
@@ -38,12 +39,19 @@ func TestCreateSecret(t *testing.T) {
 	fmt.Println(secret)
 }
 
+func TestPort(t *testing.T) {
+	fmt.Println(1<<16 - 1)
+}
+
 func TestConfigure(t *testing.T) {
 	Configure("./app.yml", false)
-
 	if err := StartCrontab(nameFns); err != nil {
 		panic(err)
 	}
 
-	select {}
+	ServerMux(http.NewServeMux())
+	Route("/", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("ok"))
+	})
+	Fire()
 }

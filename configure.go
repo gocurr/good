@@ -6,6 +6,7 @@ import (
 
 // conf the global Configuration
 var conf Configuration
+var configured bool
 
 // Configure configures the application
 func Configure(filename string, fastFail bool) {
@@ -52,4 +53,6 @@ func Configure(filename string, fastFail bool) {
 			log.Errorf("initRocketMq: %v", err)
 		}
 	}
+
+	configured = true
 }
