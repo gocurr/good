@@ -17,12 +17,11 @@ func Init(c *conf.Configuration) error {
 		return err
 	}
 
-	ds := `user="` + dbConf.User + `" password="` + pw + `" connectString="` + dbConf.Datasource + `"`
 	switch strings.ToLower(dbConf.Driver) {
 	case "mysql":
-		Db, err = openMysql(ds)
+		Db, err = openMysql(c, pw)
 	case "godror":
-		Db, err = openOracle(ds)
+		Db, err = openOracle(c, pw)
 	}
 
 	if err != nil {
