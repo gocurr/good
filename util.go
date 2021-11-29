@@ -95,7 +95,7 @@ func handleResp(r *http.Response) ([]byte, error) {
 }
 
 // PostJSON posts JSON format data to the given url
-func PostJSON(url string, data []interface{}) ([]byte, error) {
+func PostJSON(url string, data interface{}) ([]byte, error) {
 	all, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
