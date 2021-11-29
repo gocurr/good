@@ -31,7 +31,7 @@ func Fire(callbacks ...func()) {
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalln("illegal server port")
 	} else {
-		log.Infof(fmt.Sprintf("http server listening at [::%v]", port))
+		log.Infof(fmt.Sprintf("http server listening at: [::]: %v", port))
 	}
 
 	if serverMux != nil {
