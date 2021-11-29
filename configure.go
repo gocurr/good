@@ -10,6 +10,7 @@ import (
 	"github.com/gocurr/good/tablestore"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"sync"
 )
 
 // custom represents the same filed in configuration
@@ -28,7 +29,7 @@ func Configure(filename string, fastFail bool) {
 	// tag configured
 	configured = true
 
-	c, err := conf.ReadYml(filename)
+	c, err := conf.Read(filename)
 	if err != nil {
 		if fastFail {
 			panic(err)
@@ -91,14 +92,19 @@ func Configure(filename string, fastFail bool) {
 	custom = c.Custom
 }
 
+// tryOnce for tryConfig
+var tryOnce sync.Once
+
 // tryConfig try to configure once more
 func tryConfig() {
-	f := filename()
-	if f == "" {
-		log.Fatalln("cannot find config file")
-	}
-	Configure(f, false)
-	log.Infof("app is configured by '%s'", f)
+	tryOnce.Do(func() {
+		f := filename()
+		if f == "" {
+			log.Fatalln("cannot find config file")
+		}
+		Configure(f, false)
+		log.Infof("app is configured by '%s'", f)
+	})
 }
 
 // default configuration names

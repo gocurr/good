@@ -1,70 +1,60 @@
 package main
 
 import (
-	"github.com/gocurr/good"
+	"context"
+	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/crontab"
+	"github.com/gocurr/good/db"
+	"github.com/gocurr/good/logger"
+	"github.com/gocurr/good/redis"
+	"github.com/gocurr/good/rocketmq"
+	"github.com/gocurr/good/tablestore"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 	"time"
 )
 
-func demo1() {
-	log.Info("demo1...")
-}
-
-func demo2() {
-	log.Info("demo2...")
-}
-
-func demo3() {
-	log.Info("demo3...")
+func panic_(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
-	// good.Configure("app.yml", false)
-	good.ConfigDefault()
+	c, err := conf.Read("application.yml")
+	panic_(err)
 
-	good.RegisterCron("demo11", demo1)
-	good.RegisterCron("demo21", demo2)
-	good.StartCrontab()
-	good.RegisterCron("demo3", demo3)
-	good.StartCrontab()
+	err = logger.Init(c)
+	panic_(err)
 
-	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		good.JSONHeader(w)
-		urls := good.Custom("urls")
-		s, ok := urls.([]interface{})
-		if ok {
-			for _, a := range s {
-				log.Info(a.(string))
-			}
-		}
-
-		good.RegisterCron("a", func() {
-			log.Info("a")
-		})
-		good.StartCrontab()
-
-		key := good.Parameters("key", r)
-		if key != nil {
-			log.Info(key)
-		}
-
-		p := good.Parameter("good", r)
-		log.Info(p)
-
-		bytes, err := good.JSONBytes(r)
-		if err == nil {
-			log.Info(string(bytes))
-		}
-
-		println(time.Now().Format(good.DefaultTimeFormat))
-		_, _ = w.Write([]byte(`{"data":"ok"}`))
+	crontab.Init(c)
+	crontab.Register("hello", "*/1 * * * * ?", func() {
+		log.Infof("hello")
 	})
+	err = crontab.StartCrontab()
+	panic_(err)
 
-	//good.ServerMux(http.NewServeMux())
-	good.Fire(callback)
-}
+	err = db.Init(c)
+	panic_(err)
+	rows, err := db.DB.Query("select name from names")
+	panic_(err)
+	for rows.Next() {
+		var name string
+		err = rows.Scan(&name)
+		panic_(err)
+		log.Infof("database name: %v", name)
+	}
 
-func callback() {
-	log.Info("hello app")
+	err = tablestore.Init(c)
+	panic_(err)
+
+	err = rocketmq.Init(c)
+	panic_(err)
+
+	err = redis.Init(c)
+	panic_(err)
+	result, err := redis.Rdb.Get(context.Background(), "a").Result()
+	panic_(err)
+	log.Info("redis------", result)
+
+	time.Sleep(1 * time.Minute)
 }

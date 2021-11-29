@@ -16,18 +16,27 @@ import (
 	"sync"
 )
 
-// DB returns db.Db
+// DB returns db.DB
 func DB() *sql.DB {
-	return db.Db
+	if !configured {
+		tryConfig()
+	}
+	return db.DB
 }
 
 // RocketMQProducer returns rocketMQProducer
 func RocketMQProducer() rocketmq.Producer {
+	if !configured {
+		tryConfig()
+	}
 	return mq.Producer
 }
 
 // CreateRocketMQConsumer creates a rocketmq.PushConsumer via group
 func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
+	if !configured {
+		tryConfig()
+	}
 	return rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
 		consumer.WithNsResolver(primitive.NewPassthroughResolver(mq.Addr)),
@@ -40,11 +49,17 @@ func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
 
 // TableStoreClient returns tsc
 func TableStoreClient() *tablestore.TableStoreClient {
+	if !configured {
+		tryConfig()
+	}
 	return ts.TSC
 }
 
 // Redis returns rdb
 func Redis() *redis.Client {
+	if !configured {
+		tryConfig()
+	}
 	return redisdb.Rdb
 }
 
@@ -82,7 +97,7 @@ func StartCrontab() {
 			tryConfig()
 		}
 		for _, nf := range nameFns {
-			if err := crontab.Register(nf.Name, nf.Fn); err != nil {
+			if err := crontab.Bind(nf.Name, nf.Fn); err != nil {
 				log.Errorf("%v", err)
 			}
 		}

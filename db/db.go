@@ -13,28 +13,43 @@ const (
 	godror = "godror"
 )
 
-// Db the global database object
-var Db *sql.DB
+var dbErr = errors.New("bad db configuration")
 
-// Init inits Db
+// DB the global database object
+var DB *sql.DB
+
+// Init inits DB
 func Init(c *conf.Configuration) error {
-	dbConf := c.DB
-	pw, err := crypto.Decrypt(c.Secure.Key, dbConf.Password)
-	if err != nil {
-		return err
+	if c == nil {
+		return dbErr
+	}
+	db := c.DB
+	if db == nil {
+		return dbErr
 	}
 
-	switch strings.ToLower(dbConf.Driver) {
+	var err error
+	var pw string
+	if c.Secure == nil || c.Secure.Key == "" {
+		pw = db.Password
+	} else {
+		pw, err = crypto.Decrypt(c.Secure.Key, db.Password)
+		if err != nil {
+			return err
+		}
+	}
+
+	switch strings.ToLower(db.Driver) {
 	default:
 		return errors.New("unsupported database")
 	case mysql:
-		Db, err = openMysql(c, pw)
+		DB, err = openMysql(c, pw)
 	case godror:
-		Db, err = openOracle(c, pw)
+		DB, err = openOracle(c, pw)
 	}
 
 	if err != nil {
 		return err
 	}
-	return Db.Ping()
+	return DB.Ping()
 }

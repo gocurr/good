@@ -39,8 +39,8 @@ func StartCrontab() error {
 	return crontab.Startup()
 }
 
-// Register binds cron to function fn
-func Register(name string, fn func()) error {
+// Bind binds cron to function fn
+func Bind(name string, fn func()) error {
 	job, ok := jobs[name]
 	if !ok {
 		return errors.New(fmt.Sprintf("cron '%s' does not exist", name))
@@ -51,4 +51,12 @@ func Register(name string, fn func()) error {
 		Fn:   fn,
 	}
 	return nil
+}
+
+// Register registers a new cron
+func Register(name, spec string, fn func()) {
+	jobs[name] = cronctl.Job{
+		Spec: spec,
+		Fn:   fn,
+	}
 }

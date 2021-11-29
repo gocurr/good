@@ -1,23 +1,45 @@
 package logger
 
 import (
+	"errors"
 	graylog "github.com/gemnasium/logrus-graylog-hook/v3"
 	"github.com/gocurr/good/conf"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strconv"
+	"time"
 )
 
+var logrusErr = errors.New("bad logrus configuration")
+
 // Init inits logrus
-func Init(c *conf.Configuration) {
+func Init(c *conf.Configuration) error {
+	if c == nil {
+		return logrusErr
+	}
 	// set graylog
 	l := c.Logrus
+	if l == nil {
+		return logrusErr
+	}
 
 	gray := l.GrayLog
-	if gray.Enable {
-		hook := graylog.NewAsyncGraylogHook(gray.Host+":"+strconv.Itoa(gray.Port), gray.Extra)
-		defer hook.Flush()
-		log.AddHook(hook)
+	if gray != nil {
+		if gray.Enable {
+			host := gray.Host
+			port := gray.Port
+			if host == "" || port == 0 {
+				return logrusErr
+			}
+
+			if gray.Extra == nil {
+				gray.Extra = make(map[string]interface{})
+			}
+			gray.Extra["timestamp"] = time.Now().Format("2006-01-02 15:04:05")
+			hook := graylog.NewAsyncGraylogHook(host+":"+strconv.Itoa(port), gray.Extra)
+			defer hook.Flush()
+			log.AddHook(hook)
+		}
 	}
 
 	var format = "2006-01-02 15:04:05"
@@ -33,4 +55,5 @@ func Init(c *conf.Configuration) {
 	if !l.TTY {
 		log.SetOutput(ioutil.Discard)
 	}
+	return nil
 }

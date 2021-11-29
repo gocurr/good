@@ -3,19 +3,18 @@ package conf
 import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"time"
 )
 
 // Configuration represents a yaml configuration
 type Configuration struct {
-	Server struct {
+	Server *struct {
 		Port int `yaml:"port"`
 	}
 
 	Logrus *struct {
 		Format  string `yaml:"format"`
 		TTY     bool   `yaml:"tty"`
-		GrayLog struct {
+		GrayLog *struct {
 			Enable bool                   `yaml:"enable"`
 			Host   string                 `yaml:"host"`
 			Port   int                    `yaml:"port"`
@@ -55,15 +54,15 @@ type Configuration struct {
 		Spec string `yaml:"spec"`
 	}
 
-	Secure struct {
+	Secure *struct {
 		Key string `yaml:"key"`
 	}
 
 	Custom map[string]interface{}
 }
 
-// ReadYml yml-file to conf
-func ReadYml(filename string) (*Configuration, error) {
+// Read file to conf
+func Read(filename string) (*Configuration, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -71,8 +70,5 @@ func ReadYml(filename string) (*Configuration, error) {
 
 	var c Configuration
 	err = yaml.Unmarshal(bytes, &c)
-
-	// add graylog extra
-	c.Logrus.GrayLog.Extra["timestamp"] = time.Now().Format("2006-01-02 15:04:05")
 	return &c, err
 }
