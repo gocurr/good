@@ -66,7 +66,7 @@ func RegisterCron(name string, fn func()) {
 // StartCrontab calls crontab.StartCrontab
 func StartCrontab() error {
 	if !configured {
-		reconf()
+		tryConfig()
 	}
 	for _, nf := range nameFns {
 		if err := crontab.Register(nf.Name, nf.Fn); err != nil {
@@ -78,6 +78,9 @@ func StartCrontab() error {
 
 // Custom returns custom field
 func Custom(name string) interface{} {
+	if !configured {
+		tryConfig()
+	}
 	field, ok := custom[name]
 	if ok {
 		return field

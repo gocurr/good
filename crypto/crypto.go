@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var hexs = []rune{
+var hexes = []rune{
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
 }
 
@@ -44,8 +44,8 @@ func CreateSecret() string {
 	mrand.Seed(time.Now().UnixNano())
 	var builder strings.Builder
 	for i := 0; i < len("6368616e676520746869732070617373"); i++ {
-		a := mrand.Intn(len(hexs) - 1)
-		builder.WriteRune(hexs[a])
+		a := mrand.Intn(len(hexes) - 1)
+		builder.WriteRune(hexes[a])
 	}
 	return builder.String()
 }

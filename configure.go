@@ -17,6 +17,11 @@ var custom map[string]interface{}
 // reports Configure has been invoked
 var configured bool
 
+// ConfigDefault config by default file
+func ConfigDefault() {
+	Configure("app.yml", false)
+}
+
 // Configure configures the application
 func Configure(filename string, fastFail bool) {
 	// tag configured

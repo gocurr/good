@@ -23,9 +23,14 @@ var port int
 var serverMux *http.ServeMux
 
 // Fire http server fire entry
-func Fire() {
+func Fire(callbacks ...func()) {
 	if !configured {
-		reconf()
+		tryConfig()
+	}
+
+	// invoke callbacks
+	for _, callback := range callbacks {
+		callback()
 	}
 
 	if serverMux == nil {
@@ -49,14 +54,14 @@ func Fire() {
 	}
 }
 
-// reconf try to configure once more
-func reconf() {
+// tryConfig try to configure once more
+func tryConfig() {
 	filename := confFile()
 	if filename == "" {
-		log.Fatalln("configure the app first")
+		log.Fatalln("cannot find config file")
 	}
-	log.Warnf("[%s] will be configured", filename)
 	Configure(filename, false)
+	log.Warnf("app is configured by [%s]", filename)
 }
 
 // confFile returns a *.yml or *.yaml filename

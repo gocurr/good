@@ -17,7 +17,8 @@ func demo2() {
 }
 
 func main() {
-	good.Configure("app.yml", false)
+	// good.Configure("app.yml", false)
+	good.ConfigDefault()
 
 	/*good.RegisterCron("demo1", demo1)
 	good.RegisterCron("demo2", demo2)
@@ -25,7 +26,7 @@ func main() {
 		log.Fatalln(err)
 	}*/
 
-	// good.ServerMux(http.NewServeMux())
+	good.ServerMux(http.NewServeMux())
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		urls := good.Custom("urls")
 		s, ok := urls.([]interface{})
@@ -52,5 +53,9 @@ func main() {
 		_, _ = w.Write([]byte("ok"))
 	})
 
-	good.Fire()
+	good.Fire(callback)
+}
+
+func callback() {
+	fmt.Println("hello")
 }
