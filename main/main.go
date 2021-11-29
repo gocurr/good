@@ -23,8 +23,8 @@ func main() {
 	// good.Configure("app.yml", false)
 	good.ConfigDefault()
 
-	good.RegisterCron("demo1", demo1)
-	good.RegisterCron("demo2", demo2)
+	good.RegisterCron("demo11", demo1)
+	good.RegisterCron("demo21", demo2)
 	good.StartCrontab()
 	good.RegisterCron("demo3", demo3)
 	good.StartCrontab()

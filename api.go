@@ -83,11 +83,11 @@ func StartCrontab() {
 		}
 		for _, nf := range nameFns {
 			if err := crontab.Register(nf.Name, nf.Fn); err != nil {
-				log.Infof("%v", err)
+				log.Errorf("%v", err)
 			}
 		}
 		if err := crontab.StartCrontab(); err != nil {
-			log.Infof("%v", err)
+			log.Errorf("%v", err)
 		}
 	})
 }
