@@ -43,7 +43,7 @@ func StartCrontab() error {
 func Register(name string, fn func()) error {
 	job, ok := jobs[name]
 	if !ok {
-		return errors.New(fmt.Sprintf("cron [%s] does not exist", name))
+		return errors.New(fmt.Sprintf("cron '%s' does not exist", name))
 	}
 
 	jobs[name] = cronctl.Job{
