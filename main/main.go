@@ -28,6 +28,7 @@ func main() {
 
 	good.ServerMux(http.NewServeMux())
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
+		good.JsonHeader(w)
 		urls := good.Custom("urls")
 		s, ok := urls.([]interface{})
 		if ok {
@@ -50,12 +51,12 @@ func main() {
 		}
 
 		println(time.Now().Format(good.DefaultTimeFormat))
-		_, _ = w.Write([]byte("ok"))
+		_, _ = w.Write([]byte(`{"data":"ok"}`))
 	})
 
 	good.Fire(callback)
 }
 
 func callback() {
-	fmt.Println("hello")
+	log.Info("hello app")
 }

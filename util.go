@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gocurr/good/crypto"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"math"
 	"net/http"
@@ -115,4 +116,23 @@ func HttpGet(url string) ([]byte, error) {
 		return nil, err
 	}
 	return handleResp(response)
+}
+
+// ErrMsg error message
+type ErrMsg struct {
+	Err string `json:"err"`
+}
+
+// HandleErr handle error
+func HandleErr(w http.ResponseWriter, status int, err error) {
+	w.WriteHeader(status)
+	log.Errorf("%v", err)
+	if msg, err := json.Marshal(ErrMsg{Err: err.Error()}); err == nil {
+		_, _ = w.Write(msg)
+	}
+}
+
+// JsonHeader add DefaultContentType into response header
+func JsonHeader(w http.ResponseWriter) {
+	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
 }

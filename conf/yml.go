@@ -3,6 +3,7 @@ package conf
 import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"time"
 )
 
 // Configuration represents a yaml configuration
@@ -70,5 +71,8 @@ func ReadYml(filename string) (*Configuration, error) {
 
 	var c Configuration
 	err = yaml.Unmarshal(bytes, &c)
+
+	// add graylog extra
+	c.Logrus.GrayLog.Extra["timestamp"] = time.Now().Format("2006-01-02 15:04:05")
 	return &c, err
 }
