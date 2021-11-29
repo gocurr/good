@@ -9,6 +9,7 @@ import (
 	"github.com/gocurr/good/rocketmq"
 	"github.com/gocurr/good/tablestore"
 	log "github.com/sirupsen/logrus"
+	"os"
 )
 
 // custom represents the same filed in configuration
@@ -19,7 +20,7 @@ var configured bool
 
 // ConfigDefault config by default file
 func ConfigDefault() {
-	Configure("app.yml", false)
+	tryConfig()
 }
 
 // Configure configures the application
@@ -88,4 +89,58 @@ func Configure(filename string, fastFail bool) {
 	port = c.Server.Port
 	// set custom field
 	custom = c.Custom
+}
+
+// tryConfig try to configure once more
+func tryConfig() {
+	f := filename()
+	if f == "" {
+		log.Fatalln("cannot find config file")
+	}
+	Configure(f, false)
+	log.Warnf("app is configured by [%s]", f)
+}
+
+// default configuration names
+const (
+	appYml  = "app.yml"
+	appYaml = "app.yaml"
+
+	applicationYml  = "application.yml"
+	applicationYaml = "application.yaml"
+
+	confAppYml  = "conf/app.yml"
+	confAppYaml = "conf/app.yaml"
+
+	confApplicationYml  = "conf/application.yml"
+	confApplicationYaml = "conf/application.yaml"
+)
+
+// filename returns a configuration name
+func filename() string {
+	if _, err := os.Stat(appYml); err == nil {
+		return appYml
+	}
+	if _, err := os.Stat(appYaml); err == nil {
+		return appYaml
+	}
+	if _, err := os.Stat(applicationYml); err == nil {
+		return applicationYml
+	}
+	if _, err := os.Stat(applicationYaml); err == nil {
+		return applicationYaml
+	}
+	if _, err := os.Stat(confAppYml); err == nil {
+		return confAppYml
+	}
+	if _, err := os.Stat(confAppYaml); err == nil {
+		return confAppYaml
+	}
+	if _, err := os.Stat(confApplicationYml); err == nil {
+		return confApplicationYml
+	}
+	if _, err := os.Stat(confApplicationYaml); err == nil {
+		return confApplicationYaml
+	}
+	return ""
 }
