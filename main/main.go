@@ -26,7 +26,7 @@ func main() {
 	}
 
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		good.JsonHeader(w)
+		good.JSONHeader(w)
 		urls := good.Custom("urls")
 		s, ok := urls.([]interface{})
 		if ok {

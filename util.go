@@ -132,7 +132,7 @@ func HandleErr(w http.ResponseWriter, status int, err error) {
 	}
 }
 
-// JsonHeader add DefaultContentType into response header
-func JsonHeader(w http.ResponseWriter) {
+// JSONHeader add JSON to response headers
+func JSONHeader(w http.ResponseWriter) {
 	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
 }
