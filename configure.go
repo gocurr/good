@@ -14,7 +14,7 @@ import (
 )
 
 // custom represents the same filed in configuration
-var custom map[string]interface{}
+var custom = make(map[string]interface{})
 
 // reports Configure has been invoked
 var configured bool
@@ -89,7 +89,9 @@ func Configure(filename string, fastFail bool) {
 	// set server bound port
 	port = c.Server.Port
 	// set custom field
-	custom = c.Custom
+	if c.Custom != nil {
+		custom = c.Custom
+	}
 }
 
 // tryOnce for tryConfig
