@@ -23,6 +23,21 @@ func Init(c *conf.Configuration) error {
 		return logrusErr
 	}
 
+	// set logrus output format
+	var format = "2006-01-02 15:04:05"
+	if l.Format != "" {
+		format = l.Format
+	}
+	log.SetFormatter(&log.TextFormatter{
+		TimestampFormat: format,
+		FullTimestamp:   true,
+	})
+
+	// set tty
+	if !l.TTY {
+		log.SetOutput(ioutil.Discard)
+	}
+
 	gray := l.GrayLog
 	if gray != nil {
 		if gray.Enable {
@@ -40,20 +55,6 @@ func Init(c *conf.Configuration) error {
 			defer hook.Flush()
 			log.AddHook(hook)
 		}
-	}
-
-	var format = "2006-01-02 15:04:05"
-	if l.Format != "" {
-		format = l.Format
-	}
-	log.SetFormatter(&log.TextFormatter{
-		TimestampFormat: format,
-		FullTimestamp:   true,
-	})
-
-	// set tty
-	if !l.TTY {
-		log.SetOutput(ioutil.Discard)
 	}
 	return nil
 }
