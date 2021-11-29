@@ -10,6 +10,9 @@ import (
 // port server bound port
 var port int
 
+// running reports server state
+var running bool
+
 // serverMux the global multiplexer
 var serverMux *http.ServeMux
 
@@ -25,14 +28,17 @@ func Fire(callbacks ...func()) {
 	}
 
 	if serverMux == nil {
-		log.Info("default handler has been set")
+		log.Info("default handler is set")
 	}
 
 	if port < 0 || port > 1<<16-1 {
-		log.Fatalln("illegal server port")
+		log.Fatalf("port '%v' is invalid", port)
 	} else {
 		log.Infof(fmt.Sprintf("http server listening at: [::]: %v", port))
 	}
+
+	// set server state
+	running = true
 
 	if serverMux != nil {
 		muxboot()

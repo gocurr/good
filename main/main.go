@@ -19,11 +19,11 @@ func main() {
 	// good.Configure("app.yml", false)
 	good.ConfigDefault()
 
-	/*good.RegisterCron("demo1", demo1)
+	good.RegisterCron("demo1", demo1)
 	good.RegisterCron("demo2", demo2)
 	if err := good.StartCrontab(); err != nil {
 		log.Fatalln(err)
-	}*/
+	}
 
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		good.JsonHeader(w)
@@ -33,6 +33,13 @@ func main() {
 			for _, a := range s {
 				log.Info(a.(string))
 			}
+		}
+
+		good.RegisterCron("a", func() {
+
+		})
+		if err := good.StartCrontab(); err != nil {
+			log.Error(err)
 		}
 
 		key := good.Parameters("key", r)

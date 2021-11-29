@@ -98,7 +98,7 @@ func tryConfig() {
 		log.Fatalln("cannot find config file")
 	}
 	Configure(f, false)
-	log.Infof("app is configured by %s", f)
+	log.Infof("app is configured by '%s'", f)
 }
 
 // default configuration names

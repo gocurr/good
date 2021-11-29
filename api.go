@@ -2,6 +2,7 @@ package good
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/consumer"
@@ -57,6 +58,9 @@ var nameFns []*NameFns
 
 // RegisterCron registers name-function to crontab
 func RegisterCron(name string, fn func()) {
+	if running {
+		return
+	}
 	nameFns = append(nameFns, &NameFns{
 		Name: name,
 		Fn:   fn,
@@ -65,6 +69,9 @@ func RegisterCron(name string, fn func()) {
 
 // StartCrontab calls crontab.StartCrontab
 func StartCrontab() error {
+	if running {
+		return errors.New("cannot start crontab while server is running")
+	}
 	if !configured {
 		tryConfig()
 	}
