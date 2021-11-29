@@ -9,7 +9,7 @@ require (
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gocurr/cronctl v0.0.0-20211129121114-e4946f2db122
+	github.com/gocurr/cronctl v0.0.0-20211129125944-48fa73f93946
 	github.com/godror/godror v0.29.0
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/flatbuffers v2.0.0+incompatible // indirect

@@ -80,6 +80,9 @@ func StartCrontab() error {
 			return err
 		}
 	}
+
+	// reset nameFns
+	nameFns = nil
 	return crontab.StartCrontab()
 }
 

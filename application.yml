@@ -42,6 +42,8 @@ crontab:
     spec: "*/1 * * * * ?"
   demo2:
     spec: "*/5 * * * * ?"
+  demo3:
+    spec: "*/1 * * * * ?"
 
 secure:
   key: 651589a9bab91314783c1c7b6102a823

@@ -15,6 +15,10 @@ func demo2() {
 	log.Info("demo2...")
 }
 
+func demo3() {
+	log.Info("demo3...")
+}
+
 func main() {
 	// good.Configure("app.yml", false)
 	good.ConfigDefault()
@@ -23,6 +27,10 @@ func main() {
 	good.RegisterCron("demo2", demo2)
 	if err := good.StartCrontab(); err != nil {
 		log.Fatalln(err)
+	}
+	good.RegisterCron("demo3", demo3)
+	if err := good.StartCrontab(); err != nil {
+		log.Error(err)
 	}
 
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
