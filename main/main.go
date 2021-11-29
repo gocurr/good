@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gocurr/good"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -33,21 +32,21 @@ func main() {
 		s, ok := urls.([]interface{})
 		if ok {
 			for _, a := range s {
-				fmt.Println(a.(string))
+				log.Info(a.(string))
 			}
 		}
 
 		key := good.Parameters("key", r)
 		if key != nil {
-			fmt.Println(key)
+			log.Info(key)
 		}
 
 		p := good.Parameter("good", r)
-		fmt.Println(p)
+		log.Info(p)
 
 		bytes, err := good.JSONBytes(r)
 		if err == nil {
-			fmt.Println(string(bytes))
+			log.Info(string(bytes))
 		}
 
 		println(time.Now().Format(good.DefaultTimeFormat))
