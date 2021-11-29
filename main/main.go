@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/db"
@@ -55,6 +56,9 @@ func main() {
 	result, err := redis.Rdb.Get(context.Background(), "a").Result()
 	panic_(err)
 	log.Info("redis------", result)
+
+	urls := c.Custom["urls"].([]interface{})
+	fmt.Println(urls)
 
 	time.Sleep(1 * time.Minute)
 }
