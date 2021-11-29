@@ -40,8 +40,13 @@ func main() {
 			fmt.Println(key)
 		}
 
-		bytes := good.JSONBytes(r)
-		fmt.Println(string(bytes))
+		p := good.Parameter("good", r)
+		fmt.Println(p)
+
+		bytes, err := good.JSONBytes(r)
+		if err == nil {
+			fmt.Println(string(bytes))
+		}
 
 		println(time.Now().Format(good.DefaultTimeFormat))
 		_, _ = w.Write([]byte("ok"))

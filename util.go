@@ -32,11 +32,11 @@ func GenPasswd(pw string) string {
 		secret = string(all)
 	}
 
-	encrypter, err := crypto.Encrypt(secret, pw)
+	encrypted, err := crypto.Encrypt(secret, pw)
 	if err != nil {
 		panic(err)
 	}
-	return encrypter
+	return encrypted
 }
 
 // handleFloat handles float with fn
@@ -83,48 +83,36 @@ func Parameters(name string, r *http.Request) []string {
 }
 
 // JSONBytes returns JSON []byte from http.Request
-func JSONBytes(r *http.Request) []byte {
-	body := r.Body
-	defer func() { _ = body.Close() }()
+func JSONBytes(r *http.Request) ([]byte, error) {
+	defer func() { _ = r.Body.Close() }()
+	return ioutil.ReadAll(r.Body)
+}
 
-	all, err := ioutil.ReadAll(body)
-	if err != nil {
-		return nil
-	}
-	return all
+// handleResp handle response
+func handleResp(r *http.Response) ([]byte, error) {
+	defer func() { _ = r.Body.Close() }()
+	return ioutil.ReadAll(r.Body)
 }
 
 // PostJSON posts JSON format data to the given url
-func PostJSON(url string, data []interface{}) []byte {
+func PostJSON(url string, data []interface{}) ([]byte, error) {
 	all, err := json.Marshal(data)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	response, err := http.Post(url, DefaultContentType, bytes.NewReader(all))
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	return handleResp(response)
 }
 
 // HttpGet get []byte via given url
-func HttpGet(url string) []byte {
+func HttpGet(url string) ([]byte, error) {
 	response, err := http.Get(url)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	return handleResp(response)
-}
-
-// handleResp handle response
-func handleResp(response *http.Response) []byte {
-	body := response.Body
-	defer func() { _ = body.Close() }()
-
-	respBytes, err := ioutil.ReadAll(body)
-	if err != nil {
-		return nil
-	}
-	return respBytes
 }

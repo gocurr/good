@@ -21,3 +21,28 @@ func TestCrypto(t *testing.T) {
 func TestRoundFloat(t *testing.T) {
 	fmt.Printf("%v", RoundFloat(1.015, 2))
 }
+
+func TestCeilFloat(t *testing.T) {
+	fmt.Printf("%v", CeilFloat(1.21, 2))
+}
+
+func TestFloorFloat(t *testing.T) {
+	fmt.Printf("%v", FloorFloat(1.21, 2))
+}
+
+func TestPostJSON(t *testing.T) {
+	var data []interface{}
+	json, err := PostJSON("http://127.0.0.1:9090", data)
+	if err != nil {
+		return
+	}
+	fmt.Printf("%s", string(json))
+}
+
+func TestHttpGet(t *testing.T) {
+	get, err := HttpGet("http://127.0.0.1:9090")
+	if err != nil {
+		return
+	}
+	fmt.Printf("%s", string(get))
+}
