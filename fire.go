@@ -10,8 +10,8 @@ import (
 // port server bound port
 var port int
 
-// running reports server state
-var running bool
+// serverRunning reports server state
+var serverRunning bool
 
 // serverMux the global multiplexer
 var serverMux *http.ServeMux
@@ -38,7 +38,7 @@ func Fire(callbacks ...func()) {
 	}
 
 	// set server state
-	running = true
+	serverRunning = true
 
 	if serverMux != nil {
 		muxboot()

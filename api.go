@@ -2,7 +2,6 @@ package good
 
 import (
 	"database/sql"
-	"errors"
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/consumer"
@@ -13,6 +12,8 @@ import (
 	redisdb "github.com/gocurr/good/redis"
 	mq "github.com/gocurr/good/rocketmq"
 	ts "github.com/gocurr/good/tablestore"
+	log "github.com/sirupsen/logrus"
+	"sync"
 )
 
 // DB returns db.Db
@@ -47,43 +48,48 @@ func Redis() *redis.Client {
 	return redisdb.Rdb
 }
 
-// NameFns name-function pairs
-type NameFns struct {
+// NameFn name-function pair
+type NameFn struct {
 	Name string
 	Fn   func()
 }
 
-// nameFns name function pairs
-var nameFns []*NameFns
+// nameFns name-function pairs
+var nameFns []*NameFn
 
 // RegisterCron registers name-function to crontab
 func RegisterCron(name string, fn func()) {
-	if running {
+	if startCronDone || serverRunning {
 		return
 	}
-	nameFns = append(nameFns, &NameFns{
+	nameFns = append(nameFns, &NameFn{
 		Name: name,
 		Fn:   fn,
 	})
 }
 
-// StartCrontab calls crontab.StartCrontab
-func StartCrontab() error {
-	if running {
-		return errors.New("cannot start crontab while server is running")
-	}
-	if !configured {
-		tryConfig()
-	}
-	for _, nf := range nameFns {
-		if err := crontab.Register(nf.Name, nf.Fn); err != nil {
-			return err
-		}
-	}
+// startCronOnce for StartCrontab
+var startCronOnce sync.Once
 
-	// reset nameFns
-	nameFns = nil
-	return crontab.StartCrontab()
+// startCronDone reports StartCrontab invoked
+var startCronDone bool
+
+// StartCrontab calls crontab.StartCrontab
+func StartCrontab() {
+	startCronOnce.Do(func() {
+		startCronDone = true // set done
+		if !configured {
+			tryConfig()
+		}
+		for _, nf := range nameFns {
+			if err := crontab.Register(nf.Name, nf.Fn); err != nil {
+				log.Infof("%v", err)
+			}
+		}
+		if err := crontab.StartCrontab(); err != nil {
+			log.Infof("%v", err)
+		}
+	})
 }
 
 // Custom returns custom field

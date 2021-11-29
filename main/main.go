@@ -25,13 +25,9 @@ func main() {
 
 	good.RegisterCron("demo1", demo1)
 	good.RegisterCron("demo2", demo2)
-	if err := good.StartCrontab(); err != nil {
-		log.Fatalln(err)
-	}
+	good.StartCrontab()
 	good.RegisterCron("demo3", demo3)
-	if err := good.StartCrontab(); err != nil {
-		log.Error(err)
-	}
+	good.StartCrontab()
 
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		good.JSONHeader(w)
@@ -44,11 +40,9 @@ func main() {
 		}
 
 		good.RegisterCron("a", func() {
-
+			log.Info("a")
 		})
-		if err := good.StartCrontab(); err != nil {
-			log.Error(err)
-		}
+		good.StartCrontab()
 
 		key := good.Parameters("key", r)
 		if key != nil {
