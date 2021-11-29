@@ -35,13 +35,29 @@ func Fire(callbacks ...func()) {
 	}
 
 	if serverMux != nil {
-		if err := http.ListenAndServe(":"+strconv.Itoa(port), serverMux); err != nil {
-			log.Errorf("http server: %v", err)
-		}
+		muxboot()
 	} else {
-		if err := http.ListenAndServe(":"+strconv.Itoa(port), nil); err != nil {
-			log.Errorf("http server: %v", err)
-		}
+		defaultBoot()
+	}
+}
+
+// defaultBoot boot by default
+func defaultBoot() {
+	for route, fn := range routeFns {
+		http.HandleFunc(route, fn)
+	}
+	if err := http.ListenAndServe(":"+strconv.Itoa(port), nil); err != nil {
+		log.Errorf("http server: %v", err)
+	}
+}
+
+// muxboot boot by serverMux
+func muxboot() {
+	for route, fn := range routeFns {
+		serverMux.HandleFunc(route, fn)
+	}
+	if err := http.ListenAndServe(":"+strconv.Itoa(port), serverMux); err != nil {
+		log.Errorf("http server: %v", err)
 	}
 }
 
@@ -50,11 +66,10 @@ func ServerMux(mux *http.ServeMux) {
 	serverMux = mux
 }
 
+// routeFns represents route-fn pairs
+var routeFns = make(map[string]func(http.ResponseWriter, *http.Request))
+
 // Route binds route path to fn
 func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
-	if serverMux != nil {
-		serverMux.HandleFunc(route, fn)
-	} else {
-		http.HandleFunc(route, fn)
-	}
+	routeFns[route] = fn
 }

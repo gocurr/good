@@ -25,7 +25,6 @@ func main() {
 		log.Fatalln(err)
 	}*/
 
-	good.ServerMux(http.NewServeMux())
 	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		good.JsonHeader(w)
 		urls := good.Custom("urls")
@@ -53,6 +52,7 @@ func main() {
 		_, _ = w.Write([]byte(`{"data":"ok"}`))
 	})
 
+	//good.ServerMux(http.NewServeMux())
 	good.Fire(callback)
 }
 
