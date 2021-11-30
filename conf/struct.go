@@ -1,7 +1,6 @@
 package conf
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 )
@@ -73,7 +72,7 @@ type Configuration struct {
 func (c *Configuration) String(field string, convert ...bool) (string, error) {
 	i := c.Custom[field]
 	if i == nil {
-		return "", errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+		return "", fmt.Errorf("'%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.String {
 		return i.(string), nil
@@ -82,43 +81,43 @@ func (c *Configuration) String(field string, convert ...bool) (string, error) {
 	if len(convert) > 0 && convert[0] {
 		return fmt.Sprintf("%v", i), nil
 	}
-	return "", errors.New(fmt.Sprintf("%v is not 'string' type", i))
+	return "", fmt.Errorf("%v is not 'string' type", i)
 }
 
 // Int return int field in custom
 func (c *Configuration) Int(field string) (int, error) {
 	i := c.Custom[field]
 	if i == nil {
-		return 0, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+		return 0, fmt.Errorf("'%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Int {
 		return i.(int), nil
 	}
-	return 0, errors.New(fmt.Sprintf("%v is not 'int' type", i))
+	return 0, fmt.Errorf("%v is not 'int' type", i)
 }
 
 // Float64 return float64 field in custom
 func (c *Configuration) Float64(field string) (float64, error) {
 	i := c.Custom[field]
 	if i == nil {
-		return 0, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+		return 0, fmt.Errorf("'%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Float64 {
 		return i.(float64), nil
 	}
-	return 0, errors.New(fmt.Sprintf("%v is not 'float64' type", i))
+	return 0, fmt.Errorf("%v is not 'float64' type", i)
 }
 
 // Float32 return float32 field in custom
 func (c *Configuration) Float32(field string) (float32, error) {
 	i := c.Custom[field]
 	if i == nil {
-		return 0, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+		return 0, fmt.Errorf("'%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Float32 {
 		return i.(float32), nil
 	}
-	return 0, errors.New(fmt.Sprintf("%v is not 'float32' type", i))
+	return 0, fmt.Errorf("%v is not 'float32' type", i)
 }
 
 // Float return float64 field in custom
@@ -135,22 +134,22 @@ func (c *Configuration) Interface(field string) interface{} {
 func (c *Configuration) Slice(field string) ([]interface{}, error) {
 	i := c.Custom[field]
 	if i == nil {
-		return nil, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+		return nil, fmt.Errorf("'%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Slice {
 		return i.([]interface{}), nil
 	}
-	return nil, errors.New(fmt.Sprintf("%v is not '[]interface{}' type", i))
+	return nil, fmt.Errorf("%v is not '[]interface{}' type", i)
 }
 
 // Map return map field in custom
 func (c *Configuration) Map(field string) (map[string]interface{}, error) {
 	i := c.Custom[field]
 	if i == nil {
-		return nil, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+		return nil, fmt.Errorf("'%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Map {
 		return i.(map[string]interface{}), nil
 	}
-	return nil, errors.New(fmt.Sprintf("%v is not 'map[string]interface{}' type", i))
+	return nil, fmt.Errorf("%v is not 'map[string]interface{}' type", i)
 }

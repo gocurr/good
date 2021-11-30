@@ -28,5 +28,6 @@ func main() {
 	fmt.Println(c.String("key", false))
 	fmt.Println(c.String("key", true))
 
+	mysqlOp()
 	sugar.Fire(c)
 }

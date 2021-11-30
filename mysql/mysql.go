@@ -40,5 +40,4 @@ func Init(c *conf.Configuration) error {
 	ds := fmt.Sprintf("%s:%s@%s", db.User, pw, db.Datasource)
 	DB, err = sql.Open(mysql, ds)
 	return err
-
 }

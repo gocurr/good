@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-var crontabErr = errors.New("cannot Bind after Start()")
+var crontabErr = errors.New("cannot Bind after Start")
 
 // jobs global crontab
 var jobs = make(map[string]cronctl.Job)
@@ -64,7 +64,7 @@ func Bind(name string, fn func()) error {
 	}
 	job, ok := jobs[name]
 	if !ok {
-		return errors.New(fmt.Sprintf("cron '%s' does not exist", name))
+		return fmt.Errorf("cron '%s' does not exist", name)
 	}
 
 	jobs[name] = cronctl.Job{
