@@ -3,13 +3,10 @@ package sugar
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
-	"github.com/gocurr/good/crypto"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"math"
 	"net/http"
-	"os"
 )
 
 // DefaultTimeFormat default time format
@@ -17,28 +14,6 @@ const DefaultTimeFormat = "2006-01-02 15:04:05"
 
 // DefaultContentType default Content-Type
 const DefaultContentType = "Content-Type:application/json"
-
-// GenPasswd generates encrypted string via pw
-func GenPasswd(pw string) string {
-	var secret string
-	filename := "secret.txt"
-	all, err := ioutil.ReadFile(filename)
-	if err != nil {
-		secret = crypto.CreateSecret()
-		fmt.Println(secret)
-		if err := ioutil.WriteFile(filename, []byte(secret), os.ModePerm); err != nil {
-			panic(err)
-		}
-	} else {
-		secret = string(all)
-	}
-
-	encrypted, err := crypto.Encrypt(secret, pw)
-	if err != nil {
-		panic(err)
-	}
-	return encrypted
-}
 
 // handleFloat handles float with fn
 func handleFloat(f, n float64, fn func(float64) float64) float64 {

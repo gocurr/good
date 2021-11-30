@@ -8,7 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	mrand "math/rand"
+	"os"
 	"strings"
 	"time"
 )
@@ -92,4 +94,26 @@ func Encrypt(secret, msg string) (string, error) {
 	stream.XORKeyStream(ciphertext[aes.BlockSize:], plaintext)
 
 	return fmt.Sprintf("%x", ciphertext), nil
+}
+
+// GenPasswd generates encrypted string via pw
+func GenPasswd(pw string) string {
+	var secret string
+	filename := "secret.txt"
+	all, err := ioutil.ReadFile(filename)
+	if err != nil {
+		secret = CreateSecret()
+		fmt.Println(secret)
+		if err := ioutil.WriteFile(filename, []byte(secret), os.ModePerm); err != nil {
+			panic(err)
+		}
+	} else {
+		secret = string(all)
+	}
+
+	encrypted, err := Encrypt(secret, pw)
+	if err != nil {
+		panic(err)
+	}
+	return encrypted
 }
