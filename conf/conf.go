@@ -1,71 +1,54 @@
 package conf
 
 import (
+	"errors"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"os"
 )
 
-// Configuration represents a yaml configuration
-type Configuration struct {
-	Server *struct {
-		Port int `yaml:"port"`
+// default configuration names
+const (
+	appYml  = "app.yml"
+	appYaml = "app.yaml"
+
+	applicationYml  = "application.yml"
+	applicationYaml = "application.yaml"
+
+	confAppYml  = "conf/app.yml"
+	confAppYaml = "conf/app.yaml"
+
+	confApplicationYml  = "conf/application.yml"
+	confApplicationYaml = "conf/application.yaml"
+)
+
+// Filename returns a configuration name
+func Filename() string {
+	if _, err := os.Stat(appYml); err == nil {
+		return appYml
 	}
-
-	Logrus *struct {
-		Format  string `yaml:"format"`
-		TTY     bool   `yaml:"tty"`
-		GrayLog *struct {
-			Enable bool                   `yaml:"enable"`
-			Host   string                 `yaml:"host"`
-			Port   int                    `yaml:"port"`
-			Extra  map[string]interface{} `yaml:"extra"`
-		} `yaml:"graylog"`
+	if _, err := os.Stat(appYaml); err == nil {
+		return appYaml
 	}
-
-	Oracle *struct {
-		Driver     string `yaml:"driver"`
-		User       string `yaml:"user"`
-		Password   string `yaml:"password"`
-		Datasource string `yaml:"datasource"`
+	if _, err := os.Stat(applicationYml); err == nil {
+		return applicationYml
 	}
-
-	Mysql *struct {
-		Driver     string `yaml:"driver"`
-		User       string `yaml:"user"`
-		Password   string `yaml:"password"`
-		Datasource string `yaml:"datasource"`
+	if _, err := os.Stat(applicationYaml); err == nil {
+		return applicationYaml
 	}
-
-	Redis *struct {
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		Password string `yaml:"password"`
-		DB       int    `yaml:"db"`
+	if _, err := os.Stat(confAppYml); err == nil {
+		return confAppYml
 	}
-
-	RocketMq *struct {
-		Addr      []string `yaml:"addr"`
-		Retry     int      `yaml:"retry"`
-		AccessKey string   `yaml:"access-key"`
-		SecretKey string   `yaml:"secret-key"`
-	} `yaml:"rocket-mq"`
-
-	TableStore *struct {
-		EndPoint        string `yaml:"end-point"`
-		InstanceName    string `yaml:"instance-name"`
-		AccessKeyId     string `yaml:"access-key-id"`
-		AccessKeySecret string `yaml:"access-key-secret"`
-	} `yaml:"table-store"`
-
-	Crontab map[string]struct {
-		Spec string `yaml:"spec"`
+	if _, err := os.Stat(confAppYaml); err == nil {
+		return confAppYaml
 	}
-
-	Secure *struct {
-		Key string `yaml:"key"`
+	if _, err := os.Stat(confApplicationYml); err == nil {
+		return confApplicationYml
 	}
-
-	Custom map[string]interface{}
+	if _, err := os.Stat(confApplicationYaml); err == nil {
+		return confApplicationYaml
+	}
+	return ""
 }
 
 // Read file to conf
@@ -78,4 +61,15 @@ func Read(filename string) (*Configuration, error) {
 	var c Configuration
 	err = yaml.Unmarshal(bytes, &c)
 	return &c, err
+}
+
+var confErr = errors.New("configuration not found")
+
+// ReadDefault read default configurations
+func ReadDefault() (*Configuration, error) {
+	filename := Filename()
+	if filename == "" {
+		return nil, confErr
+	}
+	return Read(filename)
 }

@@ -1,23 +1,24 @@
 package main
 
 import (
-	"github.com/gocurr/good"
-	log "github.com/sirupsen/logrus"
+	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/logger"
+	"github.com/gocurr/good/sugar"
 	"net/http"
 )
 
+func Panic(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
 func main() {
-	good.BindCron("demo1", func() {
-		log.Info("demo1")
+	c, err := conf.ReadDefault()
+	Panic(err)
+	err = logger.Init(c)
+	Panic(err)
+	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("ok"))
 	})
-	good.Register("hello", "*/5 * * * * ?", func() {
-		log.Info("hello")
-	})
-	good.StartCrontab()
-
-	good.ServerMux(http.NewServeMux())
-	good.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte("good"))
-	})
-	good.Fire()
+	sugar.Fire(c)
 }
