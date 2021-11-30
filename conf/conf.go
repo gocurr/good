@@ -22,7 +22,14 @@ type Configuration struct {
 		} `yaml:"graylog"`
 	}
 
-	DB *struct {
+	Oracle *struct {
+		Driver     string `yaml:"driver"`
+		User       string `yaml:"user"`
+		Password   string `yaml:"password"`
+		Datasource string `yaml:"datasource"`
+	}
+
+	Mysql *struct {
 		Driver     string `yaml:"driver"`
 		User       string `yaml:"user"`
 		Password   string `yaml:"password"`

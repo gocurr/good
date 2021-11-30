@@ -8,7 +8,8 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/go-redis/redis/v8"
 	"github.com/gocurr/good/crontab"
-	"github.com/gocurr/good/db"
+	"github.com/gocurr/good/mysql"
+	"github.com/gocurr/good/oracle"
 	redisdb "github.com/gocurr/good/redis"
 	mq "github.com/gocurr/good/rocketmq"
 	ts "github.com/gocurr/good/tablestore"
@@ -16,27 +17,23 @@ import (
 	"sync"
 )
 
-// DB returns db.DB
-func DB() *sql.DB {
-	if !configured {
-		tryConfig()
-	}
-	return db.DB
+// Oracle returns oracle.DB
+func Oracle() *sql.DB {
+	return oracle.DB
+}
+
+// Mysql returns mysql.DB
+func Mysql() *sql.DB {
+	return mysql.DB
 }
 
 // RocketMQProducer returns rocketMQProducer
 func RocketMQProducer() rocketmq.Producer {
-	if !configured {
-		tryConfig()
-	}
 	return mq.Producer
 }
 
 // CreateRocketMQConsumer creates a rocketmq.PushConsumer via group
 func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
-	if !configured {
-		tryConfig()
-	}
 	return rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
 		consumer.WithNsResolver(primitive.NewPassthroughResolver(mq.Addr)),
@@ -49,17 +46,11 @@ func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
 
 // TableStoreClient returns tsc
 func TableStoreClient() *tablestore.TableStoreClient {
-	if !configured {
-		tryConfig()
-	}
 	return ts.TSC
 }
 
 // Redis returns rdb
 func Redis() *redis.Client {
-	if !configured {
-		tryConfig()
-	}
 	return redisdb.Rdb
 }
 
@@ -74,7 +65,7 @@ var nameFns []*NameFn
 
 // RegisterCron registers name-function to crontab
 func RegisterCron(name string, fn func()) {
-	if startCronDone || serverRunning {
+	if startCronDone {
 		return
 	}
 	nameFns = append(nameFns, &NameFn{

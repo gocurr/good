@@ -1,25 +1,23 @@
-package good
+package sugar
 
 import (
+	"errors"
 	"fmt"
+	"github.com/gocurr/good/conf"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
 
-// port server bound port
-var port int
-
-// serverRunning reports server state
-var serverRunning bool
+var serverErr = errors.New("bad server configuration")
 
 // serverMux the global multiplexer
 var serverMux *http.ServeMux
 
-// Fire http server fire entry
-func Fire(callbacks ...func()) {
-	if !configured {
-		tryConfig()
+// Fire http server entry
+func Fire(c *conf.Configuration, callbacks ...func()) {
+	if c == nil || c.Server == nil {
+		panic(serverErr)
 	}
 
 	// invoke callbacks
@@ -27,42 +25,38 @@ func Fire(callbacks ...func()) {
 		callback()
 	}
 
-	if serverMux == nil {
-		log.Info("default handler is set")
-	}
-
+	// port server bound port
+	port := c.Server.Port
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalf("port '%v' is invalid", port)
 	} else {
 		log.Infof(fmt.Sprintf("http server listening at: [::]: %v", port))
 	}
 
-	// set server state
-	serverRunning = true
-
+	addr := ":" + strconv.Itoa(port)
 	if serverMux != nil {
-		muxboot()
+		muxBoot(addr)
 	} else {
-		defaultBoot()
+		defaultBoot(addr)
 	}
 }
 
 // defaultBoot boot by default
-func defaultBoot() {
+func defaultBoot(addr string) {
 	for route, fn := range routeFns {
 		http.HandleFunc(route, fn)
 	}
-	if err := http.ListenAndServe(":"+strconv.Itoa(port), nil); err != nil {
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Errorf("http server: %v", err)
 	}
 }
 
-// muxboot boot by serverMux
-func muxboot() {
+// muxBoot boot by serverMux
+func muxBoot(addr string) {
 	for route, fn := range routeFns {
 		serverMux.HandleFunc(route, fn)
 	}
-	if err := http.ListenAndServe(":"+strconv.Itoa(port), serverMux); err != nil {
+	if err := http.ListenAndServe(addr, serverMux); err != nil {
 		log.Errorf("http server: %v", err)
 	}
 }

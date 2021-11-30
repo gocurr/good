@@ -3,8 +3,9 @@ package good
 import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
-	"github.com/gocurr/good/db"
 	"github.com/gocurr/good/logger"
+	"github.com/gocurr/good/mysql"
+	"github.com/gocurr/good/oracle"
 	"github.com/gocurr/good/redis"
 	"github.com/gocurr/good/rocketmq"
 	"github.com/gocurr/good/tablestore"
@@ -34,12 +35,19 @@ func Configure(filename string, fastFail bool) {
 		if fastFail {
 			panic(err)
 		} else {
-			log.Errorf("readYml: %v", err)
+			log.Errorf("conf: %v", err)
 		}
 	}
 
 	if c.Logrus != nil {
-		logger.Init(c)
+		if err := logger.Init(c); err != nil {
+			if fastFail {
+				panic(err)
+			} else {
+				log.Errorf("logrus: %v", err)
+			}
+		}
+
 	}
 
 	if len(c.Crontab) > 0 {
@@ -51,17 +59,27 @@ func Configure(filename string, fastFail bool) {
 			if fastFail {
 				panic(err)
 			} else {
-				log.Errorf("initDb: %v", err)
+				log.Errorf("tablestore: %v", err)
 			}
 		}
 	}
 
-	if c.DB != nil {
-		if err := db.Init(c); err != nil {
+	if c.Oracle != nil {
+		if err := oracle.Init(c); err != nil {
 			if fastFail {
 				panic(err)
 			} else {
-				log.Errorf("initDb: %v", err)
+				log.Errorf("oracle: %v", err)
+			}
+		}
+	}
+
+	if c.Mysql != nil {
+		if err := mysql.Init(c); err != nil {
+			if fastFail {
+				panic(err)
+			} else {
+				log.Errorf("mysql: %v", err)
 			}
 		}
 	}
@@ -71,7 +89,7 @@ func Configure(filename string, fastFail bool) {
 			if fastFail {
 				panic(err)
 			} else {
-				log.Errorf("initRedis: %v", err)
+				log.Errorf("redis: %v", err)
 			}
 		}
 	}
@@ -81,15 +99,13 @@ func Configure(filename string, fastFail bool) {
 			if fastFail {
 				panic(err)
 			} else {
-				log.Errorf("initRocketMq: %v", err)
+				log.Errorf("rocketmq: %v", err)
 			}
 		}
 	}
 
-	// set server bound port
-	port = c.Server.Port
 	// set custom field
-	if c.Custom != nil {
+	if len(c.Custom) > 0 {
 		custom = c.Custom
 	}
 }

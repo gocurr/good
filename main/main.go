@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
-	"github.com/gocurr/good/db"
 	"github.com/gocurr/good/logger"
+	"github.com/gocurr/good/mysql"
 	"github.com/gocurr/good/redis"
 	"github.com/gocurr/good/rocketmq"
 	"github.com/gocurr/good/tablestore"
@@ -34,10 +34,11 @@ func main() {
 	err = crontab.StartCrontab()
 	panic_(err)
 
-	err = db.Init(c)
+	err = mysql.Init(c)
 	panic_(err)
-	rows, err := db.DB.Query("select name from names")
+	rows, err := mysql.DB.Query("select name from names")
 	panic_(err)
+	defer func() { _ = rows.Close() }()
 	for rows.Next() {
 		var name string
 		err = rows.Scan(&name)

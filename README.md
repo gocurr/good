@@ -53,6 +53,7 @@ func main() {
 	panic_(err)
 	rows, err := db.DB.Query("select abc from abc")
 	panic_(err)
+	defer func() { _ = rows.Close() }()
 	for rows.Next() {
 		var abc string
 		err = rows.Scan(&abc)

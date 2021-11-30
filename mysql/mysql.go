@@ -1,31 +1,29 @@
-package db
+package mysql
 
 import (
 	"database/sql"
 	"errors"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crypto"
-	"strings"
 )
 
-const (
-	mysql  = "mysql"
-	godror = "godror"
-)
-
-var dbErr = errors.New("bad db configuration")
+const mysql = "mysql"
 
 // DB the global database object
 var DB *sql.DB
 
-// Init inits DB
+var mysqlErr = errors.New("bad mysql configuration")
+
+// Init opens Oracle
 func Init(c *conf.Configuration) error {
 	if c == nil {
-		return dbErr
+		return mysqlErr
 	}
-	db := c.DB
+	db := c.Mysql
 	if db == nil {
-		return dbErr
+		return mysqlErr
 	}
 
 	var err error
@@ -39,17 +37,8 @@ func Init(c *conf.Configuration) error {
 		}
 	}
 
-	switch strings.ToLower(db.Driver) {
-	default:
-		return errors.New("unsupported database")
-	case mysql:
-		DB, err = openMysql(c, pw)
-	case godror:
-		DB, err = openOracle(c, pw)
-	}
+	ds := fmt.Sprintf("%s:%s@%s", db.User, pw, db.Datasource)
+	DB, err = sql.Open(mysql, ds)
+	return err
 
-	if err != nil {
-		return err
-	}
-	return DB.Ping()
 }
