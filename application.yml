@@ -55,6 +55,11 @@ secure:
   key: 651589a9bab91314783c1c7b6102a823
 
 custom:
+  key: 123
+  str: hello
   urls:
     - 127.0.0.1:9090
     - 127.0.0.1:9091
+  complex:
+    a: 1
+    b: 2

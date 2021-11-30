@@ -60,5 +60,35 @@ type Configuration struct {
 		Key string `yaml:"key"`
 	}
 
-	Custom map[string]interface{}
+	Custom map[string]interface{} // custom field for users
+}
+
+// String return string field in custom
+func (c *Configuration) String(field string) string {
+	return c.Custom[field].(string)
+}
+
+// Int return int field in custom
+func (c *Configuration) Int(field string) int {
+	return c.Custom[field].(int)
+}
+
+// Float return float64 field in custom
+func (c *Configuration) Float(field string) float64 {
+	return c.Custom[field].(float64)
+}
+
+// Slice return slice field in custom
+func (c *Configuration) Slice(field string) []interface{} {
+	return c.Custom[field].([]interface{})
+}
+
+// Interface return interface{} field in custom
+func (c *Configuration) Interface(field string) interface{} {
+	return c.Custom[field]
+}
+
+// Map return map field in custom
+func (c *Configuration) Map(field string) map[string]interface{} {
+	return c.Custom[field].(map[string]interface{})
 }
