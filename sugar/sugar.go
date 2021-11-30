@@ -100,6 +100,9 @@ type ErrMsg struct {
 
 // HandleErr handle error
 func HandleErr(w http.ResponseWriter, status int, err error) {
+	if err == nil {
+		return
+	}
 	w.WriteHeader(status)
 	log.Errorf("%v", err)
 	if msg, err := json.Marshal(ErrMsg{Err: err.Error()}); err == nil {
