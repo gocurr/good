@@ -129,5 +129,8 @@ func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
 
 // Fire http server entry
 func Fire(callbacks ...func()) {
+	if !configured {
+		tryConfig()
+	}
 	sugar.Fire(configuration, callbacks...)
 }
