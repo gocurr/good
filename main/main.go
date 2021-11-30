@@ -1,8 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/crontab"
+	"github.com/gocurr/good/sugar"
+	log "github.com/sirupsen/logrus"
 )
 
 func Panic(err error) {
@@ -11,10 +13,15 @@ func Panic(err error) {
 	}
 }
 func main() {
-	c, err := conf.ReadDefault()
-	Panic(err)
-	fmt.Println(c.Int("key"))
-	fmt.Println(c.String("str"))
-	fmt.Println(c.Slice("urls"))
-	fmt.Println(c.Map("complex"))
+	c, _ := conf.ReadDefault()
+	crontab.Init(c)
+	_ = crontab.Bind("demo1", func() {
+		log.Info("demo1")
+	})
+	_ = crontab.Bind("demo2", func() {
+		log.Info("demo2")
+	})
+	crontab.Start()
+
+	sugar.Fire(c)
 }

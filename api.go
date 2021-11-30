@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
 	"github.com/apache/rocketmq-client-go/v2"
-	"github.com/apache/rocketmq-client-go/v2/consumer"
-	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/go-redis/redis/v8"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/mysql"
@@ -36,14 +34,7 @@ func RocketMQProducer() rocketmq.Producer {
 
 // CreateRocketMQConsumer creates a rocketmq.PushConsumer via group
 func CreateRocketMQConsumer(group string) (rocketmq.PushConsumer, error) {
-	return rocketmq.NewPushConsumer(
-		consumer.WithGroupName(group),
-		consumer.WithNsResolver(primitive.NewPassthroughResolver(mq.Addr)),
-		consumer.WithCredentials(primitive.Credentials{
-			AccessKey: mq.AccessKey,
-			SecretKey: mq.SecretKey,
-		}),
-	)
+	return mq.CreateConsumer(group)
 }
 
 // TableStoreClient returns tsc
@@ -90,9 +81,7 @@ func StartCrontab() {
 				log.Errorf("%v", err)
 			}
 		}
-		if err := crontab.Start(); err != nil {
-			log.Errorf("%v", err)
-		}
+		crontab.Start()
 	})
 }
 

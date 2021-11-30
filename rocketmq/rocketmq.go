@@ -3,6 +3,7 @@ package rocketmq
 import (
 	"errors"
 	"github.com/apache/rocketmq-client-go/v2"
+	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
 	"github.com/gocurr/good/conf"
@@ -55,4 +56,16 @@ func Init(c *conf.Configuration) error {
 			SecretKey: SecretKey,
 		}))
 	return err
+}
+
+// CreateConsumer creates a rocketmq.PushConsumer via group
+func CreateConsumer(group string) (rocketmq.PushConsumer, error) {
+	return rocketmq.NewPushConsumer(
+		consumer.WithGroupName(group),
+		consumer.WithNsResolver(primitive.NewPassthroughResolver(Addr)),
+		consumer.WithCredentials(primitive.Credentials{
+			AccessKey: AccessKey,
+			SecretKey: SecretKey,
+		}),
+	)
 }
