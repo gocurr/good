@@ -73,8 +73,13 @@ func main() {
 	panic_(err)
 	log.Info("redis------", result)
 
-	urls := c.Custom["urls"].([]interface{})
+	urls := c.Slice("urls")
 	fmt.Println(urls)
+
+	m := c.Map("complex")
+	for k, v := range m {
+		fmt.Println(k, v)
+	}
 
 	time.Sleep(1 * time.Minute)
 }

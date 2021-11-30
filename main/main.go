@@ -15,7 +15,8 @@ func main() {
 	Panic(err)
 	fmt.Println(c.String("str"))
 	fmt.Println(c.Int("key"))
-	fmt.Println(c.Slice("urls"))
+	slice := c.Slice("urls")
+	fmt.Println(slice)
 	m := c.Map("complex")
 	for k, v := range m {
 		fmt.Println(k, v)

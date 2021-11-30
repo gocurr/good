@@ -56,6 +56,11 @@ func Redis() *redis.Client {
 	return redisdb.Rdb
 }
 
+// RegisterCron registers a new cron
+func RegisterCron(name, spec string, fn func()) {
+	crontab.Register(name, spec, fn)
+}
+
 // NameFn name-function pair
 type NameFn struct {
 	Name string
@@ -98,23 +103,6 @@ func StartCrontab() {
 			log.Errorf("%v", err)
 		}
 	})
-}
-
-// Custom returns custom field
-func Custom(name string) interface{} {
-	if !configured {
-		tryConfig()
-	}
-	field, ok := custom[name]
-	if ok {
-		return field
-	}
-	return nil
-}
-
-// Register registers a new cron
-func Register(name, spec string, fn func()) {
-	crontab.Register(name, spec, fn)
 }
 
 // ServerMux set serverMux
