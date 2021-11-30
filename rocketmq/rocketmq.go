@@ -15,11 +15,9 @@ var rocketmqErr = errors.New("bad rocketmq configuration")
 // Producer the global rocketmq producer
 var Producer rocketmq.Producer
 
-// exported fields
-
-var AccessKey string
-var SecretKey string
-var Addr []string
+var accessKey string
+var secretKey string
+var addr []string
 
 // Init inits rocketMQProducer
 func Init(c *conf.Configuration) error {
@@ -33,27 +31,27 @@ func Init(c *conf.Configuration) error {
 
 	var err error
 	if c.Secure == nil || c.Secure.Key == "" {
-		AccessKey = mq.AccessKey
-		SecretKey = mq.SecretKey
+		accessKey = mq.AccessKey
+		secretKey = mq.SecretKey
 	} else {
-		AccessKey, err = crypto.Decrypt(c.Secure.Key, mq.AccessKey)
+		accessKey, err = crypto.Decrypt(c.Secure.Key, mq.AccessKey)
 		if err != nil {
 			return err
 		}
-		SecretKey, err = crypto.Decrypt(c.Secure.Key, mq.SecretKey)
+		secretKey, err = crypto.Decrypt(c.Secure.Key, mq.SecretKey)
 		if err != nil {
 			return err
 		}
 	}
 
-	Addr = mq.Addr
+	addr = mq.Addr
 
 	Producer, err = rocketmq.NewProducer(
-		producer.WithNsResolver(primitive.NewPassthroughResolver(Addr)),
+		producer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
 		producer.WithRetry(mq.Retry),
 		producer.WithCredentials(primitive.Credentials{
-			AccessKey: AccessKey,
-			SecretKey: SecretKey,
+			AccessKey: accessKey,
+			SecretKey: secretKey,
 		}))
 	return err
 }
@@ -62,10 +60,10 @@ func Init(c *conf.Configuration) error {
 func CreateConsumer(group string) (rocketmq.PushConsumer, error) {
 	return rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
-		consumer.WithNsResolver(primitive.NewPassthroughResolver(Addr)),
+		consumer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
 		consumer.WithCredentials(primitive.Credentials{
-			AccessKey: AccessKey,
-			SecretKey: SecretKey,
+			AccessKey: accessKey,
+			SecretKey: secretKey,
 		}),
 	)
 }
