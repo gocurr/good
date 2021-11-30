@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/gocurr/good"
 	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/crontab"
 	log "github.com/sirupsen/logrus"
 	"time"
 )
@@ -24,9 +24,10 @@ func main() {
 	for k, v := range m {
 		fmt.Println(k, v)
 	}
-	good.RegisterCron("hello", "*/1 * * * * ?", func() {
+	crontab.Register("hello", "*/1 * * * * ?", func() {
 		log.Info("hello")
 	})
-	good.StartCrontab()
+	err = crontab.Start()
+	Panic(err)
 	time.Sleep(1 * time.Minute)
 }
