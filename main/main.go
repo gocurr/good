@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/sugar"
@@ -22,6 +23,10 @@ func main() {
 		log.Info("demo2")
 	})
 	crontab.Start()
+
+	fmt.Println(c.Int("xxx"))
+	fmt.Println(c.String("key", false))
+	fmt.Println(c.String("key", true))
 
 	sugar.Fire(c)
 }

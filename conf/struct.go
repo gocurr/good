@@ -70,17 +70,27 @@ type Configuration struct {
 }
 
 // String return string field in custom
-func (c *Configuration) String(field string) string {
+func (c *Configuration) String(field string, convert ...bool) (string, error) {
 	i := c.Custom[field]
-	if reflect.TypeOf(i).Kind() == reflect.String {
-		return i.(string)
+	if i == nil {
+		return "", errors.New(fmt.Sprintf("'%s' not found in configuration", field))
 	}
-	return fmt.Sprintf("%v", i)
+	if reflect.TypeOf(i).Kind() == reflect.String {
+		return i.(string), nil
+	}
+
+	if len(convert) > 0 && convert[0] {
+		return fmt.Sprintf("%v", i), nil
+	}
+	return "", errors.New(fmt.Sprintf("%v is not 'string' type", i))
 }
 
 // Int return int field in custom
 func (c *Configuration) Int(field string) (int, error) {
 	i := c.Custom[field]
+	if i == nil {
+		return 0, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+	}
 	if reflect.TypeOf(i).Kind() == reflect.Int {
 		return i.(int), nil
 	}
@@ -90,6 +100,9 @@ func (c *Configuration) Int(field string) (int, error) {
 // Float64 return float64 field in custom
 func (c *Configuration) Float64(field string) (float64, error) {
 	i := c.Custom[field]
+	if i == nil {
+		return 0, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+	}
 	if reflect.TypeOf(i).Kind() == reflect.Float64 {
 		return i.(float64), nil
 	}
@@ -99,6 +112,9 @@ func (c *Configuration) Float64(field string) (float64, error) {
 // Float32 return float32 field in custom
 func (c *Configuration) Float32(field string) (float32, error) {
 	i := c.Custom[field]
+	if i == nil {
+		return 0, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+	}
 	if reflect.TypeOf(i).Kind() == reflect.Float32 {
 		return i.(float32), nil
 	}
@@ -118,6 +134,9 @@ func (c *Configuration) Interface(field string) interface{} {
 // Slice return slice field in custom
 func (c *Configuration) Slice(field string) ([]interface{}, error) {
 	i := c.Custom[field]
+	if i == nil {
+		return nil, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+	}
 	if reflect.TypeOf(i).Kind() == reflect.Slice {
 		return i.([]interface{}), nil
 	}
@@ -127,6 +146,9 @@ func (c *Configuration) Slice(field string) ([]interface{}, error) {
 // Map return map field in custom
 func (c *Configuration) Map(field string) (map[string]interface{}, error) {
 	i := c.Custom[field]
+	if i == nil {
+		return nil, errors.New(fmt.Sprintf("'%s' not found in configuration", field))
+	}
 	if reflect.TypeOf(i).Kind() == reflect.Map {
 		return i.(map[string]interface{}), nil
 	}
