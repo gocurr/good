@@ -1,17 +1,12 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/logger"
-	"github.com/gocurr/good/mysql"
-	"github.com/gocurr/good/redis"
-	"github.com/gocurr/good/rocketmq"
-	"github.com/gocurr/good/tablestore"
+	"github.com/gocurr/good/sugar"
 	log "github.com/sirupsen/logrus"
-	"time"
+	"net/http"
 )
 
 func panic_(err error) {
@@ -28,13 +23,13 @@ func main() {
 	panic_(err)
 
 	crontab.Init(c)
-	crontab.Register("hello", "*/1 * * * * ?", func() {
+	crontab.Register("hello", "*/10 * * * * ?", func() {
 		log.Infof("hello")
 	})
 	err = crontab.StartCrontab()
 	panic_(err)
 
-	err = mysql.Init(c)
+	/*err = mysql.Init(c)
 	panic_(err)
 	rows, err := mysql.DB.Query("select name from names")
 	panic_(err)
@@ -59,7 +54,19 @@ func main() {
 	log.Info("redis------", result)
 
 	urls := c.Custom["urls"].([]interface{})
-	fmt.Println(urls)
+	fmt.Println(urls)*/
 
-	time.Sleep(1 * time.Minute)
+	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
+		//sugar.JSONHeader(w)
+		url := sugar.Parameter("url", r)
+		log.Infof("key = %v", url)
+
+		var data = []byte("ok")
+		get, err := sugar.HttpGet(url)
+		if err == nil {
+			data = get
+		}
+		_, _ = w.Write(data)
+	})
+	sugar.Fire(c)
 }
