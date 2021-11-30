@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/gocurr/good"
-	log "github.com/sirupsen/logrus"
+	"fmt"
+	"github.com/gocurr/good/conf"
 )
 
 func Panic(err error) {
@@ -11,12 +11,10 @@ func Panic(err error) {
 	}
 }
 func main() {
-	good.BindCron("demo1", func() {
-		log.Info("demo1")
-	})
-	good.BindCron("demo2", func() {
-		log.Info("demo2")
-	})
-	good.StartCrontab()
-	good.Fire()
+	c, err := conf.ReadDefault()
+	Panic(err)
+	fmt.Println(c.Int("key"))
+	fmt.Println(c.String("str"))
+	fmt.Println(c.Slice("urls"))
+	fmt.Println(c.Map("complex"))
 }
