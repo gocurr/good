@@ -14,6 +14,8 @@ import (
 	"sync"
 )
 
+var configuration *conf.Configuration
+
 // custom represents the same filed in configuration
 var custom = make(map[string]interface{})
 
@@ -38,6 +40,9 @@ func Configure(filename string, fastFail bool) {
 			log.Errorf("conf: %v", err)
 		}
 	}
+
+	// set configuration
+	configuration = c
 
 	if c.Logrus != nil {
 		if err := logger.Init(c); err != nil {

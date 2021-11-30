@@ -12,8 +12,10 @@ import (
 	"github.com/gocurr/good/oracle"
 	redisdb "github.com/gocurr/good/redis"
 	mq "github.com/gocurr/good/rocketmq"
+	"github.com/gocurr/good/sugar"
 	ts "github.com/gocurr/good/tablestore"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 	"sync"
 )
 
@@ -63,8 +65,8 @@ type NameFn struct {
 // nameFns name-function pairs
 var nameFns []*NameFn
 
-// RegisterCron registers name-function to crontab
-func RegisterCron(name string, fn func()) {
+// BindCron binds name-function to crontab
+func BindCron(name string, fn func()) {
 	if startCronDone {
 		return
 	}
@@ -108,4 +110,24 @@ func Custom(name string) interface{} {
 		return field
 	}
 	return nil
+}
+
+// Register registers a new cron
+func Register(name, spec string, fn func()) {
+	crontab.Register(name, spec, fn)
+}
+
+// ServerMux set serverMux
+func ServerMux(mux *http.ServeMux) {
+	sugar.ServerMux(mux)
+}
+
+// Route binds route path to fn
+func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
+	sugar.Route(route, fn)
+}
+
+// Fire http server entry
+func Fire(callbacks ...func()) {
+	sugar.Fire(configuration, callbacks...)
 }

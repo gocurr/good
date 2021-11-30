@@ -20,17 +20,17 @@ func Fire(c *conf.Configuration, callbacks ...func()) {
 		panic(serverErr)
 	}
 
-	// invoke callbacks
-	for _, callback := range callbacks {
-		callback()
-	}
-
 	// port server bound port
 	port := c.Server.Port
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalf("port '%v' is invalid", port)
 	} else {
 		log.Infof(fmt.Sprintf("http server listening at: [::]: %v", port))
+	}
+
+	// invoke callbacks
+	for _, callback := range callbacks {
+		callback()
 	}
 
 	addr := ":" + strconv.Itoa(port)
