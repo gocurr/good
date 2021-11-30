@@ -19,8 +19,8 @@ func Init(c *conf.Configuration) {
 	}
 }
 
-// StartCrontab starts up crontab
-func StartCrontab() error {
+// Start starts up crontab
+func Start() error {
 	// filter bad jobs
 	var goodJobs = make(map[string]cronctl.Job)
 	for k, v := range jobs {

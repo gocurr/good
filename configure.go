@@ -124,7 +124,7 @@ func tryConfig() {
 		if f == "" {
 			log.Fatalln("cannot find config file")
 		}
-		Configure(f, false)
 		log.Infof("app is configured by '%s'", f)
+		Configure(f, false)
 	})
 }

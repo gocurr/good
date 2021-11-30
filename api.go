@@ -87,7 +87,7 @@ var startCronOnce sync.Once
 // startCronDone reports StartCrontab invoked
 var startCronDone bool
 
-// StartCrontab calls crontab.StartCrontab
+// StartCrontab calls crontab.Start
 func StartCrontab() {
 	startCronOnce.Do(func() {
 		startCronDone = true // set done
@@ -99,7 +99,7 @@ func StartCrontab() {
 				log.Errorf("%v", err)
 			}
 		}
-		if err := crontab.StartCrontab(); err != nil {
+		if err := crontab.Start(); err != nil {
 			log.Errorf("%v", err)
 		}
 	})

@@ -2,7 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/gocurr/good"
 	"github.com/gocurr/good/conf"
+	log "github.com/sirupsen/logrus"
+	"time"
 )
 
 func Panic(err error) {
@@ -21,4 +24,9 @@ func main() {
 	for k, v := range m {
 		fmt.Println(k, v)
 	}
+	good.RegisterCron("hello", "*/1 * * * * ?", func() {
+		log.Info("hello")
+	})
+	good.StartCrontab()
+	time.Sleep(1 * time.Minute)
 }
