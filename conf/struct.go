@@ -84,7 +84,7 @@ func (c *Configuration) Int(field string) (int, error) {
 	if reflect.TypeOf(i).Kind() == reflect.Int {
 		return i.(int), nil
 	}
-	return 0, errors.New(fmt.Sprintf("%v is not a int", i))
+	return 0, errors.New(fmt.Sprintf("%v is not 'int' type", i))
 }
 
 // Float64 return float64 field in custom
@@ -93,7 +93,7 @@ func (c *Configuration) Float64(field string) (float64, error) {
 	if reflect.TypeOf(i).Kind() == reflect.Float64 {
 		return i.(float64), nil
 	}
-	return 0, errors.New(fmt.Sprintf("%v is not a float64", i))
+	return 0, errors.New(fmt.Sprintf("%v is not 'float64' type", i))
 }
 
 // Float32 return float32 field in custom
@@ -102,7 +102,7 @@ func (c *Configuration) Float32(field string) (float32, error) {
 	if reflect.TypeOf(i).Kind() == reflect.Float32 {
 		return i.(float32), nil
 	}
-	return 0, errors.New(fmt.Sprintf("%v is not a float32", i))
+	return 0, errors.New(fmt.Sprintf("%v is not 'float32' type", i))
 }
 
 // Float return float64 field in custom
@@ -121,7 +121,7 @@ func (c *Configuration) Slice(field string) ([]interface{}, error) {
 	if reflect.TypeOf(i).Kind() == reflect.Slice {
 		return i.([]interface{}), nil
 	}
-	return nil, errors.New(fmt.Sprintf("%v is not a []interface{}", i))
+	return nil, errors.New(fmt.Sprintf("%v is not '[]interface{}' type", i))
 }
 
 // Map return map field in custom
@@ -130,5 +130,5 @@ func (c *Configuration) Map(field string) (map[string]interface{}, error) {
 	if reflect.TypeOf(i).Kind() == reflect.Map {
 		return i.(map[string]interface{}), nil
 	}
-	return nil, errors.New(fmt.Sprintf("%v is not a map[string]interface{}", i))
+	return nil, errors.New(fmt.Sprintf("%v is not 'map[string]interface{}' type", i))
 }
