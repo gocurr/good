@@ -61,24 +61,15 @@ func RegisterCron(name, spec string, fn func()) {
 	crontab.Register(name, spec, fn)
 }
 
-// NameFn name-function pair
-type NameFn struct {
-	Name string
-	Fn   func()
-}
-
 // nameFns name-function pairs
-var nameFns []*NameFn
+var nameFns = make(map[string]func())
 
 // BindCron binds name-function to crontab
 func BindCron(name string, fn func()) {
 	if startCronDone {
 		return
 	}
-	nameFns = append(nameFns, &NameFn{
-		Name: name,
-		Fn:   fn,
-	})
+	nameFns[name] = fn
 }
 
 // startCronOnce for StartCrontab
@@ -94,8 +85,8 @@ func StartCrontab() {
 		if !configured {
 			tryConfig()
 		}
-		for _, nf := range nameFns {
-			if err := crontab.Bind(nf.Name, nf.Fn); err != nil {
+		for n, f := range nameFns {
+			if err := crontab.Bind(n, f); err != nil {
 				log.Errorf("%v", err)
 			}
 		}
