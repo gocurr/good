@@ -6,6 +6,7 @@ import (
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/sugar"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 func Panic(err error) {
@@ -22,13 +23,18 @@ func main() {
 	_ = crontab.Bind("demo2", func() {
 		log.Info("demo2")
 	})
-	crontab.Start()
+	//crontab.Start()
 
 	fmt.Println(c.Int("xxx"))
 	fmt.Println(c.String("key", false))
 	fmt.Println(c.String("key", true))
 
-	mysqlOp(c)
-	redisOp(c)
+	//mysqlOp(c)
+	//redisOp(c)
+
+	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
+		sugar.JSONHeader(w)
+		sugar.HandleErr(w, http.StatusForbidden, nil)
+	})
 	sugar.Fire(c)
 }
