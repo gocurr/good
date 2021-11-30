@@ -30,6 +30,8 @@ github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LB
 github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg7847qk6SyHyPtNmDHnmrv/HOrqktSC+C9fM+CJOE=
 github.com/gocurr/cronctl v0.0.0-20211129125944-48fa73f93946 h1:424nCjxztpQaEfj5xFquUxpzzd5gOMuKA1HKMf2gTe0=
 github.com/gocurr/cronctl v0.0.0-20211129125944-48fa73f93946/go.mod h1:Eyze1zwfdb4RzZNZYSAnMCrc3tjAJKghP/Y38DygRsU=
+github.com/gocurr/cronctl v0.0.0-20211130130706-16679f22aa48 h1:C/xHGfJuw2McAQomF5ND9HgYf+mNai2q5kkjsXEmn3U=
+github.com/gocurr/cronctl v0.0.0-20211130130706-16679f22aa48/go.mod h1:Eyze1zwfdb4RzZNZYSAnMCrc3tjAJKghP/Y38DygRsU=
 github.com/godror/godror v0.29.0 h1:J5PiWMy7glh4cZnExYk5ryAYx0c972YQUavh/ml+wlM=
 github.com/godror/godror v0.29.0/go.mod h1:dwNYusI/Ug2JlbJuVvQQMhzlxVEJeq+MwaXwTYlDyC8=
 github.com/godror/knownpb v0.1.0 h1:dJPK8s/I3PQzGGaGcUStL2zIaaICNzKKAK8BzP1uLio=

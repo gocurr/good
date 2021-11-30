@@ -7,10 +7,8 @@ import (
 	"github.com/gocurr/good/mysql"
 )
 
-func mysqlOp() {
-	c, err := conf.ReadDefault()
-	Panic(err)
-	err = mysql.Init(c)
+func mysqlOp(c *conf.Configuration) {
+	err := mysql.Init(c)
 	Panic(err)
 	insert("joy")
 	query()

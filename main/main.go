@@ -28,6 +28,7 @@ func main() {
 	fmt.Println(c.String("key", false))
 	fmt.Println(c.String("key", true))
 
-	mysqlOp()
+	mysqlOp(c)
+	redisOp(c)
 	sugar.Fire(c)
 }
