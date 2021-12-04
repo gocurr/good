@@ -21,14 +21,14 @@ oracle:
 mysql:
   driver: mysql
   user: abc
-  password: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
+  password: enc(dfdf920e95c3565b95749dd03e788fd486f489e72094)
   datasource: tcp(127.0.0.1:3306)/testdb
 
 redis:
   host: 127.0.0.1
   port: 6379
   db: 0
-  password: password
+  password: enc(436c7849214555123a97c132730d70538e23554583ed70be)
 
 rocket-mq:
   addr:
@@ -52,9 +52,9 @@ crontab:
     spec: "*/1 * * * * ?"
 
 secure:
-  key: 651589a9bab91314783c1c7b6102a823
+  key: 6c841a6c8b9e3b42dfd30dc950da0382
 
-custom:
+reserved:
   key: 123
   str: hello
   urls:
@@ -67,3 +67,13 @@ custom:
   a_b: text_1
   AB: AB
   a_B: aB
+
+pg:
+  addr: 127.0.0.1:5432
+  user: pg
+  password: 123456
+
+maria:
+  addr: 127.0.0.1:3306
+  user: maria
+  password: 654321

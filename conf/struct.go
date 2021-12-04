@@ -2,75 +2,86 @@ package conf
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v3"
 	"reflect"
 )
 
 // Configuration represents a yaml configuration
 type Configuration struct {
+	cache []byte `yaml:"-"` // cached yml-bytes
+
 	Server *struct {
-		Port int `yaml:"port"`
+		Port int `yaml:"port,omitempty"`
 	}
 
 	Logrus *struct {
-		Format  string `yaml:"format"`
-		TTY     bool   `yaml:"tty"`
+		Format  string `yaml:"format,omitempty"`
+		TTY     bool   `yaml:"tty,omitempty"`
 		GrayLog *struct {
-			Enable bool                   `yaml:"enable"`
-			Host   string                 `yaml:"host"`
-			Port   int                    `yaml:"port"`
-			Extra  map[string]interface{} `yaml:"extra"`
-		} `yaml:"graylog"`
+			Enable bool                   `yaml:"enable,omitempty"`
+			Host   string                 `yaml:"host,omitempty"`
+			Port   int                    `yaml:"port,omitempty"`
+			Extra  map[string]interface{} `yaml:"extra,omitempty"`
+		} `yaml:"graylog,omitempty"`
 	}
 
 	Oracle *struct {
-		Driver     string `yaml:"driver"`
-		User       string `yaml:"user"`
-		Password   string `yaml:"password"`
-		Datasource string `yaml:"datasource"`
+		Driver     string `yaml:"driver,omitempty"`
+		User       string `yaml:"user,omitempty"`
+		Password   string `yaml:"password,omitempty"`
+		Datasource string `yaml:"datasource,omitempty"`
 	}
 
 	Mysql *struct {
-		Driver     string `yaml:"driver"`
-		User       string `yaml:"user"`
-		Password   string `yaml:"password"`
-		Datasource string `yaml:"datasource"`
+		Driver     string `yaml:"driver,omitempty"`
+		User       string `yaml:"user,omitempty"`
+		Password   string `yaml:"password,omitempty"`
+		Datasource string `yaml:"datasource,omitempty"`
 	}
 
 	Redis *struct {
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		Password string `yaml:"password"`
-		DB       int    `yaml:"db"`
+		Host     string `yaml:"host,omitempty"`
+		Port     int    `yaml:"port,omitempty"`
+		Password string `yaml:"password,omitempty"`
+		DB       int    `yaml:"db,omitempty"`
 	}
 
 	RocketMq *struct {
-		Addr      []string `yaml:"addr"`
-		Retry     int      `yaml:"retry"`
-		AccessKey string   `yaml:"access-key"`
-		SecretKey string   `yaml:"secret-key"`
-	} `yaml:"rocket-mq"`
+		Addr      []string `yaml:"addr,omitempty"`
+		Retry     int      `yaml:"retry,omitempty"`
+		AccessKey string   `yaml:"access-key,omitempty"`
+		SecretKey string   `yaml:"secret-key,omitempty"`
+	} `yaml:"rocket-mq,omitempty"`
 
 	TableStore *struct {
-		EndPoint        string `yaml:"end-point"`
-		InstanceName    string `yaml:"instance-name"`
-		AccessKeyId     string `yaml:"access-key-id"`
-		AccessKeySecret string `yaml:"access-key-secret"`
-	} `yaml:"table-store"`
+		EndPoint        string `yaml:"end-point,omitempty"`
+		InstanceName    string `yaml:"instance-name,omitempty"`
+		AccessKeyId     string `yaml:"access-key-id,omitempty"`
+		AccessKeySecret string `yaml:"access-key-secret,omitempty"`
+	} `yaml:"table-store,omitempty"`
 
 	Crontab map[string]struct {
-		Spec string `yaml:"spec"`
+		Spec string `yaml:"spec,omitempty"`
 	}
 
 	Secure *struct {
-		Key string `yaml:"key"`
+		Key string `yaml:"key,omitempty"`
 	}
 
-	Custom map[string]interface{} // custom field for users
+	Reserved map[string]interface{} `yaml:"reserved,omitempty"` // reserved area for users
+}
+
+// Fill fills custom struct
+func (c *Configuration) Fill(custom interface{}) error {
+	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
+		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(custom).Name())
+	}
+	return yaml.Unmarshal(c.cache, custom)
 }
 
 // String return string field in custom
 func (c *Configuration) String(field string, convert ...bool) (string, error) {
-	i := c.Custom[field]
+	i := c.Reserved[field]
 	if i == nil {
 		return "", fmt.Errorf("'%s' not found in configuration", field)
 	}
@@ -86,7 +97,7 @@ func (c *Configuration) String(field string, convert ...bool) (string, error) {
 
 // Int return int field in custom
 func (c *Configuration) Int(field string) (int, error) {
-	i := c.Custom[field]
+	i := c.Reserved[field]
 	if i == nil {
 		return 0, fmt.Errorf("'%s' not found in configuration", field)
 	}
@@ -98,7 +109,7 @@ func (c *Configuration) Int(field string) (int, error) {
 
 // Float64 return float64 field in custom
 func (c *Configuration) Float64(field string) (float64, error) {
-	i := c.Custom[field]
+	i := c.Reserved[field]
 	if i == nil {
 		return 0, fmt.Errorf("'%s' not found in configuration", field)
 	}
@@ -110,7 +121,7 @@ func (c *Configuration) Float64(field string) (float64, error) {
 
 // Float32 return float32 field in custom
 func (c *Configuration) Float32(field string) (float32, error) {
-	i := c.Custom[field]
+	i := c.Reserved[field]
 	if i == nil {
 		return 0, fmt.Errorf("'%s' not found in configuration", field)
 	}
@@ -127,12 +138,12 @@ func (c *Configuration) Float(field string) (float64, error) {
 
 // Interface return interface{} field in custom
 func (c *Configuration) Interface(field string) interface{} {
-	return c.Custom[field]
+	return c.Reserved[field]
 }
 
 // Slice return slice field in custom
 func (c *Configuration) Slice(field string) ([]interface{}, error) {
-	i := c.Custom[field]
+	i := c.Reserved[field]
 	if i == nil {
 		return nil, fmt.Errorf("'%s' not found in configuration", field)
 	}
@@ -144,7 +155,7 @@ func (c *Configuration) Slice(field string) ([]interface{}, error) {
 
 // Map return map field in custom
 func (c *Configuration) Map(field string) (map[string]interface{}, error) {
-	i := c.Custom[field]
+	i := c.Reserved[field]
 	if i == nil {
 		return nil, fmt.Errorf("'%s' not found in configuration", field)
 	}

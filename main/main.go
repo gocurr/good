@@ -15,6 +15,23 @@ func Panic(err error) {
 		panic(err)
 	}
 }
+
+type Custom struct {
+	Pg struct {
+		Addr     string `yaml:"addr"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+	} `yaml:"pg"`
+
+	Maria struct {
+		Addr     string `yaml:"addr"`
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+	} `yaml:"maria"`
+}
+
+var custom Custom
+
 func main() {
 	c, _ := conf.ReadDefault()
 	_ = logger.Set(c)
@@ -33,6 +50,11 @@ func main() {
 	fmt.Println(c.Int("xxx"))
 	fmt.Println(c.String("key", false))
 	fmt.Println(c.String("key", true))
+
+	if err := c.Fill(&custom); err != nil {
+		log.Error(err)
+	}
+	fmt.Println(custom)
 
 	mysqlOp(c)
 	redisOp(c)
