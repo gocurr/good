@@ -37,13 +37,23 @@ func main() {
 	mysqlOp(c)
 	redisOp(c)
 
+	type msg struct {
+		Text string `json:"text"`
+	}
 	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		bytes, err := sugar.HttpGet("http://127.0.0.1:9091")
+		bytes, err := sugar.PostJSON("http://127.0.0.1:9091", &msg{Text: "hello"})
 		if err != nil {
 			_, _ = w.Write([]byte(err.Error()))
 			return
 		}
 		_, _ = w.Write(bytes)
 	})
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("test"))
+	})
+
+	sugar.ServerMux(mux)
 	sugar.Fire(c)
 }
