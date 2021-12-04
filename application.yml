@@ -63,3 +63,7 @@ custom:
   complex:
     a: 1
     b: 2
+  a-b: text_2
+  a_b: text_1
+  AB: AB
+  a_B: aB
