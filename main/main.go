@@ -53,8 +53,7 @@ func main() {
 	crons.Start()
 
 	fmt.Println(c.Int("xxx"))
-	fmt.Println(c.String("key", false))
-	fmt.Println(c.String("key", true))
+	fmt.Println(c.String("key"))
 
 	if err := c.Fill(&custom); err != nil {
 		log.Error(err)

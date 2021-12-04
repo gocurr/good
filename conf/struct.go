@@ -80,7 +80,7 @@ func (c *Configuration) Fill(custom interface{}) error {
 }
 
 // String return string field in reserved
-func (c *Configuration) String(field string, convert ...bool) (string, error) {
+func (c *Configuration) String(field string) (string, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return "", fmt.Errorf("'%s' not found in configuration", field)
@@ -89,10 +89,7 @@ func (c *Configuration) String(field string, convert ...bool) (string, error) {
 		return i.(string), nil
 	}
 
-	if len(convert) > 0 && convert[0] {
-		return fmt.Sprintf("%v", i), nil
-	}
-	return "", fmt.Errorf("%v is not 'string' type", i)
+	return fmt.Sprintf("%v", i), nil
 }
 
 // Int return int field in reserved
