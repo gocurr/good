@@ -51,7 +51,7 @@ func Filename() string {
 	return ""
 }
 
-// Read file to conf
+// Read returns *Configuration and error
 func Read(filename string) (*Configuration, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -68,7 +68,7 @@ func Read(filename string) (*Configuration, error) {
 
 var confErr = errors.New("configuration not found")
 
-// ReadDefault read default configurations
+// ReadDefault reads default configurations
 func ReadDefault() (*Configuration, error) {
 	filename := Filename()
 	if filename == "" {

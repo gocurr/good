@@ -11,7 +11,7 @@ import (
 
 var crontabErr = errors.New("cannot Bind after Start")
 
-// Crontab cron wrapper
+// Crontab jobs wrapper
 type Crontab struct {
 	jobs map[string]cronctl.Job // name-job mapping
 	once sync.Once              // for Start
@@ -56,7 +56,7 @@ func (c *Crontab) Start() {
 	})
 }
 
-// Bind binds cron-name to function-fn
+// Bind binds name to function
 func (c *Crontab) Bind(name string, fn func()) error {
 	if c.done {
 		return crontabErr

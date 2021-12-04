@@ -8,7 +8,7 @@ import (
 
 // Configuration represents a yaml configuration
 type Configuration struct {
-	cache []byte `yaml:"-"` // cached yml-bytes
+	cache []byte `yaml:"-"` // cached yaml-bytes
 
 	Server *struct {
 		Port int `yaml:"port,omitempty"`
@@ -79,7 +79,7 @@ func (c *Configuration) Fill(custom interface{}) error {
 	return yaml.Unmarshal(c.cache, custom)
 }
 
-// String return string field in custom
+// String return string field in reserved
 func (c *Configuration) String(field string, convert ...bool) (string, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -95,7 +95,7 @@ func (c *Configuration) String(field string, convert ...bool) (string, error) {
 	return "", fmt.Errorf("%v is not 'string' type", i)
 }
 
-// Int return int field in custom
+// Int return int field in reserved
 func (c *Configuration) Int(field string) (int, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -107,7 +107,7 @@ func (c *Configuration) Int(field string) (int, error) {
 	return 0, fmt.Errorf("%v is not 'int' type", i)
 }
 
-// Float64 return float64 field in custom
+// Float64 return float64 field in reserved
 func (c *Configuration) Float64(field string) (float64, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -119,7 +119,7 @@ func (c *Configuration) Float64(field string) (float64, error) {
 	return 0, fmt.Errorf("%v is not 'float64' type", i)
 }
 
-// Float32 return float32 field in custom
+// Float32 return float32 field in reserved
 func (c *Configuration) Float32(field string) (float32, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -131,17 +131,17 @@ func (c *Configuration) Float32(field string) (float32, error) {
 	return 0, fmt.Errorf("%v is not 'float32' type", i)
 }
 
-// Float return float64 field in custom
+// Float return float64 field in reserved
 func (c *Configuration) Float(field string) (float64, error) {
 	return c.Float64(field)
 }
 
-// Interface return interface{} field in custom
+// Interface return interface{} field in reserved
 func (c *Configuration) Interface(field string) interface{} {
 	return c.Reserved[field]
 }
 
-// Slice return slice field in custom
+// Slice return slice field in reserved
 func (c *Configuration) Slice(field string) ([]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -153,7 +153,7 @@ func (c *Configuration) Slice(field string) ([]interface{}, error) {
 	return nil, fmt.Errorf("%v is not '[]interface{}' type", i)
 }
 
-// Map return map field in custom
+// Map return map field in reserved
 func (c *Configuration) Map(field string) (map[string]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
