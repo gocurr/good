@@ -14,7 +14,7 @@ var rocketmqErr = errors.New("bad rocketmq configuration")
 
 // NewProducer returns rocketmq.Producer and error
 func NewProducer(c *conf.Configuration) (rocketmq.Producer, error) {
-	accessKey, secretKey, addr, retry, err := decr(c)
+	accessKey, secretKey, addr, retry, err := decrypt(c)
 	if err != nil {
 		return nil, err
 	}
@@ -28,9 +28,9 @@ func NewProducer(c *conf.Configuration) (rocketmq.Producer, error) {
 		}))
 }
 
-// NewConsumer creates a rocketmq.PushConsumer and error
+// NewConsumer returns rocketmq.PushConsumer and error
 func NewConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, error) {
-	accessKey, secretKey, addr, retry, err := decr(c)
+	accessKey, secretKey, addr, retry, err := decrypt(c)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,8 @@ func NewConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, er
 	)
 }
 
-func decr(c *conf.Configuration) (string, string, []string, int, error) {
+// decrypt returns decrypted attributes
+func decrypt(c *conf.Configuration) (string, string, []string, int, error) {
 	if c == nil {
 		return "", "", nil, 0, rocketmqErr
 	}
