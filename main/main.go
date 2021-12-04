@@ -28,6 +28,11 @@ type Custom struct {
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
 	} `yaml:"maria"`
+
+	Logic struct {
+		Api   string   `yaml:"api"`
+		Names []string `yaml:"names"`
+	}
 }
 
 var custom Custom

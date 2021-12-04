@@ -77,3 +77,10 @@ maria:
   addr: 127.0.0.1:3306
   user: maria
   password: 654321
+
+logic:
+  api: http://127.0.0.1:9092/logic
+  names:
+    - jack
+    - rose
+    - tom
