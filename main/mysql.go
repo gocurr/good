@@ -2,23 +2,23 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/mysql"
 )
 
 func mysqlOp(c *conf.Configuration) {
-	err := mysql.Init(c)
+	db, err := mysql.Get(c)
 	Panic(err)
-	insert("joy")
-	query()
+	insert(db, "joy")
+	query(db)
 	fmt.Println("-----")
-	del("joy")
-	query()
+	del(db, "joy")
+	query(db)
 }
 
-func insert(name string) {
-	db := mysql.DB
+func insert(db *sql.DB, name string) {
 	ctx := context.Background()
 
 	tx, err := db.BeginTx(ctx, nil)
@@ -31,8 +31,7 @@ func insert(name string) {
 	Panic(err)
 }
 
-func query() {
-	db := mysql.DB
+func query(db *sql.DB) {
 	rows, err := db.Query("select name from names")
 	Panic(err)
 	defer func() { _ = rows.Close() }()
@@ -44,8 +43,7 @@ func query() {
 	}
 }
 
-func del(name string) {
-	db := mysql.DB
+func del(db *sql.DB, name string) {
 	tx, err := db.BeginTx(context.Background(), nil)
 	Panic(err)
 	defer func() { _ = tx.Rollback() }()

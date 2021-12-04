@@ -9,17 +9,14 @@ import (
 
 var tablestoreErr = errors.New("bad tablestore configuration")
 
-// TSC the global tablestore client
-var TSC *tablestore.TableStoreClient
-
-// Init inits tsc
-func Init(c *conf.Configuration) error {
+// Get returns *tablestore.TableStoreClient
+func Get(c *conf.Configuration) (*tablestore.TableStoreClient, error) {
 	if c == nil {
-		return tablestoreErr
+		return nil, tablestoreErr
 	}
 	ts := c.TableStore
 	if ts == nil {
-		return tablestoreErr
+		return nil, tablestoreErr
 	}
 
 	var err error
@@ -30,14 +27,13 @@ func Init(c *conf.Configuration) error {
 	} else {
 		id, err = crypto.Decrypt(c.Secure.Key, ts.AccessKeyId)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		secret, err = crypto.Decrypt(c.Secure.Key, ts.AccessKeySecret)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	TSC = tablestore.NewClient(ts.EndPoint, ts.InstanceName, id, secret)
-	return nil
+	return tablestore.NewClient(ts.EndPoint, ts.InstanceName, id, secret), nil
 }

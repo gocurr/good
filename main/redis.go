@@ -8,11 +8,10 @@ import (
 )
 
 func redisOp(c *conf.Configuration) {
-	err := redis.Init(c)
+	rdb, err := redis.Get(c)
 	Panic(err)
 
 	var ctx = context.Background()
-	rdb := redis.Rdb
 	result, err := rdb.Get(ctx, "a").Result()
 	Panic(err)
 	fmt.Println(result)

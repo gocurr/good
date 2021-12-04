@@ -11,19 +11,16 @@ import (
 
 const mysql = "mysql"
 
-// DB the global database object
-var DB *sql.DB
-
 var mysqlErr = errors.New("bad mysql configuration")
 
-// Init opens Oracle
-func Init(c *conf.Configuration) error {
+// Get returns *sql.DB
+func Get(c *conf.Configuration) (*sql.DB, error) {
 	if c == nil {
-		return mysqlErr
+		return nil, mysqlErr
 	}
 	db := c.Mysql
 	if db == nil {
-		return mysqlErr
+		return nil, mysqlErr
 	}
 
 	var err error
@@ -33,11 +30,10 @@ func Init(c *conf.Configuration) error {
 	} else {
 		pw, err = crypto.Decrypt(c.Secure.Key, db.Password)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	ds := fmt.Sprintf("%s:%s@%s", db.User, pw, db.Datasource)
-	DB, err = sql.Open(mysql, ds)
-	return err
+	dsn := fmt.Sprintf("%s:%s@%s", db.User, pw, db.Datasource)
+	return sql.Open(mysql, dsn)
 }

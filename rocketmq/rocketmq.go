@@ -12,23 +12,51 @@ import (
 
 var rocketmqErr = errors.New("bad rocketmq configuration")
 
-// Producer the global rocketmq producer
-var Producer rocketmq.Producer
+// Producer returns rocketmq.Producer
+func Producer(c *conf.Configuration) (rocketmq.Producer, error) {
+	accessKey, secretKey, addr, retry, err := decr(c)
+	if err != nil {
+		return nil, err
+	}
 
-var accessKey string
-var secretKey string
-var addr []string
+	return rocketmq.NewProducer(
+		producer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
+		producer.WithRetry(retry),
+		producer.WithCredentials(primitive.Credentials{
+			AccessKey: accessKey,
+			SecretKey: secretKey,
+		}))
+}
 
-// Init inits rocketMQProducer
-func Init(c *conf.Configuration) error {
+// Consumer creates a rocketmq.PushConsumer
+func Consumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, error) {
+	accessKey, secretKey, addr, retry, err := decr(c)
+	if err != nil {
+		return nil, err
+	}
+
+	return rocketmq.NewPushConsumer(
+		consumer.WithGroupName(group),
+		consumer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
+		consumer.WithRetry(retry),
+		consumer.WithCredentials(primitive.Credentials{
+			AccessKey: accessKey,
+			SecretKey: secretKey,
+		}),
+	)
+}
+
+func decr(c *conf.Configuration) (string, string, []string, int, error) {
 	if c == nil {
-		return rocketmqErr
+		return "", "", nil, 0, rocketmqErr
 	}
 	mq := c.RocketMq
 	if mq == nil {
-		return rocketmqErr
+		return "", "", nil, 0, rocketmqErr
 	}
 
+	var accessKey string
+	var secretKey string
 	var err error
 	if c.Secure == nil || c.Secure.Key == "" {
 		accessKey = mq.AccessKey
@@ -36,34 +64,12 @@ func Init(c *conf.Configuration) error {
 	} else {
 		accessKey, err = crypto.Decrypt(c.Secure.Key, mq.AccessKey)
 		if err != nil {
-			return err
+			return "", "", nil, 0, err
 		}
 		secretKey, err = crypto.Decrypt(c.Secure.Key, mq.SecretKey)
 		if err != nil {
-			return err
+			return "", "", nil, 0, err
 		}
 	}
-
-	addr = mq.Addr
-
-	Producer, err = rocketmq.NewProducer(
-		producer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
-		producer.WithRetry(mq.Retry),
-		producer.WithCredentials(primitive.Credentials{
-			AccessKey: accessKey,
-			SecretKey: secretKey,
-		}))
-	return err
-}
-
-// CreateConsumer creates a rocketmq.PushConsumer via group
-func CreateConsumer(group string) (rocketmq.PushConsumer, error) {
-	return rocketmq.NewPushConsumer(
-		consumer.WithGroupName(group),
-		consumer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
-		consumer.WithCredentials(primitive.Credentials{
-			AccessKey: accessKey,
-			SecretKey: secretKey,
-		}),
-	)
+	return accessKey, secretKey, mq.Addr, mq.Retry, nil
 }

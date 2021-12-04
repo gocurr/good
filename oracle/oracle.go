@@ -9,21 +9,18 @@ import (
 	_ "github.com/godror/godror"
 )
 
-// DB the global database object
-var DB *sql.DB
-
 const godror = "godror"
 
-var oracleErr = errors.New("bad mysql configuration")
+var oracleErr = errors.New("bad oracle configuration")
 
-// Init opens Oracle
-func Init(c *conf.Configuration) error {
+// Get returns *sql.DB
+func Get(c *conf.Configuration) (*sql.DB, error) {
 	if c == nil {
-		return oracleErr
+		return nil, oracleErr
 	}
 	db := c.Oracle
 	if db == nil {
-		return oracleErr
+		return nil, oracleErr
 	}
 
 	var err error
@@ -33,11 +30,10 @@ func Init(c *conf.Configuration) error {
 	} else {
 		pw, err = crypto.Decrypt(c.Secure.Key, db.Password)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
 
-	ds := fmt.Sprintf(`user="%s" password="%s" connectString="%s"`, db.User, pw, db.Datasource)
-	DB, err = sql.Open(godror, ds)
-	return err
+	dsn := fmt.Sprintf(`user="%s" password="%s" connectString="%s"`, db.User, pw, db.Datasource)
+	return sql.Open(godror, dsn)
 }
