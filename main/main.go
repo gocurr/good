@@ -17,7 +17,7 @@ func Panic(err error) {
 }
 func main() {
 	c, _ := conf.ReadDefault()
-	_ = logger.Init(c)
+	_ = logger.Set(c)
 	crons := crontab.New(c)
 	_ = crons.Bind("demo1", func() {
 		log.Info("demo1")

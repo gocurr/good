@@ -13,8 +13,8 @@ const mysql = "mysql"
 
 var mysqlErr = errors.New("bad mysql configuration")
 
-// Get returns *sql.DB
-func Get(c *conf.Configuration) (*sql.DB, error) {
+// Open returns *sql.DB and error
+func Open(c *conf.Configuration) (*sql.DB, error) {
 	if c == nil {
 		return nil, mysqlErr
 	}

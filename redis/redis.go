@@ -11,8 +11,8 @@ import (
 
 var redisErr = errors.New("bad redis configuration")
 
-// Get returns *redis.Client
-func Get(c *conf.Configuration) (*redis.Client, error) {
+// New returns *redis.Client and error
+func New(c *conf.Configuration) (*redis.Client, error) {
 	redisConf := c.Redis
 	if redisConf == nil {
 		return nil, redisErr

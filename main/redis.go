@@ -8,7 +8,7 @@ import (
 )
 
 func redisOp(c *conf.Configuration) {
-	rdb, err := redis.Get(c)
+	rdb, err := redis.New(c)
 	Panic(err)
 
 	var ctx = context.Background()

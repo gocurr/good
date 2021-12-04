@@ -8,43 +8,37 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	mrand "math/rand"
 	"strings"
-	"time"
 )
 
-var hexes = []rune{
-	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
-}
-
-// Decrypt decrypts str
-func Decrypt(key, str string) (string, error) {
-	if !isEnc(str) {
-		return str, nil
+// Decrypt decrypts encrypted string
+func Decrypt(key, e string) (string, error) {
+	if !isEnc(e) {
+		return e, nil
 	}
 
-	enc := str[len("enc[") : len(str)-1]
+	enc := e[len("enc[") : len(e)-1]
 	return decrypt(key, enc)
 }
 
-// isEnc reports str is encrypted
-func isEnc(str string) bool {
-	if str == "" {
+// isEnc reports e is encrypted
+func isEnc(e string) bool {
+	if e == "" {
 		return false
 	}
 
-	lower := strings.ToLower(str)
+	lower := strings.ToLower(e)
 	return len(lower) > len("enc()") &&
 		strings.HasPrefix(lower, "enc(") &&
 		strings.HasSuffix(lower, ")")
 }
 
-// decrypt text with secret
-func decrypt(secret, text string) (string, error) {
-	key, _ := hex.DecodeString(secret)
-	ciphertext, _ := hex.DecodeString(text)
+// decrypt returns decrypted string
+func decrypt(key, e string) (string, error) {
+	keyBytes, _ := hex.DecodeString(key)
+	ciphertext, _ := hex.DecodeString(e)
 
-	block, err := aes.NewCipher(key)
+	block, err := aes.NewCipher(keyBytes)
 	if err != nil {
 		return "", err
 	}
@@ -61,12 +55,12 @@ func decrypt(secret, text string) (string, error) {
 	return fmt.Sprintf("%s", ciphertext), nil
 }
 
-// Encrypt msg with secret
-func Encrypt(secret, msg string) (string, error) {
-	key, _ := hex.DecodeString(secret)
-	plaintext := []byte(msg)
+// Encrypt returns encrypted string
+func Encrypt(key, plain string) (string, error) {
+	keyBytes, _ := hex.DecodeString(key)
+	plaintext := []byte(plain)
 
-	block, err := aes.NewCipher(key)
+	block, err := aes.NewCipher(keyBytes)
 	if err != nil {
 		return "", err
 	}
@@ -81,15 +75,4 @@ func Encrypt(secret, msg string) (string, error) {
 	stream.XORKeyStream(ciphertext[aes.BlockSize:], plaintext)
 
 	return fmt.Sprintf("%x", ciphertext), nil
-}
-
-// CreateSecret returns a secret key
-func CreateSecret() string {
-	mrand.Seed(time.Now().UnixNano())
-	var builder strings.Builder
-	for i := 0; i < len("6368616e676520746869732070617373"); i++ {
-		a := mrand.Intn(len(hexes))
-		builder.WriteRune(hexes[a])
-	}
-	return builder.String()
 }

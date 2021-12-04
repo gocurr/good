@@ -12,8 +12,8 @@ import (
 
 var rocketmqErr = errors.New("bad rocketmq configuration")
 
-// Producer returns rocketmq.Producer
-func Producer(c *conf.Configuration) (rocketmq.Producer, error) {
+// NewProducer returns rocketmq.Producer and error
+func NewProducer(c *conf.Configuration) (rocketmq.Producer, error) {
 	accessKey, secretKey, addr, retry, err := decr(c)
 	if err != nil {
 		return nil, err
@@ -28,8 +28,8 @@ func Producer(c *conf.Configuration) (rocketmq.Producer, error) {
 		}))
 }
 
-// Consumer creates a rocketmq.PushConsumer
-func Consumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, error) {
+// NewConsumer creates a rocketmq.PushConsumer and error
+func NewConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, error) {
 	accessKey, secretKey, addr, retry, err := decr(c)
 	if err != nil {
 		return nil, err

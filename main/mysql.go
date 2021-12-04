@@ -9,7 +9,7 @@ import (
 )
 
 func mysqlOp(c *conf.Configuration) {
-	db, err := mysql.Get(c)
+	db, err := mysql.Open(c)
 	Panic(err)
 	insert(db, "joy")
 	query(db)

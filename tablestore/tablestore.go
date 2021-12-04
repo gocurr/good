@@ -9,8 +9,8 @@ import (
 
 var tablestoreErr = errors.New("bad tablestore configuration")
 
-// Get returns *tablestore.TableStoreClient
-func Get(c *conf.Configuration) (*tablestore.TableStoreClient, error) {
+// New returns *tablestore.TableStoreClient and error
+func New(c *conf.Configuration) (*tablestore.TableStoreClient, error) {
 	if c == nil {
 		return nil, tablestoreErr
 	}

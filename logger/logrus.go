@@ -12,8 +12,8 @@ import (
 
 var logrusErr = errors.New("bad logrus configuration")
 
-// Init inits logrus
-func Init(c *conf.Configuration) error {
+// Set configures logrus
+func Set(c *conf.Configuration) error {
 	if c == nil {
 		return logrusErr
 	}
