@@ -8,8 +8,15 @@ import (
 )
 
 // GenPasswd generates an encrypted string via pw and filename
-func GenPasswd(pw, filename string) {
+func GenPasswd(pw, filename string, reset ...bool) {
 	var secret string
+	if len(reset) > 0 && reset[0] {
+		if err := os.Remove(filename); err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+
 	all, err := ioutil.ReadFile(filename)
 	if err != nil {
 		secret = crypto.CreateSecret()

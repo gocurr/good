@@ -16,8 +16,6 @@ func Panic(err error) {
 	}
 }
 func main() {
-	sugar.GenPasswd("good", "secret.txt")
-
 	c, _ := conf.ReadDefault()
 	_ = logger.Init(c)
 	crons := crontab.New(c)

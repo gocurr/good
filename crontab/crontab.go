@@ -54,7 +54,6 @@ func (c *Crontab) Start() {
 			log.Errorf("%v", err)
 		}
 	})
-
 }
 
 // Bind binds cron-name to function-fn

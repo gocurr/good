@@ -88,7 +88,7 @@ func CreateSecret() string {
 	mrand.Seed(time.Now().UnixNano())
 	var builder strings.Builder
 	for i := 0; i < len("6368616e676520746869732070617373"); i++ {
-		a := mrand.Intn(len(hexes) - 1)
+		a := mrand.Intn(len(hexes))
 		builder.WriteRune(hexes[a])
 	}
 	return builder.String()
