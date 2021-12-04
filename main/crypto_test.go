@@ -6,5 +6,5 @@ import (
 )
 
 func Test_Encrypted(t *testing.T) {
-	sugar.Encrypted("123456", "secret.txt", true)
+	sugar.PrintKeyEnc("123456", "secret.txt", true)
 }

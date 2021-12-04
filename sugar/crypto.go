@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gocurr/good/crypto"
 	"io/ioutil"
-	mrand "math/rand"
+	"math/rand"
 	"os"
 	"strings"
 	"time"
@@ -16,17 +16,17 @@ var hexes = []rune{
 
 // Key returns a secret key
 func Key() string {
-	mrand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 	var builder strings.Builder
 	for i := 0; i < 32; i++ {
-		a := mrand.Intn(len(hexes))
+		a := rand.Intn(len(hexes))
 		builder.WriteRune(hexes[a])
 	}
 	return builder.String()
 }
 
-// Encrypted returns an encrypted string via pw and filename
-func Encrypted(pw, filename string, reset ...bool) {
+// PrintKeyEnc prints secret-key and encrypted string
+func PrintKeyEnc(pw, filename string, reset ...bool) {
 	var secret string
 	if len(reset) > 0 && reset[0] {
 		_ = os.Remove(filename)
