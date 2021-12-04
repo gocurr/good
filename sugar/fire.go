@@ -14,6 +14,19 @@ var serverErr = errors.New("bad server configuration")
 // serverMux the global multiplexer
 var serverMux *http.ServeMux
 
+// ServerMux set serverMux
+func ServerMux(mux *http.ServeMux) {
+	serverMux = mux
+}
+
+// routeFns represents route-fn pairs
+var routeFns = make(map[string]func(http.ResponseWriter, *http.Request))
+
+// Route binds route-path to fn
+func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
+	routeFns[route] = fn
+}
+
 // Fire http server entry
 func Fire(c *conf.Configuration, callbacks ...func()) {
 	if c == nil || c.Server == nil {
@@ -41,7 +54,7 @@ func Fire(c *conf.Configuration, callbacks ...func()) {
 	}
 }
 
-// defaultBoot boot by default
+// defaultBoot boot by http
 func defaultBoot(addr string) {
 	for route, fn := range routeFns {
 		http.HandleFunc(route, fn)
@@ -59,17 +72,4 @@ func muxBoot(addr string) {
 	if err := http.ListenAndServe(addr, serverMux); err != nil {
 		log.Errorf("http server: %v", err)
 	}
-}
-
-// ServerMux set serverMux
-func ServerMux(mux *http.ServeMux) {
-	serverMux = mux
-}
-
-// routeFns represents route-fn pairs
-var routeFns = make(map[string]func(http.ResponseWriter, *http.Request))
-
-// Route binds route path to fn
-func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
-	routeFns[route] = fn
 }

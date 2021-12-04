@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
@@ -19,14 +18,17 @@ func Panic(err error) {
 func main() {
 	c, _ := conf.ReadDefault()
 	_ = logger.Init(c)
-	cron := crontab.New(c)
-	_ = cron.Bind("demo1", func() {
+	crons := crontab.New(c)
+	_ = crons.Bind("demo1", func() {
 		log.Info("demo1")
 	})
-	_ = cron.Bind("demo2", func() {
+	_ = crons.Bind("demo2", func() {
 		log.Info("demo2")
 	})
-	cron.Start()
+	crons.Register("demo2", "*/1 * * * * ?", func() {
+		log.Info("demo3")
+	})
+	crons.Start()
 
 	fmt.Println(c.Int("xxx"))
 	fmt.Println(c.String("key", false))
@@ -36,8 +38,12 @@ func main() {
 	redisOp(c)
 
 	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		sugar.JSONHeader(w)
-		sugar.HandleErr(errors.New("some err"), w)
+		bytes, err := sugar.HttpGet("http://127.0.0.1:9091")
+		if err != nil {
+			_, _ = w.Write([]byte(err.Error()))
+			return
+		}
+		_, _ = w.Write(bytes)
 	})
 	sugar.Fire(c)
 }
