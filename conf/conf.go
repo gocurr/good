@@ -61,7 +61,7 @@ func Read(filename string) (*Configuration, error) {
 	var c Configuration
 	err = yaml.Unmarshal(bytes, &c)
 
-	// set bytes to content field
+	// cache bytes
 	c.cache = bytes
 	return &c, err
 }
