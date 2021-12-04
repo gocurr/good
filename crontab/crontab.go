@@ -11,6 +11,13 @@ import (
 
 var crontabErr = errors.New("cannot Bind after Start")
 
+// Crontab cron wrapper
+type Crontab struct {
+	jobs map[string]cronctl.Job // name-job mapping
+	once sync.Once              // for Start
+	done bool                   // reports Start invoked
+}
+
 // New Crontab constructor
 func New(c *conf.Configuration) *Crontab {
 	var jobs = make(map[string]cronctl.Job)
@@ -20,12 +27,6 @@ func New(c *conf.Configuration) *Crontab {
 		}
 	}
 	return &Crontab{jobs: jobs}
-}
-
-type Crontab struct {
-	jobs map[string]cronctl.Job
-	once sync.Once // for Start
-	done bool      // reports Start invoked
 }
 
 // Start starts up crontab

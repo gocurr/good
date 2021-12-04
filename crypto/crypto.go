@@ -8,9 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	mrand "math/rand"
-	"os"
 	"strings"
 	"time"
 )
@@ -39,17 +37,6 @@ func isEnc(str string) bool {
 	return len(lower) > len("enc()") &&
 		strings.HasPrefix(lower, "enc(") &&
 		strings.HasSuffix(lower, ")")
-}
-
-// CreateSecret returns a secret key
-func CreateSecret() string {
-	mrand.Seed(time.Now().UnixNano())
-	var builder strings.Builder
-	for i := 0; i < len("6368616e676520746869732070617373"); i++ {
-		a := mrand.Intn(len(hexes) - 1)
-		builder.WriteRune(hexes[a])
-	}
-	return builder.String()
 }
 
 // decrypt text with secret
@@ -96,24 +83,13 @@ func Encrypt(secret, msg string) (string, error) {
 	return fmt.Sprintf("%x", ciphertext), nil
 }
 
-// GenPasswd generates encrypted string via pw
-func GenPasswd(pw string) string {
-	var secret string
-	filename := "secret.txt"
-	all, err := ioutil.ReadFile(filename)
-	if err != nil {
-		secret = CreateSecret()
-		fmt.Println(secret)
-		if err := ioutil.WriteFile(filename, []byte(secret), os.ModePerm); err != nil {
-			panic(err)
-		}
-	} else {
-		secret = string(all)
+// CreateSecret returns a secret key
+func CreateSecret() string {
+	mrand.Seed(time.Now().UnixNano())
+	var builder strings.Builder
+	for i := 0; i < len("6368616e676520746869732070617373"); i++ {
+		a := mrand.Intn(len(hexes) - 1)
+		builder.WriteRune(hexes[a])
 	}
-
-	encrypted, err := Encrypt(secret, pw)
-	if err != nil {
-		panic(err)
-	}
-	return encrypted
+	return builder.String()
 }
