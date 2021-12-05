@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/redis"
 )
 
-func redisOp(c *conf.Configuration) {
+func redisOp(c interface{}) {
 	rdb, err := redis.New(c)
 	Panic(err)
 

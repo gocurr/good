@@ -4,11 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/mysql"
 )
 
-func mysqlOp(c *conf.Configuration) {
+func mysqlOp(c interface{}) {
 	db, err := mysql.Open(c)
 	Panic(err)
 	insert(db, "joy")

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/logger"
@@ -19,6 +18,37 @@ func Panic(err error) {
 type Custom struct {
 	Server struct {
 		Port int `yaml:"port"`
+	}
+
+	Logrus struct {
+		Format  string `yaml:"format,omitempty"`
+		TTY     bool   `yaml:"tty,omitempty"`
+		GrayLog struct {
+			Enable bool                   `yaml:"enable,omitempty"`
+			Host   string                 `yaml:"host,omitempty"`
+			Port   int                    `yaml:"port,omitempty"`
+			Extra  map[string]interface{} `yaml:"extra,omitempty"`
+		} `yaml:"graylog,omitempty"`
+	}
+
+	Mysql struct {
+		Driver     string `yaml:"driver,omitempty"`
+		User       string `yaml:"user,omitempty"`
+		Password   string `yaml:"password,omitempty"`
+		Datasource string `yaml:"datasource,omitempty"`
+	}
+
+	Redis struct {
+		Host     string `yaml:"host,omitempty"`
+		Port     int    `yaml:"port,omitempty"`
+		Password string `yaml:"password,omitempty"`
+		DB       int    `yaml:"db,omitempty"`
+	}
+
+	Crontab map[string]string
+
+	Secure struct {
+		Key string `yaml:"key,omitempty"`
 	}
 
 	Pg struct {
@@ -39,7 +69,7 @@ type Custom struct {
 	}
 }
 
-var custom Custom
+var c Custom
 
 func main() {
 	//cc, err := conf.NewDefault(&custom)
@@ -49,7 +79,11 @@ func main() {
 	//	return
 	//}
 
-	c, _ := conf.NewDefault()
+	//c, _ := conf.NewDefault()
+	err := conf.ReadDefault(&c)
+	if err != nil {
+		return
+	}
 	_ = logger.Set(c)
 	crons := crontab.New(c)
 	_ = crons.Bind("demo1", func() {
@@ -62,15 +96,6 @@ func main() {
 		log.Info("demo3")
 	})
 	crons.Start()
-
-	fmt.Println(c.ReservedInt("xxx"))
-	fmt.Println(c.ReservedString("key"))
-	fmt.Println(c.ReservedString("str"))
-
-	if err := c.Fill(&custom); err != nil {
-		log.Error(err)
-	}
-	fmt.Println(custom)
 
 	mysqlOp(c)
 	redisOp(c)
