@@ -72,9 +72,12 @@ func Open(i interface{}) (*sql.DB, error) {
 	db := dbField.String()
 
 	sslMode := "disable"
-	sslField := postgresField.FieldByName(vars.SSLMode)
-	if sslField.IsValid() {
-		sslMode = sslField.String()
+	sslModeField := postgresField.FieldByName(vars.SSLMode)
+	if sslModeField.IsValid() {
+		mode := sslModeField.String()
+		if mode != "" {
+			sslMode = mode
+		}
 	}
 
 	var err error
@@ -85,7 +88,7 @@ func Open(i interface{}) (*sql.DB, error) {
 		}
 	}
 
-	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%v",
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		host, port, user, password, db, sslMode)
 	rdb, err := sql.Open(postgres, dsn)
 	if err != nil {
