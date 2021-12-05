@@ -19,19 +19,19 @@ func Panic(err error) {
 
 type Custom struct {
 	Server struct {
-		Port int `yaml:"port"`
-	}
+		Port int `yaml:"port,omitempty"`
+	} `yaml:"server,omitempty"`
 
 	Logrus struct {
-		Format  string `yaml:"format,omitempty"`
-		TTY     bool   `yaml:"tty,omitempty"`
-		GrayLog struct {
+		TimeFormat string `yaml:"time_format,omitempty"`
+		TTYDiscard bool   `yaml:"tty_discard,omitempty"`
+		GrayLog    struct {
 			Enable bool                   `yaml:"enable,omitempty"`
 			Host   string                 `yaml:"host,omitempty"`
 			Port   int                    `yaml:"port,omitempty"`
 			Extra  map[string]interface{} `yaml:"extra,omitempty"`
 		} `yaml:"graylog,omitempty"`
-	}
+	} `yaml:"logrus,omitempty"`
 
 	Mysql struct {
 		Driver     string `yaml:"driver,omitempty"`

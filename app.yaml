@@ -2,7 +2,7 @@ server:
   port: 9090
 
 logrus:
-  format: 2006-01-02 15:04:05
+  time_format: 2006-01-02 15:04:05
   tty_discard: false
   graylog:
     enable: true

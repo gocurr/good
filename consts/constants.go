@@ -21,7 +21,7 @@ const (
 	ContentType     = "Content-Type"
 	ApplicationJSON = "application/json; charset=UTF-8"
 
-	Format     = "Format"
+	TimeFormat = "TimeFormat"
 	TTYDiscard = "TTYDiscard"
 	GrayLog    = "GrayLog"
 	Enable     = "Enable"

@@ -37,17 +37,17 @@ func Set(i interface{}) error {
 		return LogrusErr
 	}
 
-	var format = consts.DefaultTimeFormat
-	formatField := logrusField.FieldByName(consts.Format)
-	if formatField.IsValid() {
-		f := formatField.String()
+	var timeFormat = consts.DefaultTimeFormat
+	timeFormatField := logrusField.FieldByName(consts.TimeFormat)
+	if timeFormatField.IsValid() {
+		f := timeFormatField.String()
 		if f != "" {
-			format = f
+			timeFormat = f
 		}
 	}
 
 	log.SetFormatter(&log.TextFormatter{
-		TimestampFormat: format,
+		TimestampFormat: timeFormat,
 		FullTimestamp:   true,
 	})
 
@@ -91,7 +91,7 @@ func Set(i interface{}) error {
 					val := iter.Value().Interface()
 					extra[key] = val
 				}
-				extra[timestamp] = time.Now().Format(consts.DefaultTimeFormat)
+				extra[timestamp] = time.Now().Format(timeFormat)
 
 				hook := graylog.NewAsyncGraylogHook(fmt.Sprintf("%s:%v", host, port), extra)
 				defer hook.Flush()
