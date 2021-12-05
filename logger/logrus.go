@@ -93,7 +93,7 @@ func Set(i interface{}) error {
 				}
 				extra[timestamp] = time.Now().Format(timeFormat)
 
-				hook := graylog.NewAsyncGraylogHook(fmt.Sprintf("%s:%v", host, port), extra)
+				hook := graylog.NewAsyncGraylogHook(fmt.Sprintf("%s:%d", host, port), extra)
 				defer hook.Flush()
 				log.AddHook(hook)
 			}

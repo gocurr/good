@@ -73,7 +73,7 @@ func New(i interface{}) (*redis.Client, error) {
 	}
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%v", host, port),
+		Addr:     fmt.Sprintf("%s:%d", host, port),
 		Password: password,
 		DB:       int(db),
 	})

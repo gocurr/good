@@ -60,9 +60,9 @@ func Fire(i interface{}, callbacks ...func()) {
 	}
 
 	if port < 0 || port > 1<<16-1 {
-		log.Fatalf("port '%v' is invalid", port)
+		log.Fatalf("port '%d' is invalid", port)
 	} else {
-		log.Infof(fmt.Sprintf("http server listening at: [::]: %v", port))
+		log.Infof(fmt.Sprintf("http server listening at: [::]: %d", port))
 	}
 
 	// invoke callbacks
@@ -70,7 +70,7 @@ func Fire(i interface{}, callbacks ...func()) {
 		callback()
 	}
 
-	addr := fmt.Sprintf(":%v", port)
+	addr := fmt.Sprintf(":%d", port)
 	if serverMux != nil {
 		muxBoot(addr)
 	} else {

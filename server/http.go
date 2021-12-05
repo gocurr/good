@@ -83,7 +83,7 @@ func handleResp(r *http.Response) ([]byte, error) {
 	return all, nil
 }
 
-// PostJSONRaw POST to return []byte and error
+// PostJSONRaw calls http.Post to return []byte and error
 func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 	all, err := json.Marshal(in)
 	if err != nil {
@@ -111,7 +111,7 @@ func PostJSON(url string, in interface{}, out interface{}) error {
 	return json.Unmarshal(raw, out)
 }
 
-// HttpGetRaw GET to return []byte and error
+// HttpGetRaw calls http.Get to return []byte and error
 func HttpGetRaw(url string) ([]byte, error) {
 	response, err := http.Get(url)
 	if err != nil {
@@ -120,8 +120,8 @@ func HttpGetRaw(url string) ([]byte, error) {
 	return handleResp(response)
 }
 
-// HttpGet calls http.Get via given url, unmarshals body of response into out and reports error
-func HttpGet(url string, out interface{}) error {
+// HttpGetJSON calls http.Get via given url, unmarshals body of response into out and reports error
+func HttpGetJSON(url string, out interface{}) error {
 	if reflect.TypeOf(out).Kind() != reflect.Ptr {
 		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
 	}
