@@ -1,4 +1,4 @@
-package sugar
+package server
 
 import (
 	"errors"
@@ -13,8 +13,8 @@ var serverErr = errors.New("bad server configuration")
 // serverMux the global multiplexer
 var serverMux *http.ServeMux
 
-// ServerMux set serverMux
-func ServerMux(mux *http.ServeMux) {
+// Mux set serverMux
+func Mux(mux *http.ServeMux) {
 	serverMux = mux
 }
 
@@ -33,24 +33,31 @@ func Fire(i interface{}, callbacks ...func()) {
 	}
 
 	var c reflect.Value
-	if reflect.TypeOf(i).Kind() == reflect.Ptr {
+	kind := reflect.TypeOf(i).Kind()
+	if kind == reflect.Ptr {
 		c = reflect.ValueOf(i).Elem()
 	} else {
 		c = reflect.ValueOf(i)
 	}
 
-	serverField := c.FieldByName("Server")
-	if !serverField.IsValid() {
-		panic(serverErr)
+	var port int64
+	switch kind {
+	case reflect.Int64, reflect.Int, reflect.Int32, reflect.Int16, reflect.Int8:
+		port = c.Int()
+	default:
+		serverField := c.FieldByName("Server")
+		if !serverField.IsValid() {
+			panic(serverErr)
+		}
+
+		portField := serverField.FieldByName("Port")
+		if !portField.IsValid() {
+			panic(serverErr)
+		}
+		// port server bound port
+		port = portField.Int()
 	}
 
-	portField := serverField.FieldByName("Port")
-	if !portField.IsValid() {
-		panic(serverErr)
-	}
-
-	// port server bound port
-	port := portField.Int()
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalf("port '%v' is invalid", port)
 	} else {
