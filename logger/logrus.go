@@ -37,7 +37,7 @@ func Set(i interface{}) error {
 		return LogrusErr
 	}
 
-	var format = "2006-01-02 15:04:05"
+	var format = consts.DefaultTimeFormat
 	formatField := logrusField.FieldByName(consts.Format)
 	if formatField.IsValid() {
 		f := formatField.String()
@@ -91,7 +91,7 @@ func Set(i interface{}) error {
 					val := iter.Value().Interface()
 					extra[key] = val
 				}
-				extra[timestamp] = time.Now().Format("2006-01-02 15:04:05")
+				extra[timestamp] = time.Now().Format(consts.DefaultTimeFormat)
 
 				hook := graylog.NewAsyncGraylogHook(fmt.Sprintf("%s:%v", host, port), extra)
 				defer hook.Flush()

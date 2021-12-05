@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
+	"github.com/gocurr/good/logger"
 	log "github.com/sirupsen/logrus"
 	"testing"
 	"time"
@@ -10,6 +11,8 @@ import (
 
 func Test_Crontab(t *testing.T) {
 	c, _ := conf.New("../app.yaml")
+	_ = logger.Set(c)
+
 	crons, err := crontab.New(c)
 	if err != nil {
 		Panic(err)
