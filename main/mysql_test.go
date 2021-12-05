@@ -3,21 +3,26 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/mysql"
+	log "github.com/sirupsen/logrus"
+	"testing"
 )
 
-func mysqlOp(c interface{}) {
-	db, err := mysql.Open(c)
+var err error
+var db *sql.DB
+
+func Test_Mysql(t *testing.T) {
+	c, _ := conf.New("../app.yaml")
+	db, err = mysql.Open(c)
 	Panic(err)
-	insert(db, "joy")
-	query(db)
-	fmt.Println("-----")
-	del(db, "joy")
-	query(db)
+	insert("joy")
+	query()
+	del("joy")
+	query()
 }
 
-func insert(db *sql.DB, name string) {
+func insert(name string) {
 	ctx := context.Background()
 
 	tx, err := db.BeginTx(ctx, nil)
@@ -30,19 +35,22 @@ func insert(db *sql.DB, name string) {
 	Panic(err)
 }
 
-func query(db *sql.DB) {
+func query() {
 	rows, err := db.Query("select name from names")
 	Panic(err)
 	defer func() { _ = rows.Close() }()
+	var names []string
+
 	for rows.Next() {
 		var name string
 		err := rows.Scan(&name)
 		Panic(err)
-		fmt.Println(name)
+		names = append(names, name)
 	}
+	log.Info(names)
 }
 
-func del(db *sql.DB, name string) {
+func del(name string) {
 	tx, err := db.BeginTx(context.Background(), nil)
 	Panic(err)
 	defer func() { _ = tx.Rollback() }()

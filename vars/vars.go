@@ -67,46 +67,6 @@ func SetLogrus(v string) {
 	Logrus = v
 }
 
-func SetFormat(v string) {
-	Format = v
-}
-
-func SetTTYDiscard(v string) {
-	TTYDiscard = v
-}
-
-func SetGrayLog(v string) {
-	GrayLog = v
-}
-
-func SetEnable(v string) {
-	Enable = v
-}
-
-func SetExtra(v string) {
-	Extra = v
-}
-
-func SetHost(v string) {
-	Host = v
-}
-
-func SetAddr(v string) {
-	Addr = v
-}
-
-func SetEndPoint(v string) {
-	EndPoint = v
-}
-
-func SetInstanceName(v string) {
-	InstanceName = v
-}
-
-func SetPort(v string) {
-	Port = v
-}
-
 func SetMysql(v string) {
 	Mysql = v
 }
@@ -125,48 +85,4 @@ func SetRocketMq(v string) {
 
 func SetTableStore(v string) {
 	TableStore = v
-}
-
-func SetUser(v string) {
-	User = v
-}
-
-func SetDatasource(v string) {
-	Datasource = v
-}
-
-func SetPassword(v string) {
-	Password = v
-}
-
-func SetAccessKey(v string) {
-	AccessKey = v
-}
-
-func SetSecretKey(val string) {
-	SecretKey = val
-}
-
-func SetAccessKeyId(val string) {
-	AccessKeyId = val
-}
-
-func SetAccessKeySecret(val string) {
-	AccessKeySecret = val
-}
-
-func SetRetry(val string) {
-	Retry = val
-}
-
-func SetDB(val string) {
-	DB = val
-}
-
-func SetSecure(val string) {
-	Secure = val
-}
-
-func SetKey(val string) {
-	Key = val
 }

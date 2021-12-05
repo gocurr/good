@@ -3,7 +3,7 @@ server:
 
 logrus:
   format: 2006-01-02 15:04:05
-  tty_discard: true
+  tty_discard: false
   graylog:
     enable: true
     host: 127.0.0.1

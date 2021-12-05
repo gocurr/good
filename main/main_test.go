@@ -2,12 +2,10 @@ package main
 
 import (
 	"github.com/gocurr/good/conf"
-	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/logger"
 	"github.com/gocurr/good/sugar"
-	"github.com/gocurr/good/vars"
-	log "github.com/sirupsen/logrus"
 	"net/http"
+	"testing"
 )
 
 func Panic(err error) {
@@ -39,7 +37,7 @@ type Custom struct {
 		Datasource string `yaml:"datasource,omitempty"`
 	}
 
-	Redisx struct {
+	Redis struct {
 		Host     string `yaml:"host,omitempty"`
 		Port     int    `yaml:"port,omitempty"`
 		Password string `yaml:"password,omitempty"`
@@ -70,30 +68,13 @@ type Custom struct {
 	}
 }
 
-func main() {
-	// reset Redis field name
-	vars.SetRedis("Redisx")
+func Test_Main(t *testing.T) {
 	var c Custom
-	if err := conf.ReadDefault(&c); err != nil {
-		Panic(err)
-	}
-
+	_ = conf.Read("../app.yaml", &c)
 	_ = logger.Set(&c)
-	crons, err := crontab.New(&c)
-	if err != nil {
-		Panic(err)
-	}
-	_ = crons.Bind("demo1", func() {
-		log.Info("demo1")
-	})
-	crons.Start()
-
-	mysqlOp(c)
-	redisOp(c)
 
 	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 	})
-
 	sugar.Fire(&c)
 }
