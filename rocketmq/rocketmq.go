@@ -7,8 +7,8 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
 	"github.com/gocurr/good/conf"
-	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/vars"
 	"reflect"
 )
 
@@ -62,20 +62,20 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(consts.Secure)
+	secureField := c.FieldByName(vars.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(consts.Key)
+		keyField := secureField.FieldByName(vars.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
 	}
 
-	rocketmqField := c.FieldByName(consts.RocketMq)
+	rocketmqField := c.FieldByName(vars.RocketMq)
 	if !rocketmqField.IsValid() {
 		panic(rocketmqErr)
 	}
 
-	addrField := rocketmqField.FieldByName(consts.Addr)
+	addrField := rocketmqField.FieldByName(vars.Addr)
 	if !addrField.IsValid() {
 		panic(rocketmqErr)
 	}
@@ -85,19 +85,19 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 		addr = append(addr, element.String())
 	}
 
-	accessKeyField := rocketmqField.FieldByName(consts.AccessKey)
+	accessKeyField := rocketmqField.FieldByName(vars.AccessKey)
 	if !accessKeyField.IsValid() {
 		panic(rocketmqErr)
 	}
 	accessKey := accessKeyField.String()
 
-	secretKeyField := rocketmqField.FieldByName(consts.SecretKey)
+	secretKeyField := rocketmqField.FieldByName(vars.SecretKey)
 	if !secretKeyField.IsValid() {
 		panic(rocketmqErr)
 	}
 	secretKey := secretKeyField.String()
 
-	retryField := rocketmqField.FieldByName(consts.Retry)
+	retryField := rocketmqField.FieldByName(vars.Retry)
 	if !retryField.IsValid() {
 		panic(rocketmqErr)
 	}

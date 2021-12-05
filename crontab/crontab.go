@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gocurr/cronctl"
-	"github.com/gocurr/good/consts"
+	"github.com/gocurr/good/vars"
 	log "github.com/sirupsen/logrus"
 	"reflect"
 	"sync"
@@ -32,7 +32,7 @@ func New(i interface{}) *Crontab {
 		c = reflect.ValueOf(i)
 	}
 
-	crontabField := c.FieldByName(consts.Crontab)
+	crontabField := c.FieldByName(vars.Crontab)
 	if !crontabField.IsValid() {
 		panic(crontabErr)
 	}

@@ -3,7 +3,7 @@ package conf
 import (
 	"errors"
 	"fmt"
-	"github.com/gocurr/good/consts"
+	"github.com/gocurr/good/vars"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
@@ -14,29 +14,29 @@ var confErr = errors.New("configuration not found")
 
 // Filename returns a configuration name
 func Filename() string {
-	if _, err := os.Stat(consts.AppYml); err == nil {
-		return consts.AppYml
+	if _, err := os.Stat(vars.AppYml); err == nil {
+		return vars.AppYml
 	}
-	if _, err := os.Stat(consts.AppYaml); err == nil {
-		return consts.AppYaml
+	if _, err := os.Stat(vars.AppYaml); err == nil {
+		return vars.AppYaml
 	}
-	if _, err := os.Stat(consts.ApplicationYml); err == nil {
-		return consts.ApplicationYml
+	if _, err := os.Stat(vars.ApplicationYml); err == nil {
+		return vars.ApplicationYml
 	}
-	if _, err := os.Stat(consts.ApplicationYaml); err == nil {
-		return consts.ApplicationYaml
+	if _, err := os.Stat(vars.ApplicationYaml); err == nil {
+		return vars.ApplicationYaml
 	}
-	if _, err := os.Stat(consts.ConfAppYml); err == nil {
-		return consts.ConfAppYml
+	if _, err := os.Stat(vars.ConfAppYml); err == nil {
+		return vars.ConfAppYml
 	}
-	if _, err := os.Stat(consts.ConfAppYaml); err == nil {
-		return consts.ConfAppYaml
+	if _, err := os.Stat(vars.ConfAppYaml); err == nil {
+		return vars.ConfAppYaml
 	}
-	if _, err := os.Stat(consts.ConfApplicationYml); err == nil {
-		return consts.ConfApplicationYml
+	if _, err := os.Stat(vars.ConfApplicationYml); err == nil {
+		return vars.ConfApplicationYml
 	}
-	if _, err := os.Stat(consts.ConfApplicationYaml); err == nil {
-		return consts.ConfApplicationYml
+	if _, err := os.Stat(vars.ConfApplicationYaml); err == nil {
+		return vars.ConfApplicationYml
 	}
 	return ""
 }

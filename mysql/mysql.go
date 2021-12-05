@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/vars"
 	"reflect"
 )
 
@@ -28,32 +28,32 @@ func Open(i interface{}) (*sql.DB, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(consts.Secure)
+	secureField := c.FieldByName(vars.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(consts.Key)
+		keyField := secureField.FieldByName(vars.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
 	}
 
-	mysqlField := c.FieldByName(consts.Mysql)
+	mysqlField := c.FieldByName(vars.Mysql)
 	if !mysqlField.IsValid() {
 		panic(mysqlErr)
 	}
 
-	userField := mysqlField.FieldByName(consts.User)
+	userField := mysqlField.FieldByName(vars.User)
 	if !userField.IsValid() {
 		panic(mysqlErr)
 	}
 	user := userField.String()
 
-	passwordField := mysqlField.FieldByName(consts.Password)
+	passwordField := mysqlField.FieldByName(vars.Password)
 	if !passwordField.IsValid() {
 		panic(mysqlErr)
 	}
 	password := passwordField.String()
 
-	datasourceField := mysqlField.FieldByName(consts.Datasource)
+	datasourceField := mysqlField.FieldByName(vars.Datasource)
 	if !datasourceField.IsValid() {
 		panic(mysqlErr)
 	}
