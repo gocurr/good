@@ -51,7 +51,7 @@ func NewConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, er
 // decrypt returns decrypted attributes
 func decrypt(i interface{}) (string, string, []string, int, error) {
 	if i == nil {
-		panic(rocketmqErr)
+		return "", "", nil, 0, rocketmqErr
 	}
 
 	var c reflect.Value
@@ -72,12 +72,12 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 
 	rocketmqField := c.FieldByName(vars.RocketMq)
 	if !rocketmqField.IsValid() {
-		panic(rocketmqErr)
+		return "", "", nil, 0, rocketmqErr
 	}
 
 	addrField := rocketmqField.FieldByName(vars.Addr)
 	if !addrField.IsValid() {
-		panic(rocketmqErr)
+		return "", "", nil, 0, rocketmqErr
 	}
 	var addr []string
 	for i := 0; i < addrField.Len(); i++ {
@@ -87,19 +87,19 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 
 	accessKeyField := rocketmqField.FieldByName(vars.AccessKey)
 	if !accessKeyField.IsValid() {
-		panic(rocketmqErr)
+		return "", "", nil, 0, rocketmqErr
 	}
 	accessKey := accessKeyField.String()
 
 	secretKeyField := rocketmqField.FieldByName(vars.SecretKey)
 	if !secretKeyField.IsValid() {
-		panic(rocketmqErr)
+		return "", "", nil, 0, rocketmqErr
 	}
 	secretKey := secretKeyField.String()
 
 	retryField := rocketmqField.FieldByName(vars.Retry)
 	if !retryField.IsValid() {
-		panic(rocketmqErr)
+		return "", "", nil, 0, rocketmqErr
 	}
 	retry := retryField.Int()
 

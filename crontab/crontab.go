@@ -20,9 +20,9 @@ type Crontab struct {
 }
 
 // New Crontab constructor
-func New(i interface{}) *Crontab {
+func New(i interface{}) (*Crontab, error) {
 	if i == nil {
-		panic(crontabErr)
+		return nil, crontabErr
 	}
 
 	var c reflect.Value
@@ -34,7 +34,7 @@ func New(i interface{}) *Crontab {
 
 	crontabField := c.FieldByName(vars.Crontab)
 	if !crontabField.IsValid() {
-		panic(crontabErr)
+		return nil, crontabErr
 	}
 
 	var jobs = make(map[string]cronctl.Job)
@@ -46,7 +46,7 @@ func New(i interface{}) *Crontab {
 			Spec: spec,
 		}
 	}
-	return &Crontab{jobs: jobs}
+	return &Crontab{jobs: jobs}, nil
 }
 
 // Start starts up crontab

@@ -16,7 +16,7 @@ var logrusErr = errors.New("bad logrus configuration")
 // Set configures logrus
 func Set(i interface{}) error {
 	if i == nil {
-		panic(logrusErr)
+		return logrusErr
 	}
 
 	var c reflect.Value
@@ -28,37 +28,54 @@ func Set(i interface{}) error {
 
 	logrusField := c.FieldByName(vars.Logrus)
 	if !logrusField.IsValid() {
-		panic(logrusErr)
+		return logrusErr
 	}
 
-	f := logrusField.FieldByName(vars.Format).String()
-	// set logrus output format
 	var format = "2006-01-02 15:04:05"
-	if f != "" {
-		format = f
+	formatField := logrusField.FieldByName(vars.Format)
+	if formatField.IsValid() {
+		f := formatField.String()
+		if f != "" {
+			format = f
+		}
 	}
+
 	log.SetFormatter(&log.TextFormatter{
 		TimestampFormat: format,
 		FullTimestamp:   true,
 	})
 
-	tty := logrusField.FieldByName(vars.TTY).Bool()
-	// set tty
-	if !tty {
-		log.SetOutput(ioutil.Discard)
+	ttyDiscardField := logrusField.FieldByName(vars.TTYDiscard)
+	if ttyDiscardField.IsValid() {
+		if ttyDiscardField.Bool() {
+			// discard
+			log.SetOutput(ioutil.Discard)
+		}
 	}
 
 	graylogField := logrusField.FieldByName(vars.GrayLog)
 	enable := graylogField.FieldByName(vars.Enable).Bool()
 	if enable {
-		host := graylogField.FieldByName(vars.Host).String()
-		port := graylogField.FieldByName(vars.Port).Int()
+		hostField := graylogField.FieldByName(vars.Host)
+		if !hostField.IsValid() {
+			return logrusErr
+		}
+		portField := graylogField.FieldByName(vars.Port)
+		if !portField.IsValid() {
+			return logrusErr
+		}
+		extraField := graylogField.FieldByName(vars.Extra)
+		if !extraField.IsValid() {
+			return logrusErr
+		}
+
+		host := hostField.String()
+		port := portField.Int()
 		if host == "" || port == 0 {
 			return logrusErr
 		}
 
 		var extra = make(map[string]interface{})
-		extraField := graylogField.FieldByName(vars.Extra)
 		iter := extraField.MapRange()
 		for iter.Next() {
 			key := iter.Key().String()

@@ -23,12 +23,12 @@ const (
 var (
 	Crontab = "Crontab"
 
-	Logrus  = "Logrus"
-	Format  = "Format"
-	TTY     = "TTY"
-	GrayLog = "GrayLog"
-	Enable  = "Enable"
-	Extra   = "Extra"
+	Logrus     = "Logrus"
+	Format     = "Format"
+	TTYDiscard = "TTYDiscard"
+	GrayLog    = "GrayLog"
+	Enable     = "Enable"
+	Extra      = "Extra"
 
 	Host         = "Host"
 	Addr         = "Addr"
@@ -71,8 +71,8 @@ func SetFormat(v string) {
 	Format = v
 }
 
-func SetTTY(v string) {
-	TTY = v
+func SetTTYDiscard(v string) {
+	TTYDiscard = v
 }
 
 func SetGrayLog(v string) {

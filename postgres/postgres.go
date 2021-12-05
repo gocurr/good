@@ -20,7 +20,7 @@ var postgresErr = errors.New("bad postgres configuration")
 // Open returns *sql.DB and error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 
 	var c reflect.Value
@@ -41,36 +41,36 @@ func Open(i interface{}) (*sql.DB, error) {
 
 	postgresField := c.FieldByName(vars.Postgres)
 	if !postgresField.IsValid() {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 
 	hostField := postgresField.FieldByName(vars.Host)
 	if !hostField.IsValid() {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 	host := hostField.String()
 
 	portField := postgresField.FieldByName(vars.Port)
 	if !portField.IsValid() {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 	port := portField.Int()
 
 	userField := postgresField.FieldByName(vars.User)
 	if !userField.IsValid() {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 	user := userField.String()
 
 	passwordField := postgresField.FieldByName(vars.Password)
 	if !passwordField.IsValid() {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 	password := passwordField.String()
 
 	dbField := postgresField.FieldByName(vars.DB)
 	if !dbField.IsValid() {
-		panic(postgresErr)
+		return nil, postgresErr
 	}
 	db := dbField.String()
 

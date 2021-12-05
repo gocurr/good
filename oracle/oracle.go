@@ -17,7 +17,7 @@ var oracleErr = errors.New("bad oracle configuration")
 // Open returns *sql.DB and error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
-		panic(oracleErr)
+		return nil, oracleErr
 	}
 
 	var c reflect.Value
@@ -38,24 +38,24 @@ func Open(i interface{}) (*sql.DB, error) {
 
 	oracleField := c.FieldByName(vars.Oracle)
 	if !oracleField.IsValid() {
-		panic(oracleErr)
+		return nil, oracleErr
 	}
 
 	userField := oracleField.FieldByName(vars.User)
 	if !userField.IsValid() {
-		panic(oracleErr)
+		return nil, oracleErr
 	}
 	user := userField.String()
 
 	passwordField := oracleField.FieldByName(vars.Password)
 	if !passwordField.IsValid() {
-		panic(oracleErr)
+		return nil, oracleErr
 	}
 	password := passwordField.String()
 
 	datasourceField := oracleField.FieldByName(vars.Datasource)
 	if !datasourceField.IsValid() {
-		panic(oracleErr)
+		return nil, oracleErr
 	}
 	datasource := datasourceField.String()
 

@@ -15,7 +15,7 @@ var redisErr = errors.New("bad redis configuration")
 // New returns *redis.Client and error
 func New(i interface{}) (*redis.Client, error) {
 	if i == nil {
-		panic(redisErr)
+		return nil, redisErr
 	}
 
 	var c reflect.Value
@@ -36,30 +36,30 @@ func New(i interface{}) (*redis.Client, error) {
 
 	redisField := c.FieldByName(vars.Redis)
 	if !redisField.IsValid() {
-		panic(redisErr)
+		return nil, redisErr
 	}
 
 	hostField := redisField.FieldByName(vars.Host)
 	if !hostField.IsValid() {
-		panic(redisErr)
+		return nil, redisErr
 	}
 	host := hostField.String()
 
 	portField := redisField.FieldByName(vars.Port)
 	if !portField.IsValid() {
-		panic(redisErr)
+		return nil, redisErr
 	}
 	port := portField.Int()
 
 	passwordField := redisField.FieldByName(vars.Password)
 	if !passwordField.IsValid() {
-		panic(redisErr)
+		return nil, redisErr
 	}
 	password := passwordField.String()
 
 	dbField := redisField.FieldByName(vars.DB)
 	if !dbField.IsValid() {
-		panic(redisErr)
+		return nil, redisErr
 	}
 	db := dbField.Int()
 

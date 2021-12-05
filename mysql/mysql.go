@@ -17,7 +17,7 @@ var mysqlErr = errors.New("bad mysql configuration")
 // Open returns *sql.DB and error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
-		panic(mysqlErr)
+		return nil, mysqlErr
 	}
 
 	var c reflect.Value
@@ -38,24 +38,24 @@ func Open(i interface{}) (*sql.DB, error) {
 
 	mysqlField := c.FieldByName(vars.Mysql)
 	if !mysqlField.IsValid() {
-		panic(mysqlErr)
+		return nil, mysqlErr
 	}
 
 	userField := mysqlField.FieldByName(vars.User)
 	if !userField.IsValid() {
-		panic(mysqlErr)
+		return nil, mysqlErr
 	}
 	user := userField.String()
 
 	passwordField := mysqlField.FieldByName(vars.Password)
 	if !passwordField.IsValid() {
-		panic(mysqlErr)
+		return nil, mysqlErr
 	}
 	password := passwordField.String()
 
 	datasourceField := mysqlField.FieldByName(vars.Datasource)
 	if !datasourceField.IsValid() {
-		panic(mysqlErr)
+		return nil, mysqlErr
 	}
 	datasource := datasourceField.String()
 

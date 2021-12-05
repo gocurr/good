@@ -79,7 +79,10 @@ func main() {
 	}
 
 	_ = logger.Set(&c)
-	crons := crontab.New(&c)
+	crons, err := crontab.New(&c)
+	if err != nil {
+		Panic(err)
+	}
 	_ = crons.Bind("demo1", func() {
 		log.Info("demo1")
 	})

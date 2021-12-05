@@ -3,7 +3,7 @@ server:
 
 logrus:
   format: 2006-01-02 15:04:05
-  tty: true
+  tty_discard: true
   graylog:
     enable: true
     host: 127.0.0.1
@@ -30,7 +30,6 @@ postgres:
   user: postgres
   password: 123456
   db: testdb
-  ssl_mode: disable
 
 redis:
   host: 127.0.0.1

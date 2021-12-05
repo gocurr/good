@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/logger"
 	"github.com/gocurr/good/postgres"
 	log "github.com/sirupsen/logrus"
 	"testing"
@@ -13,6 +14,9 @@ func TestPostgres(t *testing.T) {
 		log.Error(err)
 		return
 	}
+
+	logger.Set(c)
+
 	db, err := postgres.Open(c)
 	if err != nil {
 		log.Error(err)
