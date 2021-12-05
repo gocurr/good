@@ -1,4 +1,4 @@
-package sugar
+package server
 
 import (
 	"bytes"
@@ -83,6 +83,7 @@ func handleResp(r *http.Response) ([]byte, error) {
 	return all, nil
 }
 
+// PostJSONRaw POST to return []byte and error
 func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 	all, err := json.Marshal(in)
 	if err != nil {
@@ -110,18 +111,22 @@ func PostJSON(url string, in interface{}, out interface{}) error {
 	return json.Unmarshal(raw, out)
 }
 
+// HttpGetRaw GET to return []byte and error
+func HttpGetRaw(url string) ([]byte, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	return handleResp(response)
+}
+
 // HttpGet calls http.Get via given url, unmarshals body of response into out and reports error
 func HttpGet(url string, out interface{}) error {
 	if reflect.TypeOf(out).Kind() != reflect.Ptr {
 		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
 	}
 
-	response, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-
-	raw, err := handleResp(response)
+	raw, err := HttpGetRaw(url)
 	if err != nil {
 		return err
 	}
