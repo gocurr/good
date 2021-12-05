@@ -5,7 +5,7 @@ logrus:
   format: 2006-01-02 15:04:05
   tty: true
   graylog:
-    enable: false
+    enable: true
     host: 127.0.0.1
     port: 5555
     extra:
@@ -34,22 +34,19 @@ rocket-mq:
   addr:
     - 127.0.0.1:9876
   retry: 2
-  access-key: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
-  secret-key: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
+  access-key: 123456
+  secret-key: 654321
 
 table-store:
   end-point: 127.0.0.1
   instance-name: abc
-  access-key-id: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
-  access-key-secret: enc(ad62d1c3882f86965306f0013cd37ac330c7ad7c1c)
+  access-key-id: 123456
+  access-key-secret: 654321
 
 crontab:
-  demo1:
-    spec: "*/1 * * * * ?"
-  demo2:
-    spec: "*/5 * * * * ?"
-  demo3:
-    spec: "*/1 * * * * ?"
+  demo1: "*/1 * * * * ?"
+  demo2: "*/5 * * * * ?"
+  demo3: "*/1 * * * * ?"
 
 secure:
   key: 6c841a6c8b9e3b42dfd30dc950da0382

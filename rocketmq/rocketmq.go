@@ -7,7 +7,9 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
 	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"reflect"
 )
 
 var rocketmqErr = errors.New("bad rocketmq configuration")
@@ -47,30 +49,70 @@ func NewConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, er
 }
 
 // decrypt returns decrypted attributes
-func decrypt(c *conf.Configuration) (string, string, []string, int, error) {
-	if c == nil {
-		return "", "", nil, 0, rocketmqErr
-	}
-	mq := c.RocketMq
-	if mq == nil {
-		return "", "", nil, 0, rocketmqErr
+func decrypt(i interface{}) (string, string, []string, int, error) {
+	if i == nil {
+		panic(rocketmqErr)
 	}
 
-	var accessKey string
-	var secretKey string
-	var err error
-	if c.Secure == nil || c.Secure.Key == "" {
-		accessKey = mq.AccessKey
-		secretKey = mq.SecretKey
+	var c reflect.Value
+	if reflect.TypeOf(i).Kind() == reflect.Ptr {
+		c = reflect.ValueOf(i).Elem()
 	} else {
-		accessKey, err = crypto.Decrypt(c.Secure.Key, mq.AccessKey)
+		c = reflect.ValueOf(i)
+	}
+
+	var key string
+	secureField := c.FieldByName(consts.Secure)
+	if secureField.IsValid() {
+		keyField := secureField.FieldByName(consts.Key)
+		if keyField.IsValid() {
+			key = keyField.String()
+		}
+	}
+
+	rocketmqField := c.FieldByName(consts.RocketMq)
+	if !rocketmqField.IsValid() {
+		panic(rocketmqErr)
+	}
+
+	addrField := rocketmqField.FieldByName(consts.Addr)
+	if !addrField.IsValid() {
+		panic(rocketmqErr)
+	}
+	var addr []string
+	for i := 0; i < addrField.Len(); i++ {
+		element := addrField.Index(i)
+		addr = append(addr, element.String())
+	}
+
+	accessKeyField := rocketmqField.FieldByName(consts.AccessKey)
+	if !accessKeyField.IsValid() {
+		panic(rocketmqErr)
+	}
+	accessKey := accessKeyField.String()
+
+	secretKeyField := rocketmqField.FieldByName(consts.SecretKey)
+	if !secretKeyField.IsValid() {
+		panic(rocketmqErr)
+	}
+	secretKey := secretKeyField.String()
+
+	retryField := rocketmqField.FieldByName(consts.Retry)
+	if !retryField.IsValid() {
+		panic(rocketmqErr)
+	}
+	retry := retryField.Int()
+
+	var err error
+	if key != "" {
+		accessKey, err = crypto.Decrypt(key, accessKey)
 		if err != nil {
 			return "", "", nil, 0, err
 		}
-		secretKey, err = crypto.Decrypt(c.Secure.Key, mq.SecretKey)
+		secretKey, err = crypto.Decrypt(key, secretKey)
 		if err != nil {
 			return "", "", nil, 0, err
 		}
 	}
-	return accessKey, secretKey, mq.Addr, mq.Retry, nil
+	return accessKey, secretKey, addr, int(retry), nil
 }

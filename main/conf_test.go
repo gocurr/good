@@ -8,7 +8,7 @@ import (
 
 func TestConf(t *testing.T) {
 	c, _ := conf.Read("../application.yml")
-	ab, err := c.String("a_B")
+	ab, err := c.ReservedString("a_B")
 	if err != nil {
 		return
 	}

@@ -3,10 +3,9 @@ package sugar
 import (
 	"errors"
 	"fmt"
-	"github.com/gocurr/good/conf"
 	log "github.com/sirupsen/logrus"
 	"net/http"
-	"strconv"
+	"reflect"
 )
 
 var serverErr = errors.New("bad server configuration")
@@ -28,13 +27,30 @@ func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
 }
 
 // Fire http server entry
-func Fire(c *conf.Configuration, callbacks ...func()) {
-	if c == nil || c.Server == nil {
+func Fire(i interface{}, callbacks ...func()) {
+	if i == nil {
+		panic(serverErr)
+	}
+
+	var c reflect.Value
+	if reflect.TypeOf(i).Kind() == reflect.Ptr {
+		c = reflect.ValueOf(i).Elem()
+	} else {
+		c = reflect.ValueOf(i)
+	}
+
+	serverField := c.FieldByName("Server")
+	if !serverField.IsValid() {
+		panic(serverErr)
+	}
+
+	portField := serverField.FieldByName("Port")
+	if !portField.IsValid() {
 		panic(serverErr)
 	}
 
 	// port server bound port
-	port := c.Server.Port
+	port := portField.Int()
 	if port < 0 || port > 1<<16-1 {
 		log.Fatalf("port '%v' is invalid", port)
 	} else {
@@ -46,7 +62,7 @@ func Fire(c *conf.Configuration, callbacks ...func()) {
 		callback()
 	}
 
-	addr := ":" + strconv.Itoa(port)
+	addr := fmt.Sprintf(":%v", port)
 	if serverMux != nil {
 		muxBoot(addr)
 	} else {

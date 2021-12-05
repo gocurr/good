@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gocurr/cronctl"
-	"github.com/gocurr/good/conf"
+	"github.com/gocurr/good/consts"
 	log "github.com/sirupsen/logrus"
+	"reflect"
 	"sync"
 )
 
@@ -19,11 +20,30 @@ type Crontab struct {
 }
 
 // New Crontab constructor
-func New(c *conf.Configuration) *Crontab {
+func New(i interface{}) *Crontab {
+	if i == nil {
+		panic(crontabErr)
+	}
+
+	var c reflect.Value
+	if reflect.TypeOf(i).Kind() == reflect.Ptr {
+		c = reflect.ValueOf(i).Elem()
+	} else {
+		c = reflect.ValueOf(i)
+	}
+
+	crontabField := c.FieldByName(consts.Crontab)
+	if !crontabField.IsValid() {
+		panic(crontabErr)
+	}
+
 	var jobs = make(map[string]cronctl.Job)
-	for name, c := range c.Crontab {
+	iter := crontabField.MapRange()
+	for iter.Next() {
+		name := iter.Key().String()
+		spec := iter.Value().String()
 		jobs[name] = cronctl.Job{
-			Spec: c.Spec,
+			Spec: spec,
 		}
 	}
 	return &Crontab{jobs: jobs}

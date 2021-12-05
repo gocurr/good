@@ -17,6 +17,10 @@ func Panic(err error) {
 }
 
 type Custom struct {
+	Server struct {
+		Port int `yaml:"port"`
+	}
+
 	Pg struct {
 		Addr     string `yaml:"addr"`
 		User     string `yaml:"user"`
@@ -38,6 +42,12 @@ type Custom struct {
 var custom Custom
 
 func main() {
+	/*_, err := conf.ReadDefault(&custom)
+	if err == nil {
+		sugar.Fire(custom)
+		return
+	}*/
+
 	c, _ := conf.ReadDefault()
 	_ = logger.Set(c)
 	crons := crontab.New(c)
@@ -47,13 +57,14 @@ func main() {
 	_ = crons.Bind("demo2", func() {
 		log.Info("demo2")
 	})
-	crons.Register("demo2", "*/1 * * * * ?", func() {
+	crons.Register("demo3", "*/1 * * * * ?", func() {
 		log.Info("demo3")
 	})
 	crons.Start()
 
-	fmt.Println(c.Int("xxx"))
-	fmt.Println(c.String("key"))
+	fmt.Println(c.ReservedInt("xxx"))
+	fmt.Println(c.ReservedString("key"))
+	fmt.Println(c.ReservedString("str"))
 
 	if err := c.Fill(&custom); err != nil {
 		log.Error(err)
@@ -67,12 +78,14 @@ func main() {
 		Text string `json:"text"`
 	}
 	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		bytes, err := sugar.PostJSON("http://127.0.0.1:9091", &msg{Text: "hello"})
+		var out interface{}
+		err := sugar.PostJSON("http://127.0.0.1:9091", &msg{Text: "hello"}, &out)
 		if err != nil {
 			_, _ = w.Write([]byte(err.Error()))
 			return
 		}
-		_, _ = w.Write(bytes)
+		log.Info(out)
+		_, _ = w.Write([]byte("ok"))
 	})
 
 	mux := http.NewServeMux()

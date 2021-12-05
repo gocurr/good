@@ -10,14 +10,14 @@ import (
 type Configuration struct {
 	cache []byte `yaml:"-"` // cached yaml-bytes
 
-	Server *struct {
+	Server struct {
 		Port int `yaml:"port,omitempty"`
 	}
 
-	Logrus *struct {
+	Logrus struct {
 		Format  string `yaml:"format,omitempty"`
 		TTY     bool   `yaml:"tty,omitempty"`
-		GrayLog *struct {
+		GrayLog struct {
 			Enable bool                   `yaml:"enable,omitempty"`
 			Host   string                 `yaml:"host,omitempty"`
 			Port   int                    `yaml:"port,omitempty"`
@@ -25,46 +25,44 @@ type Configuration struct {
 		} `yaml:"graylog,omitempty"`
 	}
 
-	Oracle *struct {
+	Oracle struct {
 		Driver     string `yaml:"driver,omitempty"`
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
 	}
 
-	Mysql *struct {
+	Mysql struct {
 		Driver     string `yaml:"driver,omitempty"`
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
 	}
 
-	Redis *struct {
+	Redis struct {
 		Host     string `yaml:"host,omitempty"`
 		Port     int    `yaml:"port,omitempty"`
 		Password string `yaml:"password,omitempty"`
 		DB       int    `yaml:"db,omitempty"`
 	}
 
-	RocketMq *struct {
+	RocketMq struct {
 		Addr      []string `yaml:"addr,omitempty"`
 		Retry     int      `yaml:"retry,omitempty"`
 		AccessKey string   `yaml:"access-key,omitempty"`
 		SecretKey string   `yaml:"secret-key,omitempty"`
 	} `yaml:"rocket-mq,omitempty"`
 
-	TableStore *struct {
+	TableStore struct {
 		EndPoint        string `yaml:"end-point,omitempty"`
 		InstanceName    string `yaml:"instance-name,omitempty"`
 		AccessKeyId     string `yaml:"access-key-id,omitempty"`
 		AccessKeySecret string `yaml:"access-key-secret,omitempty"`
 	} `yaml:"table-store,omitempty"`
 
-	Crontab map[string]struct {
-		Spec string `yaml:"spec,omitempty"`
-	}
+	Crontab map[string]string
 
-	Secure *struct {
+	Secure struct {
 		Key string `yaml:"key,omitempty"`
 	}
 
@@ -79,8 +77,8 @@ func (c *Configuration) Fill(custom interface{}) error {
 	return yaml.Unmarshal(c.cache, custom)
 }
 
-// String return string field in reserved
-func (c *Configuration) String(field string) (string, error) {
+// ReservedString return string field in reserved
+func (c *Configuration) ReservedString(field string) (string, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return "", fmt.Errorf("'%s' not found in configuration", field)
@@ -92,8 +90,8 @@ func (c *Configuration) String(field string) (string, error) {
 	return fmt.Sprintf("%v", i), nil
 }
 
-// Int return int field in reserved
-func (c *Configuration) Int(field string) (int, error) {
+// ReservedInt return int field in reserved
+func (c *Configuration) ReservedInt(field string) (int, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return 0, fmt.Errorf("'%s' not found in configuration", field)
@@ -104,8 +102,8 @@ func (c *Configuration) Int(field string) (int, error) {
 	return 0, fmt.Errorf("%v is not 'int' type", i)
 }
 
-// Float64 return float64 field in reserved
-func (c *Configuration) Float64(field string) (float64, error) {
+// ReservedFloat64 return float64 field in reserved
+func (c *Configuration) ReservedFloat64(field string) (float64, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return 0, fmt.Errorf("'%s' not found in configuration", field)
@@ -116,8 +114,8 @@ func (c *Configuration) Float64(field string) (float64, error) {
 	return 0, fmt.Errorf("%v is not 'float64' type", i)
 }
 
-// Float32 return float32 field in reserved
-func (c *Configuration) Float32(field string) (float32, error) {
+// ReservedFloat32 return float32 field in reserved
+func (c *Configuration) ReservedFloat32(field string) (float32, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return 0, fmt.Errorf("'%s' not found in configuration", field)
@@ -128,18 +126,18 @@ func (c *Configuration) Float32(field string) (float32, error) {
 	return 0, fmt.Errorf("%v is not 'float32' type", i)
 }
 
-// Float return float64 field in reserved
-func (c *Configuration) Float(field string) (float64, error) {
-	return c.Float64(field)
+// ReservedFloat return float64 field in reserved
+func (c *Configuration) ReservedFloat(field string) (float64, error) {
+	return c.ReservedFloat64(field)
 }
 
-// Interface return interface{} field in reserved
-func (c *Configuration) Interface(field string) interface{} {
+// ReservedInterface return interface{} field in reserved
+func (c *Configuration) ReservedInterface(field string) interface{} {
 	return c.Reserved[field]
 }
 
-// Slice return slice field in reserved
-func (c *Configuration) Slice(field string) ([]interface{}, error) {
+// ReservedSlice return slice field in reserved
+func (c *Configuration) ReservedSlice(field string) ([]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return nil, fmt.Errorf("'%s' not found in configuration", field)
@@ -150,8 +148,8 @@ func (c *Configuration) Slice(field string) ([]interface{}, error) {
 	return nil, fmt.Errorf("%v is not '[]interface{}' type", i)
 }
 
-// Map return map field in reserved
-func (c *Configuration) Map(field string) (map[string]interface{}, error) {
+// ReservedMap return map field in reserved
+func (c *Configuration) ReservedMap(field string) (map[string]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
 		return nil, fmt.Errorf("'%s' not found in configuration", field)

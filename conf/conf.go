@@ -5,6 +5,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
+	"reflect"
 )
 
 // default configuration names
@@ -52,10 +53,17 @@ func Filename() string {
 }
 
 // Read returns *Configuration and error
-func Read(filename string) (*Configuration, error) {
+func Read(filename string, raw ...interface{}) (*Configuration, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(raw) > 0 {
+		if reflect.TypeOf(raw[0]).Kind() == reflect.Ptr {
+			err = yaml.Unmarshal(bytes, raw[0])
+			return nil, err
+		}
 	}
 
 	var c Configuration
@@ -69,10 +77,10 @@ func Read(filename string) (*Configuration, error) {
 var confErr = errors.New("configuration not found")
 
 // ReadDefault reads default configurations
-func ReadDefault() (*Configuration, error) {
+func ReadDefault(raw ...interface{}) (*Configuration, error) {
 	filename := Filename()
 	if filename == "" {
 		return nil, confErr
 	}
-	return Read(filename)
+	return Read(filename, raw...)
 }

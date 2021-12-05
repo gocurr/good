@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/sugar"
 	"testing"
 	"time"
@@ -12,7 +13,7 @@ func Test_Encrypted(t *testing.T) {
 }
 
 func Test_TimeFormat(t *testing.T) {
-	println(time.Now().Format(sugar.DefaultTimeFormat))
+	println(time.Now().Format(consts.DefaultTimeFormat))
 }
 
 func Test_Float(t *testing.T) {

@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gocurr/good/consts"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 )
 
 // Parameter returns string via name from http.Request
@@ -31,10 +33,17 @@ func Parameters(name string, r *http.Request) []string {
 	return nil
 }
 
-// JSONBytes returns JSON []byte from http.Request
-func JSONBytes(r *http.Request) ([]byte, error) {
+// JSON unmarshals body of http.Request into out
+func JSON(r *http.Request, out interface{}) error {
+	if reflect.TypeOf(out).Kind() != reflect.Ptr {
+		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
+	}
 	defer func() { _ = r.Body.Close() }()
-	return ioutil.ReadAll(r.Body)
+	all, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(all, out)
 }
 
 // ErrMsg error message
@@ -62,35 +71,59 @@ func JSONHeader(w http.ResponseWriter) {
 // handleResp handles response
 func handleResp(r *http.Response) ([]byte, error) {
 	defer func() { _ = r.Body.Close() }()
+
 	all, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
+
 	if r.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("%s", string(all))
 	}
 	return all, nil
 }
 
-// PostJSON posts JSON format data to the given url
-func PostJSON(url string, data interface{}) ([]byte, error) {
-	all, err := json.Marshal(data)
+func PostJSONRaw(url string, in interface{}) ([]byte, error) {
+	all, err := json.Marshal(in)
 	if err != nil {
 		return nil, err
 	}
 
-	response, err := http.Post(url, JSONContentType, bytes.NewReader(all))
+	response, err := http.Post(url, consts.JSONContentType, bytes.NewReader(all))
 	if err != nil {
 		return nil, err
 	}
 	return handleResp(response)
 }
 
-// HttpGet calls http.Get via given url, returns bytes of http.Response.Body and reports error
-func HttpGet(url string) ([]byte, error) {
+// PostJSON posts JSON format data to the given url, unmarshals body of response into out and reports error
+func PostJSON(url string, in interface{}, out interface{}) error {
+	if reflect.TypeOf(out).Kind() != reflect.Ptr {
+		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
+	}
+
+	raw, err := PostJSONRaw(url, in)
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal(raw, out)
+}
+
+// HttpGet calls http.Get via given url, unmarshals body of response into out and reports error
+func HttpGet(url string, out interface{}) error {
+	if reflect.TypeOf(out).Kind() != reflect.Ptr {
+		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
+	}
+
 	response, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return handleResp(response)
+
+	raw, err := handleResp(response)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(raw, out)
 }
