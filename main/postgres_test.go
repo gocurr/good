@@ -4,6 +4,7 @@ import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/logger"
 	"github.com/gocurr/good/postgres"
+	"github.com/gocurr/good/sugar"
 	log "github.com/sirupsen/logrus"
 	"testing"
 )
@@ -15,7 +16,9 @@ func TestPostgres(t *testing.T) {
 		return
 	}
 
-	logger.Set(c)
+	if err := logger.Set(c); err == logger.LogrusErr {
+		panic(err)
+	}
 
 	db, err := postgres.Open(c)
 	if err != nil {
@@ -37,4 +40,6 @@ func TestPostgres(t *testing.T) {
 		}
 		log.Info(name)
 	}
+
+	sugar.Fire(c)
 }
