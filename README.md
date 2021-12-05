@@ -54,7 +54,7 @@ type Custom struct {
 	Logrus struct {
 		Format     string `yaml:"format,omitempty"`
 		TTYDiscard bool   `yaml:"tty_discard,omitempty"`
-		GrayLog    struct {
+		Graylog    struct {
 			Enable bool                   `yaml:"enable,omitempty"`
 			Host   string                 `yaml:"host,omitempty"`
 			Port   int                    `yaml:"port,omitempty"`

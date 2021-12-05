@@ -23,7 +23,7 @@ const (
 
 	TimeFormat = "TimeFormat"
 	TTYDiscard = "TTYDiscard"
-	GrayLog    = "GrayLog"
+	Graylog    = "Graylog"
 	Enable     = "Enable"
 	Extra      = "Extra"
 	User       = "User"

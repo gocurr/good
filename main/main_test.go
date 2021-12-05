@@ -25,7 +25,7 @@ type Custom struct {
 	Logrus struct {
 		TimeFormat string `yaml:"time_format,omitempty"`
 		TTYDiscard bool   `yaml:"tty_discard,omitempty"`
-		GrayLog    struct {
+		Graylog    struct {
 			Enable bool                   `yaml:"enable,omitempty"`
 			Host   string                 `yaml:"host,omitempty"`
 			Port   int                    `yaml:"port,omitempty"`
@@ -38,37 +38,37 @@ type Custom struct {
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
-	}
+	} `yaml:"mysql,omitempty"`
 
 	Redis struct {
 		Host     string `yaml:"host,omitempty"`
 		Port     int    `yaml:"port,omitempty"`
 		Password string `yaml:"password,omitempty"`
 		DB       int    `yaml:"db,omitempty"`
-	} `yaml:"redis"`
+	} `yaml:"redis,omitempty"`
 
 	Crontab map[string]string `yaml:"crontab,omitempty"`
 
 	Secure struct {
 		Key string `yaml:"key,omitempty"`
-	}
+	} `yaml:"secure,omitempty"`
 
 	Pg struct {
 		Addr     string `yaml:"addr"`
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
-	} `yaml:"pg"`
+	} `yaml:"pg,omitempty"`
 
 	Maria struct {
 		Addr     string `yaml:"addr"`
 		User     string `yaml:"user"`
 		Password string `yaml:"password"`
-	} `yaml:"maria"`
+	} `yaml:"maria,omitempty"`
 
 	Logic struct {
 		Api   string   `yaml:"api"`
 		Names []string `yaml:"names"`
-	}
+	} `yaml:"logic,omitempty"`
 }
 
 type Msg struct {

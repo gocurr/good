@@ -59,7 +59,7 @@ func Set(i interface{}) error {
 		}
 	}
 
-	graylogField := logrusField.FieldByName(consts.GrayLog)
+	graylogField := logrusField.FieldByName(consts.Graylog)
 	if graylogField.IsValid() {
 		enableField := graylogField.FieldByName(consts.Enable)
 		if enableField.IsValid() {

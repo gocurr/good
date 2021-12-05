@@ -17,7 +17,7 @@ type Configuration struct {
 	Logrus struct {
 		TimeFormat string `yaml:"time_format,omitempty"`
 		TTYDiscard bool   `yaml:"tty_discard,omitempty"`
-		GrayLog    struct {
+		Graylog    struct {
 			Enable bool                   `yaml:"enable,omitempty"`
 			Host   string                 `yaml:"host,omitempty"`
 			Port   int                    `yaml:"port,omitempty"`
