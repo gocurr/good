@@ -8,7 +8,7 @@ import (
 )
 
 func TestPostgres(t *testing.T) {
-	c, err := conf.New("../application.yml")
+	c, err := conf.New("../app.yaml")
 	if err != nil {
 		log.Error(err)
 		return
