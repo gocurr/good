@@ -13,7 +13,7 @@ var tablestoreErr = errors.New("bad tablestore configuration")
 // New returns *tablestore.TableStoreClient and error
 func New(i interface{}) (*tablestore.TableStoreClient, error) {
 	if i == nil {
-		panic(tablestoreErr)
+		return nil, tablestoreErr
 	}
 
 	var c reflect.Value
@@ -34,30 +34,30 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 
 	tablestoreField := c.FieldByName(vars.TableStore)
 	if !tablestoreField.IsValid() {
-		panic(tablestoreErr)
+		return nil, tablestoreErr
 	}
 
 	endPointField := tablestoreField.FieldByName(vars.EndPoint)
 	if !endPointField.IsValid() {
-		panic(tablestoreErr)
+		return nil, tablestoreErr
 	}
 	endPoint := endPointField.String()
 
 	instanceNameField := tablestoreField.FieldByName(vars.InstanceName)
 	if !instanceNameField.IsValid() {
-		panic(tablestoreErr)
+		return nil, tablestoreErr
 	}
 	instanceName := instanceNameField.String()
 
 	accessKeyIdField := tablestoreField.FieldByName(vars.AccessKeyId)
 	if !accessKeyIdField.IsValid() {
-		panic(tablestoreErr)
+		return nil, tablestoreErr
 	}
 	accessKeyId := accessKeyIdField.String()
 
 	accessKeySecretField := tablestoreField.FieldByName(vars.AccessKeySecret)
 	if !accessKeySecretField.IsValid() {
-		panic(tablestoreErr)
+		return nil, tablestoreErr
 	}
 	accessKeySecret := accessKeySecretField.String()
 
@@ -65,11 +65,11 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 	if key != "" {
 		accessKeyId, err = crypto.Decrypt(key, accessKeyId)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		accessKeySecret, err = crypto.Decrypt(key, accessKeySecret)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 

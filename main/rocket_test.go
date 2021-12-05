@@ -4,6 +4,7 @@ import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/rocketmq"
 	"github.com/gocurr/good/tablestore"
+	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -19,8 +20,12 @@ func Test_Rocket(t *testing.T) {
 func Test_Tablestore(t *testing.T) {
 	c, err := conf.New("../app.yaml")
 	if err != nil {
+		log.Error(err)
 		return
 	}
 
-	_, _ = tablestore.New(c)
+	_, err = tablestore.New(c)
+	if err != nil {
+		log.Error(err)
+	}
 }
