@@ -11,8 +11,12 @@ import (
 	"time"
 )
 
-var LogrusErr = errors.New("bad logrus configuration")
-var GraylogErr = errors.New("bad graylog configuration")
+const timestamp = "timestamp"
+
+var (
+	LogrusErr  = errors.New("bad logrus configuration")
+	GraylogErr = errors.New("bad graylog configuration")
+)
 
 // Set configures logrus
 func Set(i interface{}) error {
@@ -86,7 +90,7 @@ func Set(i interface{}) error {
 					val := iter.Value().Interface()
 					extra[key] = val
 				}
-				extra["timestamp"] = time.Now().Format("2006-01-02 15:04:05")
+				extra[timestamp] = time.Now().Format("2006-01-02 15:04:05")
 
 				hook := graylog.NewAsyncGraylogHook(fmt.Sprintf("%s:%v", host, port), extra)
 				defer hook.Flush()
