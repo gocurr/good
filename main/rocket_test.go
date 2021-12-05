@@ -8,7 +8,7 @@ import (
 )
 
 func Test_Rocket(t *testing.T) {
-	c, err := conf.Read("../application.yml")
+	c, err := conf.New("../application.yml")
 	if err != nil {
 		return
 	}
@@ -17,7 +17,7 @@ func Test_Rocket(t *testing.T) {
 }
 
 func Test_Tablestore(t *testing.T) {
-	c, err := conf.Read("../application.yml")
+	c, err := conf.New("../application.yml")
 	if err != nil {
 		return
 	}

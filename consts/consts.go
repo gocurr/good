@@ -1,48 +1,55 @@
 package consts
 
-// DefaultTimeFormat default time format
-const DefaultTimeFormat = "2006-01-02 15:04:05"
+// default configuration names
+const (
+	AppYml  = "app.yml"
+	AppYaml = "app.yaml"
 
-// JSONContentType default Content-Type
-const JSONContentType = "Content-Type:application/json"
+	ApplicationYml  = "application.yml"
+	ApplicationYaml = "application.yaml"
 
-const Crontab = "Crontab"
+	ConfAppYml  = "conf/app.yml"
+	ConfAppYaml = "conf/app.yaml"
 
-const Logrus = "Logrus"
+	ConfApplicationYml  = "conf/application.yml"
+	ConfApplicationYaml = "conf/application.yaml"
 
-const Format = "Format"
+	DefaultTimeFormat = "2006-01-02 15:04:05"
 
-const TTY = "TTY"
+	JSONContentType = "Content-Type:application/json"
 
-const GrayLog = "GrayLog"
+	Crontab = "Crontab"
+	Logrus  = "Logrus"
 
-const Enable = "Enable"
+	Format  = "Format"
+	TTY     = "TTY"
+	GrayLog = "GrayLog"
+	Enable  = "Enable"
+	Extra   = "Extra"
 
-const Host = "Host"
-const Addr = "Addr"
-const EndPoint = "EndPoint"
-const InstanceName = "InstanceName"
-const Port = "Port"
+	Host         = "Host"
+	Addr         = "Addr"
+	EndPoint     = "EndPoint"
+	InstanceName = "InstanceName"
+	Port         = "Port"
 
-const Extra = "Extra"
+	Mysql      = "Mysql"
+	Oracle     = "Oracle"
+	Redis      = "Redis"
+	RocketMq   = "RocketMq"
+	TableStore = "TableStore"
 
-const Mysql = "Mysql"
-const Oracle = "Oracle"
-const Redis = "Redis"
-const RocketMq = "RocketMq"
-const TableStore = "TableStore"
+	User       = "User"
+	Datasource = "Datasource"
+	Password   = "Password"
+	AccessKey  = "AccessKey"
+	SecretKey  = "SecretKey"
 
-const User = "User"
-const Datasource = "Datasource"
-const Password = "Password"
-const AccessKey = "AccessKey"
-const SecretKey = "SecretKey"
+	AccessKeyId     = "AccessKeyId"
+	AccessKeySecret = "AccessKeySecret"
+	Retry           = "Retry"
+	DB              = "DB"
 
-const AccessKeyId = "AccessKeyId"
-const AccessKeySecret = "AccessKeySecret"
-const Retry = "Retry"
-const DB = "DB"
-
-const Secure = "Secure"
-
-const Key = "Key"
+	Secure = "Secure"
+	Key    = "Key"
+)

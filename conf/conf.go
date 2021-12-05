@@ -2,68 +2,85 @@ package conf
 
 import (
 	"errors"
+	"fmt"
+	"github.com/gocurr/good/consts"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
 	"reflect"
 )
 
-// default configuration names
-const (
-	appYml  = "app.yml"
-	appYaml = "app.yaml"
-
-	applicationYml  = "application.yml"
-	applicationYaml = "application.yaml"
-
-	confAppYml  = "conf/app.yml"
-	confAppYaml = "conf/app.yaml"
-
-	confApplicationYml  = "conf/application.yml"
-	confApplicationYaml = "conf/application.yaml"
-)
+var confErr = errors.New("configuration not found")
 
 // Filename returns a configuration name
 func Filename() string {
-	if _, err := os.Stat(appYml); err == nil {
-		return appYml
+	if _, err := os.Stat(consts.AppYml); err == nil {
+		return consts.AppYml
 	}
-	if _, err := os.Stat(appYaml); err == nil {
-		return appYaml
+	if _, err := os.Stat(consts.AppYaml); err == nil {
+		return consts.AppYaml
 	}
-	if _, err := os.Stat(applicationYml); err == nil {
-		return applicationYml
+	if _, err := os.Stat(consts.ApplicationYml); err == nil {
+		return consts.ApplicationYml
 	}
-	if _, err := os.Stat(applicationYaml); err == nil {
-		return applicationYaml
+	if _, err := os.Stat(consts.ApplicationYaml); err == nil {
+		return consts.ApplicationYaml
 	}
-	if _, err := os.Stat(confAppYml); err == nil {
-		return confAppYml
+	if _, err := os.Stat(consts.ConfAppYml); err == nil {
+		return consts.ConfAppYml
 	}
-	if _, err := os.Stat(confAppYaml); err == nil {
-		return confAppYaml
+	if _, err := os.Stat(consts.ConfAppYaml); err == nil {
+		return consts.ConfAppYaml
 	}
-	if _, err := os.Stat(confApplicationYml); err == nil {
-		return confApplicationYml
+	if _, err := os.Stat(consts.ConfApplicationYml); err == nil {
+		return consts.ConfApplicationYml
 	}
-	if _, err := os.Stat(confApplicationYaml); err == nil {
-		return confApplicationYaml
+	if _, err := os.Stat(consts.ConfApplicationYaml); err == nil {
+		return consts.ConfApplicationYml
 	}
 	return ""
 }
 
-// Read returns *Configuration and error
-func Read(filename string, raw ...interface{}) (*Configuration, error) {
+// ReadDefault read default configuration into custom
+func ReadDefault(custom interface{}) error {
+	filename := Filename()
+	if filename == "" {
+		return confErr
+	}
+	return Read(filename, custom)
+}
+
+// Read filename-configuration into custom
+func Read(filename string, custom interface{}) error {
+	if custom == nil {
+		return errors.New("input is nil")
+	}
+
+	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
+		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(custom).Name())
+	}
+
+	bytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	return yaml.Unmarshal(bytes, custom)
+}
+
+// NewDefault returns a default configuration
+func NewDefault() (*Configuration, error) {
+	filename := Filename()
+	if filename == "" {
+		return nil, confErr
+	}
+	return New(filename)
+}
+
+// New returns *Configuration and error
+func New(filename string) (*Configuration, error) {
 	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
-	}
-
-	if len(raw) > 0 {
-		if reflect.TypeOf(raw[0]).Kind() == reflect.Ptr {
-			err = yaml.Unmarshal(bytes, raw[0])
-			return nil, err
-		}
 	}
 
 	var c Configuration
@@ -72,15 +89,4 @@ func Read(filename string, raw ...interface{}) (*Configuration, error) {
 	// cache bytes
 	c.cache = bytes
 	return &c, err
-}
-
-var confErr = errors.New("configuration not found")
-
-// ReadDefault reads default configurations
-func ReadDefault(raw ...interface{}) (*Configuration, error) {
-	filename := Filename()
-	if filename == "" {
-		return nil, confErr
-	}
-	return Read(filename, raw...)
 }

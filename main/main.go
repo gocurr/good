@@ -42,13 +42,14 @@ type Custom struct {
 var custom Custom
 
 func main() {
-	/*_, err := conf.ReadDefault(&custom)
-	if err == nil {
-		sugar.Fire(custom)
-		return
-	}*/
+	//cc, err := conf.NewDefault(&custom)
+	//if err == nil {
+	//	sugar.Fire(cc)
+	//	//sugar.Fire(custom)
+	//	return
+	//}
 
-	c, _ := conf.ReadDefault()
+	c, _ := conf.NewDefault()
 	_ = logger.Set(c)
 	crons := crontab.New(c)
 	_ = crons.Bind("demo1", func() {
