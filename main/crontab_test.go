@@ -22,5 +22,5 @@ func Test_Crontab(t *testing.T) {
 	})
 	crons.Start()
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(5 * time.Second)
 }

@@ -3,8 +3,6 @@ package main
 import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/logger"
-	"github.com/gocurr/good/sugar"
-	"net/http"
 	"testing"
 )
 
@@ -70,11 +68,8 @@ type Custom struct {
 
 func Test_Main(t *testing.T) {
 	var c Custom
-	_ = conf.Read("../app.yaml", &c)
-	_ = logger.Set(&c)
-
-	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte("ok"))
-	})
-	sugar.Fire(&c)
+	err := conf.Read("../app.yaml", &c)
+	Panic(err)
+	err = logger.Set(&c)
+	Panic(err)
 }
