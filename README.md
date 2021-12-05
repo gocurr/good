@@ -18,7 +18,7 @@ package main
 import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/logger"
-	"github.com/gocurr/good/sugar"
+	"github.com/gocurr/good/server"
 	"net/http"
 )
 
@@ -26,22 +26,23 @@ func main() {
 	c, _ := conf.NewDefault()
 	_ = logger.Set(c)
 
-	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
+	server.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 	})
-	sugar.Fire(c)
+	server.Fire(c)
 }
 ```
 
 ### Custom
 
 ```go
+
 package main
 
 import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/logger"
-	"github.com/gocurr/good/sugar"
+	"github.com/gocurr/good/server"
 	"net/http"
 )
 
@@ -67,9 +68,9 @@ func main() {
 	_ = conf.ReadDefault(&c)
 	_ = logger.Set(&c)
 
-	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {
+	server.Route("/", func(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte("ok"))
 	})
-	sugar.Fire(&c)
+	server.Fire(&c)
 }
 ```
