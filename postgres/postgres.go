@@ -10,7 +10,10 @@ import (
 	"reflect"
 )
 
-const postgres = "postgres"
+const (
+	postgres = "postgres"
+	disable  = "disable"
+)
 
 var postgresErr = errors.New("bad postgres configuration")
 
@@ -71,7 +74,7 @@ func Open(i interface{}) (*sql.DB, error) {
 	}
 	db := dbField.String()
 
-	sslMode := "disable"
+	sslMode := disable
 	sslModeField := postgresField.FieldByName(vars.SSLMode)
 	if sslModeField.IsValid() {
 		mode := sslModeField.String()

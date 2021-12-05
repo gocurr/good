@@ -1,7 +1,7 @@
 package vars
 
-// default configuration names
-var (
+// constants
+const (
 	AppYml  = "app.yml"
 	AppYaml = "app.yaml"
 
@@ -17,10 +17,13 @@ var (
 	DefaultTimeFormat = "2006-01-02 15:04:05"
 
 	JSONContentType = "Content-Type:application/json"
+)
 
+// variables
+var (
 	Crontab = "Crontab"
-	Logrus  = "Logrus"
 
+	Logrus  = "Logrus"
 	Format  = "Format"
 	TTY     = "TTY"
 	GrayLog = "GrayLog"
