@@ -36,6 +36,7 @@ var (
 	Mysql      = "Mysql"
 	Oracle     = "Oracle"
 	Redis      = "Redis"
+	Postgres   = "Postgres"
 	RocketMq   = "RocketMq"
 	TableStore = "TableStore"
 
@@ -49,6 +50,7 @@ var (
 	AccessKeySecret = "AccessKeySecret"
 	Retry           = "Retry"
 	DB              = "DB"
+	SSLMode         = "SSLMode"
 
 	Secure = "Secure"
 	Key    = "Key"

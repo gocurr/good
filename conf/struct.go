@@ -12,7 +12,7 @@ type Configuration struct {
 
 	Server struct {
 		Port int `yaml:"port,omitempty"`
-	}
+	} `yaml:"server,omitempty"`
 
 	Logrus struct {
 		Format  string `yaml:"format,omitempty"`
@@ -23,28 +23,38 @@ type Configuration struct {
 			Port   int                    `yaml:"port,omitempty"`
 			Extra  map[string]interface{} `yaml:"extra,omitempty"`
 		} `yaml:"graylog,omitempty"`
-	}
+	} `yaml:"logrus,omitempty"`
 
 	Oracle struct {
 		Driver     string `yaml:"driver,omitempty"`
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
-	}
+	} `yaml:"oracle,omitempty"`
 
 	Mysql struct {
 		Driver     string `yaml:"driver,omitempty"`
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
-	}
+	} `yaml:"mysql,omitempty"`
+
+	Postgres struct {
+		Host     string `yaml:"host,omitempty"`
+		Port     int    `yaml:"port,omitempty"`
+		User     string `yaml:"user,omitempty"`
+		Password string `yaml:"password,omitempty"`
+		DB       string `yaml:"db,omitempty"`
+		SSLMode  string `yaml:"ssl_mode,omitempty"`
+	} `yaml:"postgres,omitempty"`
 
 	Redis struct {
 		Host     string `yaml:"host,omitempty"`
 		Port     int    `yaml:"port,omitempty"`
 		Password string `yaml:"password,omitempty"`
 		DB       int    `yaml:"db,omitempty"`
-	}
+		SSL      bool   `yaml:"ssl,omitempty"`
+	} `yaml:"redis,omitempty"`
 
 	RocketMq struct {
 		Addr      []string `yaml:"addr,omitempty"`

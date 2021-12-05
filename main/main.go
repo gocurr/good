@@ -85,6 +85,7 @@ func main() {
 	})
 	crons.Start()
 
+	mysqlOp(c)
 	redisOp(c)
 
 	sugar.Route("/", func(w http.ResponseWriter, r *http.Request) {

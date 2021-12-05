@@ -68,5 +68,9 @@ func Open(i interface{}) (*sql.DB, error) {
 	}
 
 	dsn := fmt.Sprintf(`user="%s" password="%s" connectString="%s"`, user, password, datasource)
-	return sql.Open(godror, dsn)
+	db, err := sql.Open(godror, dsn)
+	if err != nil {
+		return nil, err
+	}
+	return db, db.Ping()
 }

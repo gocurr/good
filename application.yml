@@ -24,6 +24,14 @@ mysql:
   password: enc(dfdf920e95c3565b95749dd03e788fd486f489e72094)
   datasource: tcp(127.0.0.1:3306)/testdb
 
+postgres:
+  host: 127.0.0.1
+  port: 5432
+  user: postgres
+  password: 123456
+  db: testdb
+  ssl_mode: disable
+
 redis:
   host: 127.0.0.1
   port: 6379
@@ -45,7 +53,7 @@ table-store:
 
 crontab:
   demo1: "*/1 * * * * ?"
-  demo2: "*/5 * * * * ?"
+  hello: "*/5 * * * * ?"
   demo3: "*/1 * * * * ?"
 
 secure:
