@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/vars"
 	"reflect"
@@ -26,9 +27,9 @@ func New(i interface{}) (*redis.Client, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(vars.Secure)
+	secureField := c.FieldByName(consts.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(vars.Key)
+		keyField := secureField.FieldByName(consts.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
@@ -39,25 +40,25 @@ func New(i interface{}) (*redis.Client, error) {
 		return nil, redisErr
 	}
 
-	hostField := redisField.FieldByName(vars.Host)
+	hostField := redisField.FieldByName(consts.Host)
 	if !hostField.IsValid() {
 		return nil, redisErr
 	}
 	host := hostField.String()
 
-	portField := redisField.FieldByName(vars.Port)
+	portField := redisField.FieldByName(consts.Port)
 	if !portField.IsValid() {
 		return nil, redisErr
 	}
 	port := portField.Int()
 
-	passwordField := redisField.FieldByName(vars.Password)
+	passwordField := redisField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
 		return nil, redisErr
 	}
 	password := passwordField.String()
 
-	dbField := redisField.FieldByName(vars.DB)
+	dbField := redisField.FieldByName(consts.DB)
 	if !dbField.IsValid() {
 		return nil, redisErr
 	}

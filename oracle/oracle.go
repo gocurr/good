@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/vars"
 	_ "github.com/godror/godror"
@@ -28,9 +29,9 @@ func Open(i interface{}) (*sql.DB, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(vars.Secure)
+	secureField := c.FieldByName(consts.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(vars.Key)
+		keyField := secureField.FieldByName(consts.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
@@ -41,19 +42,19 @@ func Open(i interface{}) (*sql.DB, error) {
 		return nil, oracleErr
 	}
 
-	userField := oracleField.FieldByName(vars.User)
+	userField := oracleField.FieldByName(consts.User)
 	if !userField.IsValid() {
 		return nil, oracleErr
 	}
 	user := userField.String()
 
-	passwordField := oracleField.FieldByName(vars.Password)
+	passwordField := oracleField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
 		return nil, oracleErr
 	}
 	password := passwordField.String()
 
-	datasourceField := oracleField.FieldByName(vars.Datasource)
+	datasourceField := oracleField.FieldByName(consts.Datasource)
 	if !datasourceField.IsValid() {
 		return nil, oracleErr
 	}

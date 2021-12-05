@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/vars"
 	"reflect"
@@ -28,9 +29,9 @@ func Open(i interface{}) (*sql.DB, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(vars.Secure)
+	secureField := c.FieldByName(consts.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(vars.Key)
+		keyField := secureField.FieldByName(consts.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
@@ -41,19 +42,19 @@ func Open(i interface{}) (*sql.DB, error) {
 		return nil, mysqlErr
 	}
 
-	userField := mysqlField.FieldByName(vars.User)
+	userField := mysqlField.FieldByName(consts.User)
 	if !userField.IsValid() {
 		return nil, mysqlErr
 	}
 	user := userField.String()
 
-	passwordField := mysqlField.FieldByName(vars.Password)
+	passwordField := mysqlField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
 		return nil, mysqlErr
 	}
 	password := passwordField.String()
 
-	datasourceField := mysqlField.FieldByName(vars.Datasource)
+	datasourceField := mysqlField.FieldByName(consts.Datasource)
 	if !datasourceField.IsValid() {
 		return nil, mysqlErr
 	}

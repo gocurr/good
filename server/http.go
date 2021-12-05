@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/consts"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -65,7 +65,7 @@ func HandleErr(err error, w http.ResponseWriter, status ...int) {
 
 // JSONHeader adds JSON to response headers
 func JSONHeader(w http.ResponseWriter) {
-	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Add(consts.ContentType, consts.ApplicationJSON)
 }
 
 // handleResp handles response
@@ -90,7 +90,7 @@ func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 		return nil, err
 	}
 
-	response, err := http.Post(url, vars.JSONContentType, bytes.NewReader(all))
+	response, err := http.Post(url, consts.JSONContentType, bytes.NewReader(all))
 	if err != nil {
 		return nil, err
 	}

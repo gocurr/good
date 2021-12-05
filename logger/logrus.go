@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	graylog "github.com/gemnasium/logrus-graylog-hook/v3"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/vars"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -37,7 +38,7 @@ func Set(i interface{}) error {
 	}
 
 	var format = "2006-01-02 15:04:05"
-	formatField := logrusField.FieldByName(vars.Format)
+	formatField := logrusField.FieldByName(consts.Format)
 	if formatField.IsValid() {
 		f := formatField.String()
 		if f != "" {
@@ -50,7 +51,7 @@ func Set(i interface{}) error {
 		FullTimestamp:   true,
 	})
 
-	ttyDiscardField := logrusField.FieldByName(vars.TTYDiscard)
+	ttyDiscardField := logrusField.FieldByName(consts.TTYDiscard)
 	if ttyDiscardField.IsValid() {
 		if ttyDiscardField.Bool() {
 			// discard
@@ -58,21 +59,21 @@ func Set(i interface{}) error {
 		}
 	}
 
-	graylogField := logrusField.FieldByName(vars.GrayLog)
+	graylogField := logrusField.FieldByName(consts.GrayLog)
 	if graylogField.IsValid() {
-		enableField := graylogField.FieldByName(vars.Enable)
+		enableField := graylogField.FieldByName(consts.Enable)
 		if enableField.IsValid() {
 			enable := enableField.Bool()
 			if enable {
-				hostField := graylogField.FieldByName(vars.Host)
+				hostField := graylogField.FieldByName(consts.Host)
 				if !hostField.IsValid() {
 					return GraylogErr
 				}
-				portField := graylogField.FieldByName(vars.Port)
+				portField := graylogField.FieldByName(consts.Port)
 				if !portField.IsValid() {
 					return GraylogErr
 				}
-				extraField := graylogField.FieldByName(vars.Extra)
+				extraField := graylogField.FieldByName(consts.Extra)
 				if !extraField.IsValid() {
 					return GraylogErr
 				}

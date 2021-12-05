@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/vars"
 	_ "github.com/lib/pq"
@@ -31,9 +32,9 @@ func Open(i interface{}) (*sql.DB, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(vars.Secure)
+	secureField := c.FieldByName(consts.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(vars.Key)
+		keyField := secureField.FieldByName(consts.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
@@ -44,38 +45,38 @@ func Open(i interface{}) (*sql.DB, error) {
 		return nil, postgresErr
 	}
 
-	hostField := postgresField.FieldByName(vars.Host)
+	hostField := postgresField.FieldByName(consts.Host)
 	if !hostField.IsValid() {
 		return nil, postgresErr
 	}
 	host := hostField.String()
 
-	portField := postgresField.FieldByName(vars.Port)
+	portField := postgresField.FieldByName(consts.Port)
 	if !portField.IsValid() {
 		return nil, postgresErr
 	}
 	port := portField.Int()
 
-	userField := postgresField.FieldByName(vars.User)
+	userField := postgresField.FieldByName(consts.User)
 	if !userField.IsValid() {
 		return nil, postgresErr
 	}
 	user := userField.String()
 
-	passwordField := postgresField.FieldByName(vars.Password)
+	passwordField := postgresField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
 		return nil, postgresErr
 	}
 	password := passwordField.String()
 
-	dbField := postgresField.FieldByName(vars.DB)
+	dbField := postgresField.FieldByName(consts.DB)
 	if !dbField.IsValid() {
 		return nil, postgresErr
 	}
 	db := dbField.String()
 
 	sslMode := disable
-	sslModeField := postgresField.FieldByName(vars.SSLMode)
+	sslModeField := postgresField.FieldByName(consts.SSLMode)
 	if sslModeField.IsValid() {
 		mode := sslModeField.String()
 		if mode != "" {

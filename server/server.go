@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"github.com/gocurr/good/consts"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"reflect"
@@ -45,12 +46,12 @@ func Fire(i interface{}, callbacks ...func()) {
 	case reflect.Int64, reflect.Int, reflect.Int32, reflect.Int16, reflect.Int8:
 		port = c.Int()
 	default:
-		serverField := c.FieldByName("Server")
+		serverField := c.FieldByName(consts.Server)
 		if !serverField.IsValid() {
 			panic(serverErr)
 		}
 
-		portField := serverField.FieldByName("Port")
+		portField := serverField.FieldByName(consts.Port)
 		if !portField.IsValid() {
 			panic(serverErr)
 		}

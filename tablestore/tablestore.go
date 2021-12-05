@@ -3,6 +3,7 @@ package tablestore
 import (
 	"errors"
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/vars"
 	"reflect"
@@ -24,9 +25,9 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 	}
 
 	var key string
-	secureField := c.FieldByName(vars.Secure)
+	secureField := c.FieldByName(consts.Secure)
 	if secureField.IsValid() {
-		keyField := secureField.FieldByName(vars.Key)
+		keyField := secureField.FieldByName(consts.Key)
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
@@ -37,25 +38,25 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 		return nil, tablestoreErr
 	}
 
-	endPointField := tablestoreField.FieldByName(vars.EndPoint)
+	endPointField := tablestoreField.FieldByName(consts.EndPoint)
 	if !endPointField.IsValid() {
 		return nil, tablestoreErr
 	}
 	endPoint := endPointField.String()
 
-	instanceNameField := tablestoreField.FieldByName(vars.InstanceName)
+	instanceNameField := tablestoreField.FieldByName(consts.InstanceName)
 	if !instanceNameField.IsValid() {
 		return nil, tablestoreErr
 	}
 	instanceName := instanceNameField.String()
 
-	accessKeyIdField := tablestoreField.FieldByName(vars.AccessKeyId)
+	accessKeyIdField := tablestoreField.FieldByName(consts.AccessKeyId)
 	if !accessKeyIdField.IsValid() {
 		return nil, tablestoreErr
 	}
 	accessKeyId := accessKeyIdField.String()
 
-	accessKeySecretField := tablestoreField.FieldByName(vars.AccessKeySecret)
+	accessKeySecretField := tablestoreField.FieldByName(consts.AccessKeySecret)
 	if !accessKeySecretField.IsValid() {
 		return nil, tablestoreErr
 	}
