@@ -60,7 +60,7 @@ type Configuration struct {
 		AccessKeySecret string `yaml:"access-key-secret,omitempty"`
 	} `yaml:"table-store,omitempty"`
 
-	Crontab map[string]string
+	Crontab map[string]string `yaml:"crontab,omitempty"`
 
 	Secure struct {
 		Key string `yaml:"key,omitempty"`
