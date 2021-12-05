@@ -18,6 +18,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	github.com/tidwall/gjson v1.12.0 // indirect
+	github.com/tidwall/gjson v1.12.1 // indirect
+	golang.org/x/sys v0.0.0-20211204120058-94396e421777 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
