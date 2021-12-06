@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gocurr/good/client"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/logger"
@@ -89,12 +90,12 @@ func Test_Main(t *testing.T) {
 		hi := server.Parameter("hi", r)
 		log.Infof("%s", hi)
 		url := "http://127.0.0.1:9091"
-		raw, err := server.HttpGetRaw(url)
+		raw, err := client.HttpGetRaw(url)
 		if err != nil {
 			return
 		}
 		var out Msg
-		if err = server.PostJSON(url, nil, &out); err != nil {
+		if err = client.PostJSON(url, nil, &out); err != nil {
 			log.Errorf("%v", err)
 		}
 		out.Text = time.Now().Format(consts.DefaultTimeFormat)

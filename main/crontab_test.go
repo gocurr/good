@@ -21,9 +21,10 @@ func Test_Crontab(t *testing.T) {
 		log.Info("demo1")
 	})
 	crons.Register("hello", "*/3 * * * * ?", func() {
+		time.Sleep(9 * time.Second)
 		log.Info("hello...")
 	})
 	crons.Start()
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 }
