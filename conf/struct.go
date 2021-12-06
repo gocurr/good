@@ -61,14 +61,14 @@ type Configuration struct {
 		Retry     int      `yaml:"retry,omitempty"`
 		AccessKey string   `yaml:"access-key,omitempty"`
 		SecretKey string   `yaml:"secret-key,omitempty"`
-	} `yaml:"rocket-mq,omitempty"`
+	} `yaml:"rocketmq,omitempty"`
 
 	TableStore struct {
 		EndPoint        string `yaml:"end-point,omitempty"`
 		InstanceName    string `yaml:"instance-name,omitempty"`
 		AccessKeyId     string `yaml:"access-key-id,omitempty"`
 		AccessKeySecret string `yaml:"access-key-secret,omitempty"`
-	} `yaml:"table-store,omitempty"`
+	} `yaml:"tablestore,omitempty"`
 
 	Crontab map[string]string `yaml:"crontab,omitempty"`
 

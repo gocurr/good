@@ -38,14 +38,14 @@ redis:
   db: 0
   password: enc(436c7849214555123a97c132730d70538e23554583ed70be)
 
-rocket-mq:
+rocketmq:
   addr:
     - 127.0.0.1:9876
   retry: 2
   access-key: 123456
   secret-key: 654321
 
-table-store:
+tablestore:
   end-point: 127.0.0.1
   instance-name: abc
   access-key-id: 123456
