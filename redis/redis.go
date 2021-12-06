@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	"reflect"
 )
 
@@ -35,7 +35,7 @@ func New(i interface{}) (*redis.Client, error) {
 		}
 	}
 
-	redisField := c.FieldByName(vars.Redis)
+	redisField := c.FieldByName(pre.Redis)
 	if !redisField.IsValid() {
 		return nil, redisErr
 	}

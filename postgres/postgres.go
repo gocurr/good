@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	_ "github.com/lib/pq"
 	"reflect"
 )
@@ -40,7 +40,7 @@ func Open(i interface{}) (*sql.DB, error) {
 		}
 	}
 
-	postgresField := c.FieldByName(vars.Postgres)
+	postgresField := c.FieldByName(pre.Postgres)
 	if !postgresField.IsValid() {
 		return nil, postgresErr
 	}

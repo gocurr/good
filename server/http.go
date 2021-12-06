@@ -8,7 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"reflect"
 )
 
 // Parameter returns string via name from http.Request
@@ -34,10 +33,8 @@ func Parameters(name string, r *http.Request) []string {
 }
 
 // JSON unmarshals body of http.Request into out
+// Assert reflect.TypeOf(out).Kind() == reflect.Ptr
 func JSON(r *http.Request, out interface{}) error {
-	if reflect.TypeOf(out).Kind() != reflect.Ptr {
-		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
-	}
 	defer func() { _ = r.Body.Close() }()
 	all, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -98,11 +95,8 @@ func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 }
 
 // PostJSON posts JSON format data to the given url, unmarshals body of response into out and reports error
+// Assert reflect.TypeOf(out).Kind() == reflect.Ptr
 func PostJSON(url string, in interface{}, out interface{}) error {
-	if reflect.TypeOf(out).Kind() != reflect.Ptr {
-		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
-	}
-
 	raw, err := PostJSONRaw(url, in)
 	if err != nil {
 		return err
@@ -121,11 +115,8 @@ func HttpGetRaw(url string) ([]byte, error) {
 }
 
 // HttpGetJSON calls http.Get via given url, unmarshals body of response into out and reports error
+// Assert reflect.TypeOf(out).Kind() == reflect.Ptr
 func HttpGetJSON(url string, out interface{}) error {
-	if reflect.TypeOf(out).Kind() != reflect.Ptr {
-		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(out).Name())
-	}
-
 	raw, err := HttpGetRaw(url)
 	if err != nil {
 		return err

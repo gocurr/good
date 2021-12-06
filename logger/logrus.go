@@ -5,7 +5,7 @@ import (
 	"fmt"
 	graylog "github.com/gemnasium/logrus-graylog-hook/v3"
 	"github.com/gocurr/good/consts"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"reflect"
@@ -32,7 +32,7 @@ func Set(i interface{}) error {
 		c = reflect.ValueOf(i)
 	}
 
-	logrusField := c.FieldByName(vars.Logrus)
+	logrusField := c.FieldByName(pre.Logrus)
 	if !logrusField.IsValid() {
 		return LogrusErr
 	}

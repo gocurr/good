@@ -1,4 +1,4 @@
-package vars
+package pre
 
 // variables
 var (
@@ -12,34 +12,34 @@ var (
 	TableStore = "TableStore"
 )
 
-func SetCrontab(v string) {
+func ChangeCrontab(v string) {
 	Crontab = v
 }
 
-func SetLogrus(v string) {
+func ChangeLogrus(v string) {
 	Logrus = v
 }
 
-func SetMysql(v string) {
+func ChangeMysql(v string) {
 	Mysql = v
 }
 
-func SetOracle(v string) {
+func ChangeOracle(v string) {
 	Oracle = v
 }
 
-func SetRedis(v string) {
+func ChangeRedis(v string) {
 	Redis = v
 }
 
-func SetPostgres(v string) {
+func ChangePostgres(v string) {
 	Postgres = v
 }
 
-func SetRocketMq(v string) {
+func ChangeRocketMq(v string) {
 	RocketMq = v
 }
 
-func SetTableStore(v string) {
+func ChangeTableStore(v string) {
 	TableStore = v
 }

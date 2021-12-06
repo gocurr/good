@@ -8,7 +8,7 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/producer"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	"reflect"
 )
 
@@ -70,7 +70,7 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 		}
 	}
 
-	rocketmqField := c.FieldByName(vars.RocketMq)
+	rocketmqField := c.FieldByName(pre.RocketMq)
 	if !rocketmqField.IsValid() {
 		return "", "", nil, 0, rocketmqErr
 	}

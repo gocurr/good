@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	"reflect"
 )
 
@@ -37,7 +37,7 @@ func Open(i interface{}) (*sql.DB, error) {
 		}
 	}
 
-	mysqlField := c.FieldByName(vars.Mysql)
+	mysqlField := c.FieldByName(pre.Mysql)
 	if !mysqlField.IsValid() {
 		return nil, mysqlErr
 	}

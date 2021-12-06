@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	_ "github.com/godror/godror"
 	"reflect"
 )
@@ -37,7 +37,7 @@ func Open(i interface{}) (*sql.DB, error) {
 		}
 	}
 
-	oracleField := c.FieldByName(vars.Oracle)
+	oracleField := c.FieldByName(pre.Oracle)
 	if !oracleField.IsValid() {
 		return nil, oracleErr
 	}

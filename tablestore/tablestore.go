@@ -5,7 +5,7 @@ import (
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
-	"github.com/gocurr/good/vars"
+	"github.com/gocurr/good/pre"
 	"reflect"
 )
 
@@ -33,7 +33,7 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 		}
 	}
 
-	tablestoreField := c.FieldByName(vars.TableStore)
+	tablestoreField := c.FieldByName(pre.TableStore)
 	if !tablestoreField.IsValid() {
 		return nil, tablestoreErr
 	}
