@@ -31,3 +31,10 @@ func FormatTime(t time.Time, format ...string) string {
 func NowString(format ...string) string {
 	return FormatTime(time.Now(), format...)
 }
+
+// PointTimeString parses i to string
+func PointTimeString(ymd string, i int, d time.Duration) string {
+	day := ParseTime(ymd, consts.DayFormat)
+	t := day.Add(time.Duration(i) * d)
+	return FormatTime(t)
+}

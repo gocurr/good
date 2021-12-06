@@ -39,4 +39,6 @@ func Test_Time(t *testing.T) {
 	fmt.Printf("%v\n", sugar.ParseTime("2021-12-06 20:40:12", consts.DefaultTimeFormat))
 
 	println(sugar.FormatTime(time.Now(), "15:04"))
+
+	println(sugar.PointTimeString("20211206", 1, time.Minute*15))
 }
