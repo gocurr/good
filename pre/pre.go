@@ -1,6 +1,6 @@
 package pre
 
-// variables
+// prefabricate fields
 var (
 	Logrus     = "Logrus"
 	Crontab    = "Crontab"
