@@ -6,7 +6,6 @@ import (
 	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
-	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/vars"
@@ -16,8 +15,8 @@ import (
 var rocketmqErr = errors.New("bad rocketmq configuration")
 
 // NewProducer returns rocketmq.Producer and error
-func NewProducer(c *conf.Configuration) (rocketmq.Producer, error) {
-	accessKey, secretKey, addr, retry, err := decrypt(c)
+func NewProducer(i interface{}) (rocketmq.Producer, error) {
+	accessKey, secretKey, addr, retry, err := decrypt(i)
 	if err != nil {
 		return nil, err
 	}
@@ -32,8 +31,8 @@ func NewProducer(c *conf.Configuration) (rocketmq.Producer, error) {
 }
 
 // NewConsumer returns rocketmq.PushConsumer and error
-func NewConsumer(c *conf.Configuration, group string) (rocketmq.PushConsumer, error) {
-	accessKey, secretKey, addr, retry, err := decrypt(c)
+func NewConsumer(i interface{}, group string) (rocketmq.PushConsumer, error) {
+	accessKey, secretKey, addr, retry, err := decrypt(i)
 	if err != nil {
 		return nil, err
 	}
