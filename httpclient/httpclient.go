@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// handleResp handles response
+// handleResp handles response to return []byte and error
 func handleResp(r *http.Response) ([]byte, error) {
 	defer func() { _ = r.Body.Close() }()
 
@@ -38,8 +38,9 @@ func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 	return handleResp(response)
 }
 
-// PostJSON posts JSON format data to the given url, unmarshals body of response into out and reports error
-// Assert reflect.TypeOf(out).Kind() == reflect.Ptr
+// PostJSON posts JSON format data to the given url
+// Unmarshal body of response into out and reports error
+// Assert out is a pointer
 func PostJSON(url string, in interface{}, out interface{}) error {
 	raw, err := PostJSONRaw(url, in)
 	if err != nil {
@@ -58,8 +59,9 @@ func HttpGetRaw(url string) ([]byte, error) {
 	return handleResp(response)
 }
 
-// HttpGetJSON calls http.Get via given url, unmarshals body of response into out and reports error
-// Assert reflect.TypeOf(out).Kind() == reflect.Ptr
+// HttpGetJSON calls http.Get via given url
+// Unmarshal body of response into out and reports error
+// Assert out is a pointer
 func HttpGetJSON(url string, out interface{}) error {
 	raw, err := HttpGetRaw(url)
 	if err != nil {
