@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gocurr/good/client"
+	"github.com/gocurr/good/httpclient"
 	log "github.com/sirupsen/logrus"
 	"testing"
 )
@@ -12,7 +12,7 @@ func Test_HttpClient(t *testing.T) {
 	}
 	var m = msg{Text: "great"}
 	var out msg
-	err := client.PostJSON("http://127.0.0.1:9091", m, &out)
+	err := httpclient.PostJSON("http://127.0.0.1:9091", m, &out)
 	if err != nil {
 		log.Error(err)
 		return
