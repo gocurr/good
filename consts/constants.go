@@ -15,7 +15,7 @@ const (
 	ConfApplicationYaml = "conf/application.yaml"
 
 	DefaultTimeFormat = "2006-01-02 15:04:05"
-	DayFormat         = "20060102"
+	YMDFormat         = "20060102"
 
 	JSONContentType = "Content-Type:application/json"
 
