@@ -26,14 +26,12 @@ type Configuration struct {
 	} `yaml:"logrus,omitempty"`
 
 	Oracle struct {
-		Driver     string `yaml:"driver,omitempty"`
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
 	} `yaml:"oracle,omitempty"`
 
 	Mysql struct {
-		Driver     string `yaml:"driver,omitempty"`
 		User       string `yaml:"user,omitempty"`
 		Password   string `yaml:"password,omitempty"`
 		Datasource string `yaml:"datasource,omitempty"`
