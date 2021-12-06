@@ -38,5 +38,5 @@ func Test_Time(t *testing.T) {
 	fmt.Printf("%v\n", sugar.ParseTime("2021-12-06", "2006-01-02"))
 	fmt.Printf("%v\n", sugar.ParseTime("2021-12-06 20:40:12", consts.DefaultTimeFormat))
 
-	fmt.Printf("%v\n", sugar.NowString("2006-01-02"))
+	println(sugar.FormatTime(time.Now(), "15:04"))
 }
