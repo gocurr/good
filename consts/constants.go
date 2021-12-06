@@ -43,8 +43,10 @@ const (
 
 	Server       = "Server"
 	Host         = "Host"
-	Addr         = "Addr"
+	Addrs        = "Addrs"
 	EndPoint     = "EndPoint"
 	InstanceName = "InstanceName"
 	Port         = "Port"
+
+	Specs = "Specs"
 )

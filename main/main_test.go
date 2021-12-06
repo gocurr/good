@@ -47,7 +47,10 @@ type Custom struct {
 		DB       int    `yaml:"db,omitempty"`
 	} `yaml:"redis,omitempty"`
 
-	Crontab map[string]string `yaml:"crontab,omitempty"`
+	Crontab struct {
+		Enable bool              `yaml:"enable,omitempty"`
+		Specs  map[string]string `yaml:"specs,omitempty"`
+	} `yaml:"crontab,omitempty"`
 
 	Secure struct {
 		Key string `yaml:"key,omitempty"`

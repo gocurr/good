@@ -57,7 +57,7 @@ type Configuration struct {
 	} `yaml:"redis,omitempty"`
 
 	RocketMq struct {
-		Addr      []string `yaml:"addr,omitempty"`
+		Addrs     []string `yaml:"addrs,omitempty"`
 		Retry     int      `yaml:"retry,omitempty"`
 		AccessKey string   `yaml:"access-key,omitempty"`
 		SecretKey string   `yaml:"secret-key,omitempty"`
@@ -70,11 +70,14 @@ type Configuration struct {
 		AccessKeySecret string `yaml:"access-key-secret,omitempty"`
 	} `yaml:"tablestore,omitempty"`
 
-	Crontab map[string]string `yaml:"crontab,omitempty"`
+	Crontab struct {
+		Enable bool              `yaml:"enable,omitempty"`
+		Specs  map[string]string `yaml:"specs,omitempty"`
+	} `yaml:"crontab,omitempty"`
 
 	Secure struct {
 		Key string `yaml:"key,omitempty"`
-	}
+	} `yaml:"secure,omitempty"`
 
 	Reserved map[string]interface{} `yaml:"reserved,omitempty"` // reserved area for users
 }

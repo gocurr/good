@@ -13,13 +13,20 @@ var err error
 var db *sql.DB
 
 func Test_Mysql(t *testing.T) {
-	c, _ := conf.New("../app.yaml")
+	c, err := conf.New("../app.yaml")
+	if err != nil {
+		panic(err)
+	}
+
 	db, err = mysql.Open(c)
-	Panic(err)
+	if err != nil {
+		//panic(err)
+	}
+	/*Panic(err)
 	insert("joy")
 	query()
 	del("joy")
-	query()
+	query()*/
 }
 
 func insert(name string) {

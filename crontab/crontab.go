@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gocurr/cronctl"
+	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/vars"
 	log "github.com/sirupsen/logrus"
 	"reflect"
@@ -14,9 +15,10 @@ var crontabErr = errors.New("cannot Bind after Start")
 
 // Crontab jobs wrapper
 type Crontab struct {
-	jobs map[string]cronctl.Job // name-job mapping
-	once sync.Once              // for Start
-	done bool                   // reports Start invoked
+	enable bool                   // enable to Start
+	jobs   map[string]cronctl.Job // name-job mapping
+	once   sync.Once              // for Start
+	done   bool                   // reports Start invoked
 }
 
 // New Crontab constructor
@@ -37,20 +39,32 @@ func New(i interface{}) (*Crontab, error) {
 		return nil, crontabErr
 	}
 
+	var enable bool
+	enableField := crontabField.FieldByName(consts.Enable)
+	if enableField.IsValid() {
+		enable = enableField.Bool()
+	}
+
 	var jobs = make(map[string]cronctl.Job)
-	iter := crontabField.MapRange()
-	for iter.Next() {
-		name := iter.Key().String()
-		spec := iter.Value().String()
-		jobs[name] = cronctl.Job{
-			Spec: spec,
+	specsField := crontabField.FieldByName(consts.Specs)
+	if specsField.IsValid() {
+		iter := specsField.MapRange()
+		for iter.Next() {
+			name := iter.Key().String()
+			spec := iter.Value().String()
+			jobs[name] = cronctl.Job{
+				Spec: spec,
+			}
 		}
 	}
-	return &Crontab{jobs: jobs}, nil
+	return &Crontab{enable: enable, jobs: jobs}, nil
 }
 
 // Start starts up crontab
 func (c *Crontab) Start() {
+	if !c.enable {
+		return
+	}
 	c.once.Do(func() {
 		c.done = true // set done
 
@@ -78,6 +92,9 @@ func (c *Crontab) Start() {
 
 // Bind binds name to function
 func (c *Crontab) Bind(name string, fn func()) error {
+	if !c.enable {
+		return nil
+	}
 	if c.done {
 		return crontabErr
 	}
@@ -96,6 +113,9 @@ func (c *Crontab) Bind(name string, fn func()) error {
 
 // Register registers a new cron
 func (c *Crontab) Register(name, spec string, fn func()) {
+	if !c.enable {
+		return
+	}
 	if c.done {
 		return
 	}

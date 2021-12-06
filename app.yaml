@@ -39,9 +39,9 @@ redis:
   password: enc(436c7849214555123a97c132730d70538e23554583ed70be)
 
 rocketmq:
-  addr:
+  addrs:
     - 127.0.0.1:9876
-  retry: 2
+  # retry: 2
   access-key: 123456
   secret-key: 654321
 
@@ -52,9 +52,11 @@ tablestore:
   access-key-secret: 654321
 
 crontab:
-  demo1: "*/1 * * * * ?"
-  hello: "*/5 * * * * ?"
-  demo3: "*/1 * * * * ?"
+  enable: true
+  specs:
+    demo1: "*/1 * * * * ?"
+    hello: "*/5 * * * * ?"
+    demo3: "*/1 * * * * ?"
 
 secure:
   key: 6c841a6c8b9e3b42dfd30dc950da0382

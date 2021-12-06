@@ -16,13 +16,13 @@ var rocketmqErr = errors.New("bad rocketmq configuration")
 
 // NewProducer returns rocketmq.Producer and error
 func NewProducer(i interface{}) (rocketmq.Producer, error) {
-	accessKey, secretKey, addr, retry, err := decrypt(i)
+	accessKey, secretKey, addrs, retry, err := decrypt(i)
 	if err != nil {
 		return nil, err
 	}
 
 	return rocketmq.NewProducer(
-		producer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
+		producer.WithNsResolver(primitive.NewPassthroughResolver(addrs)),
 		producer.WithRetry(retry),
 		producer.WithCredentials(primitive.Credentials{
 			AccessKey: accessKey,
@@ -32,14 +32,14 @@ func NewProducer(i interface{}) (rocketmq.Producer, error) {
 
 // NewConsumer returns rocketmq.PushConsumer and error
 func NewConsumer(i interface{}, group string) (rocketmq.PushConsumer, error) {
-	accessKey, secretKey, addr, retry, err := decrypt(i)
+	accessKey, secretKey, addrs, retry, err := decrypt(i)
 	if err != nil {
 		return nil, err
 	}
 
 	return rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
-		consumer.WithNsResolver(primitive.NewPassthroughResolver(addr)),
+		consumer.WithNsResolver(primitive.NewPassthroughResolver(addrs)),
 		consumer.WithRetry(retry),
 		consumer.WithCredentials(primitive.Credentials{
 			AccessKey: accessKey,
@@ -75,14 +75,14 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 		return "", "", nil, 0, rocketmqErr
 	}
 
-	addrField := rocketmqField.FieldByName(consts.Addr)
-	if !addrField.IsValid() {
+	addrsField := rocketmqField.FieldByName(consts.Addrs)
+	if !addrsField.IsValid() {
 		return "", "", nil, 0, rocketmqErr
 	}
-	var addr []string
-	for i := 0; i < addrField.Len(); i++ {
-		element := addrField.Index(i)
-		addr = append(addr, element.String())
+	var addrs []string
+	for i := 0; i < addrsField.Len(); i++ {
+		element := addrsField.Index(i)
+		addrs = append(addrs, element.String())
 	}
 
 	var accessKey string
@@ -114,5 +114,5 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 			return "", "", nil, 0, err
 		}
 	}
-	return accessKey, secretKey, addr, int(retry), nil
+	return accessKey, secretKey, addrs, int(retry), nil
 }

@@ -4,20 +4,22 @@ import (
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/logger"
 	"github.com/gocurr/good/postgres"
-	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
 func TestPostgres(t *testing.T) {
-	c, _ := conf.New("../app.yaml")
+	c, err := conf.New("../app.yaml")
+	if err != nil {
+		panic(err)
+	}
 	_ = logger.Set(c)
 
-	db, err := postgres.Open(c)
+	_, err = postgres.Open(c)
 	if err != nil {
-		Panic(err)
+		//Panic(err)
 	}
 
-	rows, err := db.Query("select name from names")
+	/*rows, err := db.Query("select name from names")
 	if err != nil {
 		Panic(err)
 	}
@@ -30,5 +32,5 @@ func TestPostgres(t *testing.T) {
 		}
 		names = append(names, name)
 	}
-	log.Info(names)
+	log.Info(names)*/
 }
