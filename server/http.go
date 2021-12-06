@@ -30,8 +30,8 @@ func Parameters(name string, r *http.Request) []string {
 	return nil
 }
 
-// JSON unmarshals body of http.Request into out
-// Assert reflect.TypeOf(out).Kind() == reflect.Ptr
+// JSON unmarshals body of http.Request into out.
+// Assert out is a pointer
 func JSON(r *http.Request, out interface{}) error {
 	defer func() { _ = r.Body.Close() }()
 	all, err := ioutil.ReadAll(r.Body)
