@@ -14,7 +14,7 @@ import (
 var redisErr = errors.New("bad redis configuration")
 
 // New returns *redis.Client and error
-func New(i interface{}) (*redis.Client, error) {
+func New(i interface{}, _db ...int) (*redis.Client, error) {
 	if i == nil {
 		return nil, redisErr
 	}
@@ -58,11 +58,16 @@ func New(i interface{}) (*redis.Client, error) {
 	}
 	password := passwordField.String()
 
-	dbField := redisField.FieldByName(consts.DB)
-	if !dbField.IsValid() {
-		return nil, redisErr
+	var db int
+	if len(_db) == 0 {
+		dbField := redisField.FieldByName(consts.DB)
+		if !dbField.IsValid() {
+			return nil, redisErr
+		}
+		db = int(dbField.Int())
+	} else {
+		db = _db[0]
 	}
-	db := dbField.Int()
 
 	var err error
 	if key != "" {
@@ -75,7 +80,7 @@ func New(i interface{}) (*redis.Client, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%d", host, port),
 		Password: password,
-		DB:       int(db),
+		DB:       db,
 	})
 	_, err = rdb.Ping(context.Background()).Result()
 	return rdb, err
