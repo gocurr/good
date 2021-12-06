@@ -2,8 +2,8 @@ server:
   port: 9090
 
 logrus:
-  time_format: 2006-01-02 15:04:05
-  tty_discard: false
+  time-format: 2006-01-02 15:04:05
+  tty-discard: false
   graylog:
     enable: true
     host: 127.0.0.1
@@ -30,6 +30,7 @@ postgres:
   user: postgres
   password: 123456
   db: testdb
+  ssl-mode: disable
 
 redis:
   host: 127.0.0.1

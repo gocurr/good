@@ -15,8 +15,8 @@ type Configuration struct {
 	} `yaml:"server,omitempty"`
 
 	Logrus struct {
-		TimeFormat string `yaml:"time_format,omitempty"`
-		TTYDiscard bool   `yaml:"tty_discard,omitempty"`
+		TimeFormat string `yaml:"time-format,omitempty"`
+		TTYDiscard bool   `yaml:"tty-discard,omitempty"`
 		Graylog    struct {
 			Enable bool                   `yaml:"enable,omitempty"`
 			Host   string                 `yaml:"host,omitempty"`
@@ -45,7 +45,7 @@ type Configuration struct {
 		User     string `yaml:"user,omitempty"`
 		Password string `yaml:"password,omitempty"`
 		DB       string `yaml:"db,omitempty"`
-		SSLMode  string `yaml:"ssl_mode,omitempty"`
+		SSLMode  string `yaml:"ssl-mode,omitempty"`
 	} `yaml:"postgres,omitempty"`
 
 	Redis struct {

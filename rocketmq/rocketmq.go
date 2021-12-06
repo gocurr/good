@@ -85,23 +85,23 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 		addr = append(addr, element.String())
 	}
 
+	var accessKey string
 	accessKeyField := rocketmqField.FieldByName(consts.AccessKey)
-	if !accessKeyField.IsValid() {
-		return "", "", nil, 0, rocketmqErr
+	if accessKeyField.IsValid() {
+		accessKey = accessKeyField.String()
 	}
-	accessKey := accessKeyField.String()
 
+	var secretKey string
 	secretKeyField := rocketmqField.FieldByName(consts.SecretKey)
-	if !secretKeyField.IsValid() {
-		return "", "", nil, 0, rocketmqErr
+	if secretKeyField.IsValid() {
+		secretKey = secretKeyField.String()
 	}
-	secretKey := secretKeyField.String()
 
+	var retry int64
 	retryField := rocketmqField.FieldByName(consts.Retry)
-	if !retryField.IsValid() {
-		return "", "", nil, 0, rocketmqErr
+	if retryField.IsValid() {
+		retry = retryField.Int()
 	}
-	retry := retryField.Int()
 
 	var err error
 	if key != "" {
