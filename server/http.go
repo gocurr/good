@@ -30,7 +30,7 @@ func Parameters(name string, r *http.Request) []string {
 	return nil
 }
 
-// JSON unmarshals body of http.Request into out.
+// JSON unmarshal body of http.Request into out.
 // Assert out is a pointer
 func JSON(r *http.Request, out interface{}) error {
 	defer func() { _ = r.Body.Close() }()
@@ -61,4 +61,13 @@ func HandleErr(err error, w http.ResponseWriter, status ...int) {
 // JSONHeader adds JSON to response headers
 func JSONHeader(w http.ResponseWriter) {
 	w.Header().Add(consts.ContentType, consts.ApplicationJSON)
+}
+
+// WriteJSON marshals data and write to the connection
+func WriteJSON(w http.ResponseWriter, data interface{}) (int, error) {
+	marshal, err := json.Marshal(data)
+	if err != nil {
+		return 0, err
+	}
+	return w.Write(marshal)
 }
