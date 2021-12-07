@@ -5,11 +5,11 @@ import (
 	"reflect"
 )
 
-var empty struct{}
-
-var emptyStream = &Stream{}
-
-var streamErr = errors.New("input must be a slice or an array")
+var (
+	empty       struct{}
+	emptyStream = &Stream{}
+	streamErr   = errors.New("input must be a slice or an array")
+)
 
 // Slice alias of interface slice
 type Slice []interface{}
@@ -44,7 +44,7 @@ func (s *Stream) ForEach(act func(interface{})) {
 	}
 }
 
-// Map Returns a stream consisting of the results of applying the given
+// Map returns a stream consisting of the results of applying the given
 // function to the elements of this stream.
 func (s *Stream) Map(apply func(interface{}) interface{}) *Stream {
 	var slice Slice
@@ -65,9 +65,9 @@ func (s *Stream) Limit(n int) *Stream {
 }
 
 // Reduce performs a reduction on the elements of this stream,
-// using the provided combining functions
+// using the provided comparing function
 // NOTE when steam is empty, Reduce returns -1 as the index
-func (s *Stream) Reduce(combine func(a, b interface{}) bool) (interface{}, int) {
+func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) {
 	if len(s.slice) == 0 {
 		return nil, -1
 	}
@@ -75,7 +75,7 @@ func (s *Stream) Reduce(combine func(a, b interface{}) bool) (interface{}, int) 
 	t := s.slice[0]
 	i := 0
 	for j, v := range s.slice {
-		if combine(v, t) {
+		if compare(v, t) {
 			t = v
 			i = j
 		}
