@@ -90,7 +90,7 @@ func Test_Main(t *testing.T) {
 		hi := server.Parameter("hi", r)
 		log.Infof("%s", hi)
 		url := "http://127.0.0.1:9091"
-		raw, err := httpclient.GetJSONRaw(url)
+		raw, err := httpclient.GetRaw(url)
 		if err != nil {
 			return
 		}
