@@ -8,7 +8,7 @@ import (
 )
 
 func Test_Server(t *testing.T) {
-	c, err := conf.New("../app.yaml")
+	_, err := conf.New("../app.yaml")
 	if err != nil {
 		panic(err)
 	}
@@ -25,5 +25,5 @@ func Test_Server(t *testing.T) {
 		}
 	})
 
-	server.Fire(c)
+	//server.Fire(c)
 }

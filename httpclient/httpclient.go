@@ -50,8 +50,8 @@ func PostJSON(url string, in interface{}, out interface{}) error {
 	return json.Unmarshal(raw, out)
 }
 
-// HttpGetRaw calls http.Get to return []byte and error
-func HttpGetRaw(url string) ([]byte, error) {
+// GetJSONRaw calls http.Get to return []byte and error
+func GetJSONRaw(url string) ([]byte, error) {
 	response, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -59,11 +59,11 @@ func HttpGetRaw(url string) ([]byte, error) {
 	return handleResp(response)
 }
 
-// HttpGetJSON calls http.Get via given url
+// GetJSON calls http.Get via given url
 // Unmarshal body of response into out and reports error
 // Assert out is a pointer
-func HttpGetJSON(url string, out interface{}) error {
-	raw, err := HttpGetRaw(url)
+func GetJSON(url string, out interface{}) error {
+	raw, err := GetJSONRaw(url)
 	if err != nil {
 		return err
 	}
