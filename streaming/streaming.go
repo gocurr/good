@@ -315,12 +315,12 @@ func (s *Stream) Copy() *Stream {
 	return &Stream{slice: slice}
 }
 
-// Sort returns a sorted stream consisting of the elements of this stream
+// Sorted returns a sorted stream consisting of the elements of this stream
 // sorted according to the provided less.
 //
-// Sort reorders inside slice
+// Sorted reorders inside slice
 // For keeping the order relation of original slice, use Copy first
-func (s *Stream) Sort(less func(i, j int) bool) *Stream {
+func (s *Stream) Sorted(less func(i, j int) bool) *Stream {
 	sort.Slice(s.slice, less)
 	return s
 }

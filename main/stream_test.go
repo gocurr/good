@@ -263,7 +263,7 @@ func Test_std_Sort(t *testing.T) {
 
 func Test_Stream_Sort(t *testing.T) {
 	s := streaming.Of([]int{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
-	slice := s.Sort(func(i, j int) bool {
+	slice := s.Sorted(func(i, j int) bool {
 		//return s.Element(i).(int) > s.Element(j).(int)
 		return s.Element(i).(int) < s.Element(j).(int)
 	}).Collect()
@@ -272,12 +272,12 @@ func Test_Stream_Sort(t *testing.T) {
 
 func Test_Stream_Copy_Sort(t *testing.T) {
 	s := streaming.Of([]int{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
-	ss := s.Copy()
-	slice := ss.Sort(func(i, j int) bool {
-		return ss.Element(i).(int) < ss.Element(j).(int)
+	_copy := s.Copy()
+	slice := s.Sorted(func(i, j int) bool {
+		return s.Element(i).(int) < s.Element(j).(int)
 	}).Collect()
 	fmt.Printf("%v\n", slice)
-	fmt.Printf("%v\n", s.Collect())
+	fmt.Printf("%v\n", _copy.Collect())
 }
 
 func Test_Element(t *testing.T) {
