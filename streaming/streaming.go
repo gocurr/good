@@ -1,14 +1,12 @@
 package streaming
 
 import (
-	"errors"
 	"reflect"
 )
 
 var (
-	empty       struct{}
-	emptyStream = &Stream{}
-	streamErr   = errors.New("input must be a slice or an array")
+	nothing struct{}
+	empty   = &Stream{}
 )
 
 // Slice alias of interface slice
@@ -20,11 +18,12 @@ type Stream struct {
 }
 
 // Of wraps input into *Stream
-func Of(raw interface{}) (*Stream, error) {
+// Note: if input is not a slice or an array, returns empty
+func Of(raw interface{}) *Stream {
 	switch reflect.TypeOf(raw).Kind() {
 	case reflect.Slice, reflect.Array:
 	default:
-		return nil, streamErr
+		return empty
 	}
 
 	var slice Slice
@@ -34,7 +33,7 @@ func Of(raw interface{}) (*Stream, error) {
 		slice = append(slice, ele.Interface())
 	}
 
-	return &Stream{slice: slice}, nil
+	return &Stream{slice: slice}
 }
 
 // ForEach performs an action for each element of this stream.
@@ -47,6 +46,10 @@ func (s *Stream) ForEach(act func(interface{})) {
 // Map returns a stream consisting of the results of applying the given
 // function to the elements of this stream.
 func (s *Stream) Map(apply func(interface{}) interface{}) *Stream {
+	if len(s.slice) == 0 {
+		return empty
+	}
+
 	var slice Slice
 	for _, v := range s.slice {
 		slice = append(slice, apply(v))
@@ -57,6 +60,10 @@ func (s *Stream) Map(apply func(interface{}) interface{}) *Stream {
 // Limit returns a stream consisting of the elements of this stream,
 // truncated to be no longer than max-size in length.
 func (s *Stream) Limit(n int) *Stream {
+	if len(s.slice) == 0 {
+		return empty
+	}
+
 	length := len(s.slice)
 	if n > length {
 		n = length
@@ -66,7 +73,7 @@ func (s *Stream) Limit(n int) *Stream {
 
 // Reduce performs a reduction on the elements of this stream,
 // using the provided comparing function
-// NOTE when steam is empty, Reduce returns -1 as the index
+// NOTE when steam is nothing, Reduce returns -1 as the index
 func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) {
 	if len(s.slice) == 0 {
 		return nil, -1
@@ -86,6 +93,10 @@ func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) 
 // Filter returns a stream consisting of the elements of this stream
 // that match the given predicate.
 func (s *Stream) Filter(predicate func(interface{}) bool) *Stream {
+	if len(s.slice) == 0 {
+		return empty
+	}
+
 	var slice Slice
 	for _, v := range s.slice {
 		if predicate(v) {
@@ -98,12 +109,12 @@ func (s *Stream) Filter(predicate func(interface{}) bool) *Stream {
 // Distinct returns a stream consisting of the distinct elements
 func (s *Stream) Distinct() *Stream {
 	if len(s.slice) == 0 {
-		return emptyStream
+		return empty
 	}
 
 	var m = make(map[interface{}]struct{})
 	for _, v := range s.slice {
-		m[v] = empty
+		m[v] = nothing
 	}
 
 	var slice Slice
@@ -121,4 +132,14 @@ func (s *Stream) Collect() Slice {
 // Count returns the count of elements in this stream
 func (s *Stream) Count() int {
 	return len(s.slice)
+}
+
+// Sum returns the sum of elements in this stream
+// using the provided sum function
+func (s *Stream) Sum(sum func(interface{}) float64) float64 {
+	var r float64
+	for _, v := range s.slice {
+		r += sum(v)
+	}
+	return r
 }

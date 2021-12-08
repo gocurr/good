@@ -15,7 +15,7 @@ type Values []*Value
 
 func Test_Values(t *testing.T) {
 	var vs []*Value = Values{&Value{val: 1}, &Value{val: 2}, &Value{val: 0}}
-	stream, err := streaming.Of(vs)
+	stream := streaming.Of(vs)
 	if err != nil {
 		return
 	}
@@ -41,7 +41,7 @@ func Test_Values(t *testing.T) {
 }
 
 func TestWrap(t *testing.T) {
-	s, err := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of([]int{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -49,7 +49,7 @@ func TestWrap(t *testing.T) {
 }
 
 func Test_Filter(t *testing.T) {
-	s, err := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of([]int{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -60,7 +60,7 @@ func Test_Filter(t *testing.T) {
 }
 
 func Test_Collect(t *testing.T) {
-	s, err := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of([]int{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -71,7 +71,7 @@ func Test_Collect(t *testing.T) {
 }
 
 func Test_Map(t *testing.T) {
-	s, err := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of([]int{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -82,7 +82,7 @@ func Test_Map(t *testing.T) {
 }
 
 func Test_ForEach(t *testing.T) {
-	s, err := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of([]int{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -92,7 +92,7 @@ func Test_ForEach(t *testing.T) {
 }
 
 func Test_Limit(t *testing.T) {
-	s, err := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of([]int{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -103,7 +103,7 @@ func Test_Limit(t *testing.T) {
 
 func Test_Array(t *testing.T) {
 	var arr = [...]int{1, 2, 3}
-	s, err := streaming.Of(arr)
+	s := streaming.Of(arr)
 	if err != nil {
 		return
 	}
@@ -117,7 +117,7 @@ func Test_Array(t *testing.T) {
 }
 
 func TestStream_Reduce(t *testing.T) {
-	s, err := streaming.Of([]int{11, 152, 113})
+	s := streaming.Of([]int{11, 152, 113})
 	if err != nil {
 		return
 	}
@@ -130,7 +130,7 @@ func TestStream_Reduce(t *testing.T) {
 
 func Test_nil(t *testing.T) {
 	var raw []int
-	stream, err := streaming.Of(raw)
+	stream := streaming.Of(raw)
 	if err != nil {
 		return
 	}
@@ -147,11 +147,19 @@ func Test_Distinct(t *testing.T) {
 	v1 := &Value{1}
 	v2 := &Value{2}
 	raw := []*Value{v1, v2, v2}
-	stream, err := streaming.Of(raw)
+	stream := streaming.Of(raw)
 	if err != nil {
 		return
 	}
 	stream.Distinct().ForEach(func(i interface{}) {
 		fmt.Printf("%v\n", i)
 	})
+}
+
+func Test_Sum(t *testing.T) {
+	stream := streaming.Of([]int{1, 2, 3})
+	sum := stream.Sum(func(i interface{}) float64 {
+		return float64(i.(int))
+	})
+	fmt.Printf("%v\n", sum)
 }
