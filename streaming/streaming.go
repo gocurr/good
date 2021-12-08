@@ -18,8 +18,13 @@ type Stream struct {
 }
 
 // Of wraps input into *Stream
+// Note: if input is nil, returns empty
 // Note: if input is not a slice or an array, returns empty
 func Of(raw interface{}) *Stream {
+	if raw == nil {
+		return empty
+	}
+
 	switch reflect.TypeOf(raw).Kind() {
 	case reflect.Slice, reflect.Array:
 	default:

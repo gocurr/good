@@ -178,3 +178,7 @@ func Test_Match(t *testing.T) {
 		return i.(int) == 0
 	}))
 }
+
+func Test_IsEmpty(t *testing.T) {
+	println(streaming.Of(nil).IsEmpty())
+}
