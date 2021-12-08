@@ -182,3 +182,13 @@ func Test_Match(t *testing.T) {
 func Test_IsEmpty(t *testing.T) {
 	println(streaming.Of(nil).IsEmpty())
 }
+
+func Test_FlatMap(t *testing.T) {
+	stream := streaming.Of([]string{"hello there", "good morning"})
+	flatMap := stream.FlatMap(func(i interface{}) interface{} {
+		return [...]string{"hello"} //strings.Split(i.(string), " ")
+	})
+	flatMap.ForEach(func(i interface{}) {
+		fmt.Printf("%v\n", i)
+	})
+}

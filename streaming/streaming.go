@@ -62,6 +62,32 @@ func (s *Stream) Map(apply func(interface{}) interface{}) *Stream {
 	return &Stream{slice: slice}
 }
 
+// FlatMap returns a stream consisting of the results
+// of replacing each element of this stream
+func (s *Stream) FlatMap(apply func(interface{}) interface{}) *Stream {
+	stream := s.Map(apply)
+	slice := stream.slice
+	if len(slice) == 0 {
+		return empty
+	}
+
+	switch reflect.TypeOf(slice[0]).Kind() {
+	case reflect.Slice, reflect.Array:
+	default:
+		return stream
+	}
+
+	var r Slice
+	for _, _slice := range slice {
+		value := reflect.ValueOf(_slice)
+		for i := 0; i < value.Len(); i++ {
+			ele := value.Index(i)
+			r = append(r, ele.Interface())
+		}
+	}
+	return &Stream{slice: r}
+}
+
 // Limit returns a stream consisting of the elements of this stream,
 // truncated to be no longer than max-size in length.
 func (s *Stream) Limit(n int) *Stream {
