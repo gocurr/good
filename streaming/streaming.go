@@ -108,8 +108,7 @@ func (s *Stream) Limit(n int) *Stream {
 		return empty
 	}
 
-	length := len(s.slice)
-	if n >= length {
+	if n >= len(s.slice) {
 		return s
 	}
 
