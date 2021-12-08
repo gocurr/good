@@ -96,7 +96,7 @@ func Test_Limit(t *testing.T) {
 	if err != nil {
 		return
 	}
-	s.Limit(2).ForEach(func(i interface{}) {
+	s.Limit(3).ForEach(func(i interface{}) {
 		fmt.Printf("%v\n", i)
 	})
 }
@@ -198,5 +198,11 @@ func Test_Peek(t *testing.T) {
 	collect := stream.Peek(func(i interface{}) {
 		fmt.Printf("%v is consumed\n", i)
 	}).Collect()
+	fmt.Printf("%v\n", collect)
+}
+
+func Test_Skip(t *testing.T) {
+	stream := streaming.Of([]int{1, 2, 3})
+	collect := stream.Skip(3).Collect()
 	fmt.Printf("%v\n", collect)
 }

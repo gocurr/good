@@ -101,15 +101,38 @@ func (s *Stream) Peek(act func(interface{})) *Stream {
 // Limit returns a stream consisting of the elements of this stream,
 // truncated to be no longer than max-size in length.
 func (s *Stream) Limit(n int) *Stream {
+	if n <= 0 {
+		return empty
+	}
 	if len(s.slice) == 0 {
 		return empty
 	}
 
 	length := len(s.slice)
-	if n > length {
-		n = length
+	if n >= length {
+		return s
 	}
+
 	return &Stream{slice: s.slice[:n]}
+}
+
+// Skip returns a stream consisting of the remaining elements
+// of this stream after discarding the first n elements
+// of the stream. If the stream contains fewer than n elements then
+// an empty stream will be returned.
+func (s *Stream) Skip(n int) *Stream {
+	if n <= 0 {
+		return s
+	}
+	if len(s.slice) == 0 {
+		return empty
+	}
+
+	if n >= len(s.slice) {
+		return empty
+	}
+
+	return &Stream{slice: s.slice[n:]}
 }
 
 // Reduce performs a reduction on the elements of this stream,
