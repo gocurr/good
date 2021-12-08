@@ -279,3 +279,8 @@ func Test_Stream_Copy_Sort(t *testing.T) {
 	fmt.Printf("%v\n", slice)
 	fmt.Printf("%v\n", s.Collect())
 }
+
+func Test_Element(t *testing.T) {
+	s := streaming.Of([]int{1, 2})
+	fmt.Printf("%v\n", s.Element(3))
+}
