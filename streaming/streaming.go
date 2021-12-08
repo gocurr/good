@@ -134,6 +134,11 @@ func (s *Stream) Count() int {
 	return len(s.slice)
 }
 
+// IsEmpty reports stream is empty
+func (s *Stream) IsEmpty() bool {
+	return len(s.slice) == 0
+}
+
 // Sum returns the sum of elements in this stream
 // using the provided sum function
 func (s *Stream) Sum(sum func(interface{}) float64) float64 {
