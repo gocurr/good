@@ -298,6 +298,8 @@ func (s *Stream) FindFirst() interface{} {
 }
 
 // Element returns the element at the specified position in this stream
+//
+// nil is returned when index is out of range
 func (s *Stream) Element(i int) interface{} {
 	if i < 0 || i >= len(s.slice) {
 		return nil
@@ -305,7 +307,8 @@ func (s *Stream) Element(i int) interface{} {
 	return s.slice[i]
 }
 
-// Copy returns a new stream containing the elements
+// Copy returns a new stream containing the elements,
+// the new stream holds a copied slice
 func (s *Stream) Copy() *Stream {
 	slice := make(Slice, len(s.slice))
 	copy(slice, s.slice)
