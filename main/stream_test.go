@@ -206,3 +206,10 @@ func Test_Skip(t *testing.T) {
 	collect := stream.Skip(3).Collect()
 	fmt.Printf("%v\n", collect)
 }
+
+func Test_FilterCount(t *testing.T) {
+	stream := streaming.Of([]int{1, 2, 3})
+	println(stream.FilterCount(func(i interface{}) bool {
+		return i.(int) > 1
+	}))
+}

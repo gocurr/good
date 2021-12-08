@@ -167,6 +167,18 @@ func (s *Stream) Filter(predicate func(interface{}) bool) *Stream {
 	return &Stream{slice: slice}
 }
 
+// FilterCount returns count of the elements of this stream
+// that match the given predicate.
+func (s *Stream) FilterCount(predicate func(interface{}) bool) int {
+	var c int
+	for _, v := range s.slice {
+		if predicate(v) {
+			c++
+		}
+	}
+	return c
+}
+
 // Distinct returns a stream consisting of the distinct elements
 // with original order
 func (s *Stream) Distinct() *Stream {
