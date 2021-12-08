@@ -142,12 +142,15 @@ func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) 
 
 	t := s.slice[0]
 	i := 0
-	for j, v := range s.slice {
+
+	for j := 1; j < len(s.slice); j++ {
+		v := s.slice[j]
 		if compare(v, t) {
 			t = v
 			i = j
 		}
 	}
+
 	return t, i
 }
 

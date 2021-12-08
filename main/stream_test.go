@@ -117,7 +117,7 @@ func Test_Array(t *testing.T) {
 }
 
 func TestStream_Reduce(t *testing.T) {
-	s := streaming.Of([]int{11, 152, 113})
+	s := streaming.Of([]int{11, 3})
 	if err != nil {
 		return
 	}
