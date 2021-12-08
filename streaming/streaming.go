@@ -4,10 +4,8 @@ import (
 	"reflect"
 )
 
-var (
-	nothing struct{}
-	empty   = &Stream{}
-)
+// empty stream
+var empty = &Stream{}
 
 // Slice alias of interface slice
 type Slice []interface{}
@@ -170,20 +168,22 @@ func (s *Stream) Filter(predicate func(interface{}) bool) *Stream {
 }
 
 // Distinct returns a stream consisting of the distinct elements
+// with original order
 func (s *Stream) Distinct() *Stream {
 	if len(s.slice) == 0 {
 		return empty
 	}
 
-	var m = make(map[interface{}]struct{})
-	for _, v := range s.slice {
-		m[v] = nothing
+	var slice []interface{}
+
+	var memory = make(map[interface{}]int)
+	for i, v := range s.slice {
+		if _, ok := memory[v]; !ok {
+			memory[v] = i
+			slice = append(slice, v)
+		}
 	}
 
-	var slice Slice
-	for k := range m {
-		slice = append(slice, k)
-	}
 	return &Stream{slice: slice}
 }
 
