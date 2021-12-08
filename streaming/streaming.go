@@ -88,6 +88,16 @@ func (s *Stream) FlatMap(apply func(interface{}) interface{}) *Stream {
 	return &Stream{slice: r}
 }
 
+// Peek returns the same stream,
+// additionally performing the provided action on each element
+// as elements are consumed from the resulting stream
+func (s *Stream) Peek(act func(interface{})) *Stream {
+	for _, v := range s.slice {
+		act(v)
+	}
+	return s
+}
+
 // Limit returns a stream consisting of the elements of this stream,
 // truncated to be no longer than max-size in length.
 func (s *Stream) Limit(n int) *Stream {

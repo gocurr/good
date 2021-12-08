@@ -186,9 +186,17 @@ func Test_IsEmpty(t *testing.T) {
 func Test_FlatMap(t *testing.T) {
 	stream := streaming.Of([]string{"hello there", "good morning"})
 	flatMap := stream.FlatMap(func(i interface{}) interface{} {
-		return [...]string{"hello"} //strings.Split(i.(string), " ")
+		return [...]string{} //strings.Split(i.(string), " ")
 	})
 	flatMap.ForEach(func(i interface{}) {
 		fmt.Printf("%v\n", i)
 	})
+}
+
+func Test_Peek(t *testing.T) {
+	stream := streaming.Of([]string{"one", "two", "three"})
+	collect := stream.Peek(func(i interface{}) {
+		fmt.Printf("%v is consumed\n", i)
+	}).Collect()
+	fmt.Printf("%v\n", collect)
 }
