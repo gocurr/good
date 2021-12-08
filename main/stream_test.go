@@ -5,6 +5,7 @@ import (
 	"github.com/gocurr/good/streaming"
 	"math"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -236,4 +237,45 @@ func Test_FlatMapX(t *testing.T) {
 		return nil
 	}).Collect()
 	fmt.Printf("%v\n", slice)
+}
+
+func Test_Copy(t *testing.T) {
+	s := streaming.Of([]int{1, 2, 0})
+	ss := s.Copy()
+	fmt.Printf("%p %p\n", s, s.Collect())
+	fmt.Printf("%p %p\n", ss, ss.Collect())
+}
+
+func Test_std_Sort(t *testing.T) {
+	s := streaming.Of([]int{1, 12, 9})
+	c := s.Collect()
+	sort.Slice(c, func(i, j int) bool {
+		return c[i].(int) > c[j].(int)
+	})
+	fmt.Printf("%v\n", c)
+
+	ints := []int{1, 5, 3}
+	sort.Slice(ints, func(i, j int) bool {
+		return ints[i] < ints[j]
+	})
+	fmt.Printf("%v\n", ints)
+}
+
+func Test_Stream_Sort(t *testing.T) {
+	s := streaming.Of([]int{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
+	slice := s.Sort(func(i, j int) bool {
+		//return s.Element(i).(int) > s.Element(j).(int)
+		return s.Element(i).(int) < s.Element(j).(int)
+	}).Collect()
+	fmt.Printf("%v\n", slice)
+}
+
+func Test_Stream_Copy_Sort(t *testing.T) {
+	s := streaming.Of([]int{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
+	ss := s.Copy()
+	slice := ss.Sort(func(i, j int) bool {
+		return ss.Element(i).(int) < ss.Element(j).(int)
+	}).Collect()
+	fmt.Printf("%v\n", slice)
+	fmt.Printf("%v\n", s.Collect())
 }

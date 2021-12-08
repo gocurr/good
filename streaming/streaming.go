@@ -2,6 +2,7 @@ package streaming
 
 import (
 	"reflect"
+	"sort"
 )
 
 // empty stream
@@ -16,8 +17,9 @@ type Stream struct {
 }
 
 // Of wraps input into *Stream
-// Note: if input is nil, returns empty
-// Note: if input is not a slice or an array, returns empty
+//
+// Returns empty when raw is nil
+// Or is NOT a slice or an array
 func Of(raw interface{}) *Stream {
 	if raw == nil {
 		return empty
@@ -139,7 +141,8 @@ func (s *Stream) Skip(n int) *Stream {
 
 // Reduce performs a reduction on the elements of this stream,
 // using the provided comparing function
-// NOTE: when steam is empty, Reduce returns -1 as the index
+//
+// When steam is empty, Reduce returns nil, -1
 func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) {
 	if len(s.slice) == 0 {
 		return nil, -1
@@ -292,4 +295,29 @@ func (s *Stream) FindFirst() interface{} {
 		return nil
 	}
 	return s.slice[0]
+}
+
+// Element returns the element at the specified position in this stream
+func (s *Stream) Element(i int) interface{} {
+	if i < 0 || i >= len(s.slice) {
+		return nil
+	}
+	return s.slice[i]
+}
+
+// Copy returns a new stream containing the elements
+func (s *Stream) Copy() *Stream {
+	slice := make(Slice, len(s.slice))
+	copy(slice, s.slice)
+	return &Stream{slice: slice}
+}
+
+// Sort returns a sorted stream consisting of the elements of this stream
+// sorted according to the provided less.
+//
+// Sort reorders inside slice
+// For keeping the order relation of original slice, use Copy first
+func (s *Stream) Sort(less func(i, j int) bool) *Stream {
+	sort.Slice(s.slice, less)
+	return s
 }
