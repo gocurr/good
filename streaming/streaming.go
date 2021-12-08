@@ -276,3 +276,12 @@ func (s *Stream) NoneMatch(predicate func(interface{}) bool) bool {
 	}
 	return true
 }
+
+// FindFirst returns the first element of the stream,
+// or nil if the stream is empty
+func (s *Stream) FindFirst() interface{} {
+	if len(s.slice) == 0 {
+		return nil
+	}
+	return s.slice[0]
+}

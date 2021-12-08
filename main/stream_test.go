@@ -213,3 +213,9 @@ func Test_FilterCount(t *testing.T) {
 		return i.(int) > 1
 	}))
 }
+
+func Test_FindFirst(t *testing.T) {
+	stream := streaming.Of([]int{2, 1, 3})
+	first := stream.FindFirst()
+	fmt.Printf("%v\n", first)
+}
