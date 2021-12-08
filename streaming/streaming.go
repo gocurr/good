@@ -73,7 +73,7 @@ func (s *Stream) Limit(n int) *Stream {
 
 // Reduce performs a reduction on the elements of this stream,
 // using the provided comparing function
-// NOTE when steam is nothing, Reduce returns -1 as the index
+// NOTE: when steam is empty, Reduce returns -1 as the index
 func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) {
 	if len(s.slice) == 0 {
 		return nil, -1
