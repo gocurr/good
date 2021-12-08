@@ -163,3 +163,18 @@ func Test_Sum(t *testing.T) {
 	})
 	fmt.Printf("%v\n", sum)
 }
+
+func Test_Match(t *testing.T) {
+	stream := streaming.Of([]int{1, 2, 3})
+	println(stream.AnyMatch(func(i interface{}) bool {
+		return i.(int) > 12
+	}))
+
+	println(stream.AllMatch(func(i interface{}) bool {
+		return i.(int) > 0
+	}))
+
+	println(stream.NoneMatch(func(i interface{}) bool {
+		return i.(int) == 0
+	}))
+}

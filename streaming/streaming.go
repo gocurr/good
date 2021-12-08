@@ -143,3 +143,56 @@ func (s *Stream) Sum(sum func(interface{}) float64) float64 {
 	}
 	return r
 }
+
+// AnyMatch returns whether any elements of this stream match
+// the provided predicate. May not evaluate the predicated
+// on all elements if not necessary for determining the result.
+// If the stream is empty then false is returned and the predicate is not evaluated.
+func (s *Stream) AnyMatch(predicate func(interface{}) bool) bool {
+	if len(s.slice) == 0 {
+		return false
+	}
+
+	for _, v := range s.slice {
+		if predicate(v) {
+			return true
+		}
+	}
+	return false
+}
+
+// AllMatch returns whether all elements of this stream match
+// the provided predicate. May not evaluate the predicated
+// on all elements if not necessary for determining the result.
+// If the stream is empty then true is returned and the predicate is not evaluated.
+func (s *Stream) AllMatch(predicate func(interface{}) bool) bool {
+	if len(s.slice) == 0 {
+		return true
+	}
+
+	for _, v := range s.slice {
+		if predicate(v) {
+			continue
+		}
+		return false
+	}
+	return true
+}
+
+// NoneMatch returns whether no elements of this stream match
+// the provided predicate. May not evaluate the predicated
+// on all elements if not necessary for determining the result.
+// If the stream is empty then true is returned and the predicate is not evaluated.
+func (s *Stream) NoneMatch(predicate func(interface{}) bool) bool {
+	if len(s.slice) == 0 {
+		return true
+	}
+
+	for _, v := range s.slice {
+		if !predicate(v) {
+			continue
+		}
+		return false
+	}
+	return true
+}
