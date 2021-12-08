@@ -69,10 +69,15 @@ func (s *Stream) FlatMap(apply func(interface{}) interface{}) *Stream {
 		return empty
 	}
 
-	switch reflect.TypeOf(slice[0]).Kind() {
-	case reflect.Slice, reflect.Array:
-	default:
-		return stream
+	for _, _slice := range slice {
+		if _slice == nil {
+			return stream
+		}
+		switch reflect.TypeOf(_slice).Kind() {
+		case reflect.Slice, reflect.Array:
+		default:
+			return stream
+		}
 	}
 
 	var r Slice

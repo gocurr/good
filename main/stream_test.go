@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gocurr/good/streaming"
 	"math"
+	"reflect"
 	"testing"
 )
 
@@ -218,4 +219,21 @@ func Test_FindFirst(t *testing.T) {
 	stream := streaming.Of([]int{2, 1, 3})
 	first := stream.FindFirst()
 	fmt.Printf("%v\n", first)
+}
+
+func Test_FlatMapX(t *testing.T) {
+	var a = [...]int{1, 5}
+	var b = []int{2, 3}
+	var raw = []interface{}{b, a}
+	stream := streaming.Of(raw)
+	slice := stream.FlatMap(func(i interface{}) interface{} {
+		switch reflect.TypeOf(i).Kind() {
+		case reflect.Int:
+			return i.(int) * 2
+		case reflect.Slice, reflect.Array:
+			return i
+		}
+		return nil
+	}).Collect()
+	fmt.Printf("%v\n", slice)
 }
