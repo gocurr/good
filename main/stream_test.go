@@ -124,10 +124,10 @@ func TestStream_Reduce(t *testing.T) {
 		return
 	}
 
-	reduce, i := s.Reduce(func(a, b interface{}) bool {
+	reduce := s.Reduce(func(a, b interface{}) bool {
 		return a.(int) > b.(int)
 	})
-	fmt.Println(reduce, i)
+	fmt.Println(reduce)
 }
 
 func Test_nil(t *testing.T) {

@@ -142,24 +142,21 @@ func (s *Stream) Skip(n int) *Stream {
 // Reduce performs a reduction on the elements of this stream,
 // using the provided comparing function
 //
-// When steam is empty, Reduce returns nil, -1
-func (s *Stream) Reduce(compare func(a, b interface{}) bool) (interface{}, int) {
+// When steam is empty, Reduce returns nil
+func (s *Stream) Reduce(compare func(a, b interface{}) bool) interface{} {
 	if len(s.slice) == 0 {
-		return nil, -1
+		return nil
 	}
 
 	t := s.slice[0]
-	i := 0
-
 	for j := 1; j < len(s.slice); j++ {
 		v := s.slice[j]
 		if compare(v, t) {
 			t = v
-			i = j
 		}
 	}
 
-	return t, i
+	return t
 }
 
 // Filter returns a stream consisting of the elements of this stream
