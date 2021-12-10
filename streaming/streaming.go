@@ -1,6 +1,7 @@
 package streaming
 
 import (
+	"github.com/gocurr/partition"
 	"reflect"
 	"sort"
 )
@@ -10,6 +11,16 @@ var empty = &Stream{}
 
 // Slice alias of interface slice
 type Slice []interface{}
+
+// split Slice into two-dimensional
+func (s Slice) split() []Slice {
+	var parts []Slice
+	ranges := partition.RangesN(len(s), cpu)
+	for _, r := range ranges {
+		parts = append(parts, s[r.From:r.To])
+	}
+	return parts
+}
 
 // Stream Slice holder
 type Stream struct {

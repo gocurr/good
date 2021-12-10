@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gocurr/good/streaming"
+	"strings"
 	"testing"
 )
 
@@ -60,4 +61,13 @@ func TestStream_sum(t *testing.T) {
 func TestParallelCopy(t *testing.T) {
 	parallelStream := p.Copy()
 	fmt.Printf("%v\n", parallelStream.Collect())
+}
+
+func TestFlatMap(t *testing.T) {
+	p := streaming.ParallelOf([]string{"hello there", "good morning", "one", "two", "three", "four", "five"})
+	flatMap := p.FlatMap(func(i interface{}) interface{} {
+		return strings.Split(i.(string), " ")
+	})
+	slice := flatMap.Collect()
+	fmt.Printf("%v\n", slice)
 }
