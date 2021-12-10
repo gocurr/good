@@ -65,7 +65,7 @@ func (s *ParallelStream) Map(apply func(interface{}) interface{}) *ParallelStrea
 		return parallelEmpty
 	}
 
-	var mapSlice = make(map[int]Slice)
+	var mapSlice = make(map[int]Slice, cpu)
 	for i, part := range s.parts {
 		s.wg.Add(1)
 		part := part
