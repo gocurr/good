@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/gocurr/good/streaming"
-	"strings"
+	ss "strings"
 	"testing"
 )
 
-var p = streaming.ParallelOf([]int{
+var p = streaming.ParallelOf(Ints{
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 	10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 	20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -72,9 +72,9 @@ func TestParallelCopy(t *testing.T) {
 }
 
 func TestFlatMap(t *testing.T) {
-	p := streaming.ParallelOf([]string{"hello there", "good morning", "one", "two", "three", "four", "five"})
+	p := streaming.ParallelOf(strings{"hello there", "good morning", "one", "two", "three", "four", "five"})
 	flatMap := p.FlatMap(func(i interface{}) interface{} {
-		return strings.Split(i.(string), " ")
+		return ss.Split(i.(string), " ")
 	})
 	slice := flatMap.Collect()
 	fmt.Printf("%v\n", slice)

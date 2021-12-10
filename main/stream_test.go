@@ -15,6 +15,25 @@ type Value struct {
 
 type Values []*Value
 
+func (v Values) Index(i int) interface{} {
+	return v[i]
+}
+
+func (v Values) Len() int {
+	return len(v)
+}
+
+type Ints []int
+
+func (is Ints) Index(i int) interface{} {
+	return is[i]
+}
+
+func (is Ints) Len() int {
+	return len(is)
+}
+
+/*
 func Test_Values(t *testing.T) {
 	var vs []*Value = Values{&Value{val: 1}, &Value{val: 2}, &Value{val: 0}}
 	stream := streaming.Of(vs)
@@ -40,10 +59,10 @@ func Test_Values(t *testing.T) {
 	stream.Limit(3).ForEach(func(i interface{}) {
 		fmt.Printf("%v\t", i.(*Value).val)
 	})
-}
+}*/
 
 func TestWrap(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of(Ints{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -51,7 +70,7 @@ func TestWrap(t *testing.T) {
 }
 
 func Test_Filter(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of(Ints{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -62,7 +81,7 @@ func Test_Filter(t *testing.T) {
 }
 
 func Test_Collect(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of(Ints{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -73,7 +92,7 @@ func Test_Collect(t *testing.T) {
 }
 
 func Test_Map(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of(Ints{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -84,7 +103,7 @@ func Test_Map(t *testing.T) {
 }
 
 func Test_ForEach(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of(Ints{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -94,7 +113,7 @@ func Test_ForEach(t *testing.T) {
 }
 
 func Test_Limit(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 3})
+	s := streaming.Of(Ints{1, 2, 3})
 	if err != nil {
 		return
 	}
@@ -104,7 +123,7 @@ func Test_Limit(t *testing.T) {
 }
 
 func Test_Array(t *testing.T) {
-	var arr = [...]int{1, 2, 3}
+	var arr = Ints{1, 2, 3}
 	s := streaming.Of(arr)
 	if err != nil {
 		return
@@ -119,7 +138,7 @@ func Test_Array(t *testing.T) {
 }
 
 func TestStream_Reduce(t *testing.T) {
-	s := streaming.Of([]int{11, 3})
+	s := streaming.Of(Ints{11, 3})
 	if err != nil {
 		return
 	}
@@ -131,9 +150,9 @@ func TestStream_Reduce(t *testing.T) {
 }
 
 func Test_nil(t *testing.T) {
-	var raw []int
+	var raw Ints
 	stream := streaming.Of(raw)
-	if err != nil {
+	if stream == nil {
 		return
 	}
 
@@ -148,7 +167,7 @@ func Test_Distinct(t *testing.T) {
 	//raw := []Value{{val: 1}, {val: 2}, {val: 2}, {val: 1}}
 	v1 := &Value{1}
 	v2 := &Value{2}
-	raw := []*Value{v1, v2, v2}
+	raw := Values{v1, v2, v2}
 	stream := streaming.Of(raw)
 	if err != nil {
 		return
@@ -159,7 +178,7 @@ func Test_Distinct(t *testing.T) {
 }
 
 func Test_Sum(t *testing.T) {
-	stream := streaming.Of([]int{1, 2, 3})
+	stream := streaming.Of(Ints{1, 2, 3})
 	sum := stream.Sum(func(i interface{}) float64 {
 		return float64(i.(int))
 	})
@@ -167,7 +186,7 @@ func Test_Sum(t *testing.T) {
 }
 
 func Test_Match(t *testing.T) {
-	stream := streaming.Of([]int{1, 2, 3})
+	stream := streaming.Of(Ints{1, 2, 3})
 	println(stream.AnyMatch(func(i interface{}) bool {
 		return i.(int) > 12
 	}))
@@ -186,7 +205,7 @@ func Test_IsEmpty(t *testing.T) {
 }
 
 func Test_FlatMap(t *testing.T) {
-	stream := streaming.Of([]string{"hello there", "good morning"})
+	stream := streaming.Of(strings{"hello there", "good morning"})
 	flatMap := stream.FlatMap(func(i interface{}) interface{} {
 		return [...]string{} //strings.Split(i.(string), " ")
 	})
@@ -195,8 +214,18 @@ func Test_FlatMap(t *testing.T) {
 	})
 }
 
+type strings []string
+
+func (s strings) Index(i int) interface{} {
+	return s[i]
+}
+
+func (s strings) Len() int {
+	return len(s)
+}
+
 func Test_Peek(t *testing.T) {
-	stream := streaming.Of([]string{"one", "two", "three"})
+	stream := streaming.Of(strings{"one", "two", "three"})
 	collect := stream.Peek(func(i interface{}) {
 		fmt.Printf("%v is consumed\n", i)
 	}).Collect()
@@ -204,28 +233,38 @@ func Test_Peek(t *testing.T) {
 }
 
 func Test_Skip(t *testing.T) {
-	stream := streaming.Of([]int{1, 2, 3})
+	stream := streaming.Of(Ints{1, 2, 3})
 	collect := stream.Skip(3).Collect()
 	fmt.Printf("%v\n", collect)
 }
 
 func Test_FilterCount(t *testing.T) {
-	stream := streaming.Of([]int{1, 2, 3})
+	stream := streaming.Of(Ints{1, 2, 3})
 	println(stream.FilterCount(func(i interface{}) bool {
 		return i.(int) > 1
 	}))
 }
 
 func Test_FindFirst(t *testing.T) {
-	stream := streaming.Of([]int{2, 1, 3})
+	stream := streaming.Of(Ints{2, 1, 3})
 	first := stream.FindFirst()
 	fmt.Printf("%v\n", first)
 }
 
+type interfaces []interface{}
+
+func (ifs interfaces) Index(i int) interface{} {
+	return ifs[i]
+}
+
+func (ifs interfaces) Len() int {
+	return len(ifs)
+}
+
 func Test_FlatMapX(t *testing.T) {
 	var a = [...]int{1, 5}
-	var b = []int{2, 3}
-	var raw = []interface{}{b, a}
+	var b = Ints{2, 3}
+	var raw = interfaces{b, a}
 	stream := streaming.Of(raw)
 	slice := stream.FlatMap(func(i interface{}) interface{} {
 		switch reflect.TypeOf(i).Kind() {
@@ -240,21 +279,21 @@ func Test_FlatMapX(t *testing.T) {
 }
 
 func Test_Copy(t *testing.T) {
-	s := streaming.Of([]int{1, 2, 0})
+	s := streaming.Of(Ints{1, 2, 0})
 	ss := s.Copy()
 	fmt.Printf("%p %p\n", s, s.Collect())
 	fmt.Printf("%p %p\n", ss, ss.Collect())
 }
 
 func Test_std_Sort(t *testing.T) {
-	s := streaming.Of([]int{1, 12, 9})
+	s := streaming.Of(Ints{1, 12, 9})
 	c := s.Collect()
 	sort.Slice(c, func(i, j int) bool {
 		return c[i].(int) > c[j].(int)
 	})
 	fmt.Printf("%v\n", c)
 
-	ints := []int{1, 5, 3}
+	ints := Ints{1, 5, 3}
 	sort.Slice(ints, func(i, j int) bool {
 		return ints[i] < ints[j]
 	})
@@ -262,7 +301,7 @@ func Test_std_Sort(t *testing.T) {
 }
 
 func Test_Stream_Sort(t *testing.T) {
-	s := streaming.Of([]int{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
+	s := streaming.Of(Ints{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
 	slice := s.Sorted(func(i, j int) bool {
 		//return s.Element(i).(int) > s.Element(j).(int)
 		return s.Element(i).(int) < s.Element(j).(int)
@@ -271,7 +310,7 @@ func Test_Stream_Sort(t *testing.T) {
 }
 
 func Test_Stream_Copy_Sort(t *testing.T) {
-	s := streaming.Of([]int{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
+	s := streaming.Of(Ints{1, 3, 2, 9, 0, 5, 4, 6, 8, 7})
 	_copy := s.Copy()
 	slice := s.Sorted(func(i, j int) bool {
 		return s.Element(i).(int) < s.Element(j).(int)
@@ -281,6 +320,6 @@ func Test_Stream_Copy_Sort(t *testing.T) {
 }
 
 func Test_Element(t *testing.T) {
-	s := streaming.Of([]int{1, 2})
-	fmt.Printf("%v\n", s.Element(3))
+	s := streaming.Of(Ints{1, 2})
+	fmt.Printf("%v\n", s.Element(1))
 }
