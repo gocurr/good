@@ -60,6 +60,14 @@ func TestStream_sum(t *testing.T) {
 
 func TestParallelCopy(t *testing.T) {
 	parallelStream := p.Copy()
+	slice := p.Collect()
+	p.Sorted(func(i, j int) bool {
+		return slice[i].(int) > slice[j].(int)
+	})
+	mul := p.Map(func(i interface{}) interface{} {
+		return i.(int) * 10
+	})
+	fmt.Printf("%v\n", mul.Collect())
 	fmt.Printf("%v\n", parallelStream.Collect())
 }
 
