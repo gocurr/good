@@ -1,14 +1,25 @@
-package streaming
+package main
 
 import (
 	"fmt"
+	"github.com/gocurr/good/streaming"
 	"testing"
 )
 
-var p = ParallelOf([]int{1, 1, 3, 3, 6, 6, 7})
+var p = streaming.ParallelOf([]int{
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+	10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+	20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+	30, 31, 32, 33, 34, 35, 36, 37, 38, 39})
 
 func TestStream_ForEach(t *testing.T) {
 	p.ForEach(func(i interface{}) {
+		fmt.Printf("%v\n", i)
+	})
+}
+
+func TestStream_ForEachOrdered(t *testing.T) {
+	p.ForEachOrdered(func(i interface{}) {
 		fmt.Printf("%v\n", i)
 	})
 }
@@ -37,4 +48,16 @@ func TestParallelStream_Sum(t *testing.T) {
 		return float64(i.(int))
 	})
 	fmt.Printf("%v\n", sum)
+}
+
+func TestStream_sum(t *testing.T) {
+	sum := p.Stream.Sum(func(i interface{}) float64 {
+		return float64(i.(int))
+	})
+	fmt.Printf("%v\n", sum)
+}
+
+func TestParallelCopy(t *testing.T) {
+	parallelStream := p.Copy()
+	fmt.Printf("%v\n", parallelStream.Collect())
 }

@@ -2,7 +2,6 @@ package streaming
 
 import (
 	"github.com/gocurr/partition"
-	"reflect"
 	"runtime"
 	"sort"
 	"sync"
@@ -13,39 +12,31 @@ var cpu = runtime.NumCPU()
 var parallelEmpty = &ParallelStream{}
 
 type ParallelStream struct {
-	slice Slice
+	*Stream
+	parts []Slice
 	wg    sync.WaitGroup
 	mu    sync.Mutex
-	parts [][]interface{}
 }
 
 // ParallelOf wraps input into *ParallelStream
 //
-// Returns empty when raw is nil
+// Returns parallelEmpty when raw is nil
 // Or is NOT a slice or an array
 func ParallelOf(raw interface{}) *ParallelStream {
-	if raw == nil {
-		return parallelEmpty
-	}
+	stream := Of(raw)
+	slice := stream.slice
 
-	switch reflect.TypeOf(raw).Kind() {
-	case reflect.Slice, reflect.Array:
-	default:
-		return parallelEmpty
+	return &ParallelStream{
+		Stream: stream,
+		parts:  split(slice),
+		wg:     sync.WaitGroup{},
+		mu:     sync.Mutex{},
 	}
-
-	var slice Slice
-	value := reflect.ValueOf(raw)
-	for i := 0; i < value.Len(); i++ {
-		ele := value.Index(i)
-		slice = append(slice, ele.Interface())
-	}
-
-	return &ParallelStream{slice: slice, parts: getParts(slice)}
 }
 
-func getParts(slice Slice) [][]interface{} {
-	var parts [][]interface{}
+// split Slice into two-dimensional
+func split(slice Slice) []Slice {
+	var parts []Slice
 	ranges := partition.RangesN(len(slice), cpu)
 	for _, r := range ranges {
 		parts = append(parts, slice[r.From:r.To])
@@ -53,13 +44,14 @@ func getParts(slice Slice) [][]interface{} {
 	return parts
 }
 
-// ForEach performs an action for each element of this stream.
+// ForEach performs an action for each element of this stream
+// in a Parallel way
 func (s *ParallelStream) ForEach(act func(interface{})) {
-	for _, _slice := range s.parts {
+	for _, part := range s.parts {
 		s.wg.Add(1)
-		slice_ := _slice
+		slice := part
 		go func() {
-			for _, v := range slice_ {
+			for _, v := range slice {
 				act(v)
 			}
 			s.wg.Done()
@@ -68,8 +60,13 @@ func (s *ParallelStream) ForEach(act func(interface{})) {
 	s.wg.Wait()
 }
 
+// ForEachOrdered performs an action in order for each element of this stream.
+func (s *ParallelStream) ForEachOrdered(act func(interface{})) {
+	s.Stream.ForEach(act)
+}
+
 // Map returns a stream consisting of the results of applying the given
-// function to the elements of this stream.
+// function to the elements of this stream in a Parallel way
 func (s *ParallelStream) Map(apply func(interface{}) interface{}) *ParallelStream {
 	if len(s.slice) == 0 {
 		return parallelEmpty
@@ -78,10 +75,10 @@ func (s *ParallelStream) Map(apply func(interface{}) interface{}) *ParallelStrea
 	var mapSlice = make(map[int]Slice)
 	for i, part := range s.parts {
 		s.wg.Add(1)
-		slice_ := part
+		part := part
 		go func(i int) {
 			var slice Slice
-			for _, v := range slice_ {
+			for _, v := range part {
 				slice = append(slice, apply(v))
 			}
 			s.mu.Lock()
@@ -92,23 +89,21 @@ func (s *ParallelStream) Map(apply func(interface{}) interface{}) *ParallelStrea
 	}
 	s.wg.Wait()
 
-	var keys = make([]int, 0, len(mapSlice))
-	for key := range mapSlice {
-		keys = append(keys, key)
-	}
-	sort.Ints(keys)
-	var rSlice Slice
-	for _, k := range keys {
-		for _, e := range mapSlice[k] {
-			rSlice = append(rSlice, e)
+	var slice Slice
+	for i := 0; i < cpu; i++ {
+		for _, e := range mapSlice[i] {
+			slice = append(slice, e)
 		}
 	}
 
-	return &ParallelStream{slice: rSlice, parts: getParts(rSlice)}
+	return &ParallelStream{
+		Stream: &Stream{slice: slice},
+		parts:  split(slice),
+	}
 }
 
 // Reduce performs a reduction on the elements of this stream,
-// using the provided comparing function
+// using the provided comparing function in a Parallel way
 //
 // When steam is empty, Reduce returns nil, -1
 func (s *ParallelStream) Reduce(compare func(a, b interface{}) bool) interface{} {
@@ -138,88 +133,21 @@ func (s *ParallelStream) Reduce(compare func(a, b interface{}) bool) interface{}
 	}
 	s.wg.Wait()
 
-	tt := vs[0]
+	t := vs[0]
 	for i := 1; i < len(vs); i++ {
 		ti := vs[i]
-		if compare(ti, tt) {
-			tt = ti
+		if compare(ti, t) {
+			t = ti
 		}
 	}
 
-	return tt
-}
-
-// Distinct returns a stream consisting of the distinct elements
-// with original order
-func (s *ParallelStream) Distinct() *ParallelStream {
-	if len(s.slice) == 0 {
-		return parallelEmpty
-	}
-
-	var mapSlice = make(map[int]Slice)
-	for i, _slice := range s.parts {
-		s.wg.Add(1)
-		slice_ := _slice
-		go func(i int) {
-			var memory = make(map[interface{}]int)
-			var slice []interface{}
-			for i, v := range slice_ {
-				if _, ok := memory[v]; !ok {
-					memory[v] = i
-					slice = append(slice, v)
-				}
-			}
-			s.mu.Lock()
-			mapSlice[i] = slice
-			s.mu.Unlock()
-			s.wg.Done()
-		}(i)
-	}
-	s.wg.Wait()
-
-	var keys = make([]int, 0, len(mapSlice))
-	for key := range mapSlice {
-		keys = append(keys, key)
-	}
-	sort.Ints(keys)
-	var rSlice Slice
-	for _, k := range keys {
-		for _, e := range mapSlice[k] {
-			rSlice = append(rSlice, e)
-		}
-	}
-
-	var r Slice
-	var memory = make(map[interface{}]int)
-	for i, v := range rSlice {
-		if _, ok := memory[v]; !ok {
-			memory[v] = i
-			r = append(r, v)
-		}
-	}
-
-	return &ParallelStream{slice: r, parts: getParts(r)}
-}
-
-// Collect returns data load of this stream
-func (s *ParallelStream) Collect() Slice {
-	return s.slice
-}
-
-// Count returns the count of elements in this stream
-func (s *ParallelStream) Count() int {
-	return len(s.slice)
-}
-
-// IsEmpty reports stream is empty
-func (s *ParallelStream) IsEmpty() bool {
-	return len(s.slice) == 0
+	return t
 }
 
 // Sum returns the sum of elements in this stream
-// using the provided sum function
+// using the provided sum function in a Parallel way
 func (s *ParallelStream) Sum(sum func(interface{}) float64) float64 {
-	var result float64
+	var rr float64
 	for _, _slice := range s.parts {
 		s.wg.Add(1)
 		slice_ := _slice
@@ -229,11 +157,33 @@ func (s *ParallelStream) Sum(sum func(interface{}) float64) float64 {
 				r += sum(v)
 			}
 			s.mu.Lock()
-			result += r
+			rr += r
 			s.mu.Unlock()
 			s.wg.Done()
 		}()
 	}
 	s.wg.Wait()
-	return result
+	return rr
+}
+
+// Copy returns a new stream containing the elements,
+// the new stream holds a copied slice
+func (s *ParallelStream) Copy() *ParallelStream {
+	slice := make(Slice, len(s.slice))
+	copy(slice, s.slice)
+	return &ParallelStream{
+		Stream: &Stream{slice: slice},
+		parts:  split(slice),
+	}
+}
+
+// Sorted returns a sorted stream consisting of the elements of this stream
+// sorted according to the provided less.
+//
+// Sorted reorders inside slice
+// For keeping the order relation of original slice, use Copy first
+func (s *ParallelStream) Sorted(less func(i, j int) bool) *ParallelStream {
+	sort.Slice(s.slice, less)
+	s.parts = split(s.slice)
+	return s
 }
