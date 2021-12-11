@@ -26,7 +26,7 @@ type ParallelStream struct {
 //
 // Returns parallelEmpty when raw is nil
 // Or is NOT a slice or an array
-func ParallelOf(raw Indexer) *ParallelStream {
+func ParallelOf(raw Slicer) *ParallelStream {
 	stream := Of(raw)
 	slice := stream.slice
 
@@ -68,6 +68,30 @@ func (s *ParallelStream) ForEach(act func(interface{})) {
 // ForEachOrdered performs an action in order for each element of this stream.
 func (s *ParallelStream) ForEachOrdered(act func(interface{})) {
 	s.Stream.ForEach(act)
+}
+
+// MapSame returns a stream consisting of the results of applying the given
+// function to the elements of this stream in a Parallel way
+func (s *ParallelStream) MapSame(apply func(interface{}) interface{}) *ParallelStream {
+	if s.slice == nil || s.slice.Len() == 0 {
+		return parallelEmpty
+	}
+
+	for i, r := range s.ranges {
+		s.wg.Add(1)
+		r := r
+		go func(i int) {
+			for i := r.From; i < r.To; i++ {
+				v := s.slice.Index(i)
+				s.slice.Set(i, apply(v))
+			}
+
+			s.wg.Done()
+		}(i)
+	}
+	s.wg.Wait()
+
+	return s
 }
 
 // Map returns a stream consisting of the results of applying the given

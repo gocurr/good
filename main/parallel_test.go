@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var p = streaming.ParallelOf(Ints{
+var p = streaming.ParallelOf(streaming.Ints{
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 	10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 	20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
@@ -23,6 +23,13 @@ func TestStream_ForEachOrdered(t *testing.T) {
 	p.ForEachOrdered(func(i interface{}) {
 		fmt.Printf("%v\n", i)
 	})
+}
+
+func TestParallelStream_MapSame(t *testing.T) {
+	slice := p.MapSame(func(i interface{}) interface{} {
+		return i.(int) * 2
+	}).Collect()
+	fmt.Printf("%v\n", slice)
 }
 
 func TestParallelStream_Map(t *testing.T) {
@@ -72,7 +79,7 @@ func TestParallelCopy(t *testing.T) {
 }
 
 func TestFlatMap(t *testing.T) {
-	p := streaming.ParallelOf(strings{"hello there", "good morning", "one", "two", "three", "four", "five"})
+	p := streaming.ParallelOf(words)
 	flatMap := p.FlatMap(func(i interface{}) interface{} {
 		return ss.Split(i.(string), " ")
 	})

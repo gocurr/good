@@ -10,34 +10,49 @@ var empty = &Stream{}
 
 // Stream Slice holder
 type Stream struct {
-	slice Indexer
+	slice Slicer
 }
 
 // Slice alias of interface slice
 type Slice []interface{}
 
+// Set element in the specific position
+func (s Slice) Set(i int, v interface{}) {
+	s[i] = v
+}
+
+// Index returns element in the specific position
 func (s Slice) Index(i int) interface{} {
 	return s[i]
 }
 
+// Len returns length
 func (s Slice) Len() int {
 	return len(s)
 }
 
-type Indexer interface {
+// Sub returns sub Slicer with range from i to j
+func (s Slice) Sub(i, j int) Slicer {
+	return s[i:j]
+}
+
+// Slicer interface type for streaming
+type Slicer interface {
+	Set(i int, v interface{})
 	Index(i int) interface{}
 	Len() int
+	Sub(i, j int) Slicer
 }
 
 // Of wraps input into *Stream
 //
 // Returns empty when raw is nil
 // Or is NOT a slice or an array
-func Of(raw Indexer) *Stream {
-	if raw == nil {
+func Of(slicer Slicer) *Stream {
+	if slicer == nil {
 		return empty
 	}
-	return &Stream{slice: raw}
+	return &Stream{slice: slicer}
 }
 
 // ForEach performs an action for each element of this stream.
@@ -79,11 +94,8 @@ func (s *Stream) Limit(n int) *Stream {
 		return s
 	}
 
-	var r Slice
-	for i := 0; i < n; i++ {
-		r = append(r, s.slice.Index(i))
-	}
-	return &Stream{slice: r}
+	var slice = s.slice.Sub(0, n)
+	return &Stream{slice: slice}
 }
 
 // Skip returns a stream consisting of the remaining elements
@@ -101,15 +113,28 @@ func (s *Stream) Skip(n int) *Stream {
 	if n >= s.slice.Len() {
 		return empty
 	}
-	var r Slice
-	for i := n; i < s.slice.Len(); i++ {
-		r = append(r, s.slice.Index(i))
-	}
-	return &Stream{slice: r}
+
+	var slice = s.slice.Sub(n, s.slice.Len())
+	return &Stream{slice: slice}
 }
 
-// Map returns a stream consisting of the results of applying the given
-// function to the elements of this stream.
+// MapSame returns a stream consisting of the results (same type)
+//// of applying the given function to the elements of this stream.
+func (s *Stream) MapSame(apply func(interface{}) interface{}) *Stream {
+	if s.slice == nil || s.slice.Len() == 0 {
+		return empty
+	}
+
+	for i := 0; i < s.slice.Len(); i++ {
+		v := s.slice.Index(i)
+		s.slice.Set(i, apply(v))
+	}
+
+	return s
+}
+
+// Map returns a stream consisting of the results (any type)
+// of applying the given function to the elements of this stream.
 func (s *Stream) Map(apply func(interface{}) interface{}) *Stream {
 	if s.slice == nil || s.slice.Len() == 0 {
 		return empty

@@ -4,43 +4,43 @@ import (
 	"github.com/gocurr/good/streaming"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
-	ss "strings"
+	"strings"
 	"testing"
 	"time"
 )
 
 func Test_File(t *testing.T) {
-	bytes, err := ioutil.ReadFile("no.txt")
+	bytes, err := ioutil.ReadFile("isaac.txt")
 	if err != nil {
 		return
 	}
 	ls := string(bytes)
 
-	var lines strings = ss.Split(ls, "\n")
+	var lines = strings.Split(ls, "\n")
 	wordLen := 15
 
-	//parallelStream := streaming.ParallelOf(lines)
-	stream := streaming.Of(lines)
+	parallelStream := streaming.ParallelOf(streaming.Strings(lines))
+	stream := streaming.Of(streaming.Strings(lines))
 
-	/*since := time.Now()
+	since := time.Now()
 	count := parallelStream.
 		FlatMap(func(i interface{}) interface{} {
 			return strings.Split(i.(string), " ")
 		}).Filter(func(i interface{}) bool {
 		return len(i.(string)) > wordLen
 	}).Distinct().Count()
-	logrus.Infof("%v took %v", count, time.Since(since))*/
+	logrus.Infof("%v took %v", count, time.Since(since))
 
-	since := time.Now()
-	count := stream.
+	since = time.Now()
+	count = stream.
 		FlatMap(func(i interface{}) interface{} {
-			return ss.Split(i.(string), " ")
+			return strings.Split(i.(string), " ")
 		}).Filter(func(i interface{}) bool {
 		return len(i.(string)) > wordLen
 	}).Distinct().Count()
 	logrus.Infof("%v took %v", count, time.Since(since))
 
-	/*since := time.Now()
+	since = time.Now()
 	var nothing struct{}
 	var distinct = make(map[string]struct{})
 	for _, line := range lines {
@@ -51,5 +51,5 @@ func Test_File(t *testing.T) {
 			}
 		}
 	}
-	logrus.Infof("%v took %v", len(distinct), time.Since(since))*/
+	logrus.Infof("%v took %v", len(distinct), time.Since(since))
 }
