@@ -168,9 +168,6 @@ func (s *Stream) FlatMap(apply func(interface{}) Slicer) *Stream {
 		}
 	}
 
-	if len(slice) == 0 {
-		return empty
-	}
 	return &Stream{slice: slice}
 }
 
