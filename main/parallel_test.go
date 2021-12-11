@@ -80,8 +80,9 @@ func TestParallelCopy(t *testing.T) {
 
 func TestFlatMap(t *testing.T) {
 	p := streaming.ParallelOf(words)
-	flatMap := p.FlatMap(func(i interface{}) interface{} {
-		return ss.Split(i.(string), " ")
+	flatMap := p.FlatMap(func(i interface{}) streaming.Slicer {
+		split := ss.Split(i.(string), " ")
+		return streaming.Strings(split)
 	})
 	slice := flatMap.Collect()
 	fmt.Printf("%v\n", slice)

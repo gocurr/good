@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gocurr/good/streaming"
 	"math"
-	"reflect"
 	"sort"
+	"strings"
 	"testing"
 )
 
@@ -179,8 +179,9 @@ func Test_IsEmpty(t *testing.T) {
 
 func Test_FlatMap(t *testing.T) {
 	stream := streaming.Of(words)
-	flatMap := stream.FlatMap(func(i interface{}) interface{} {
-		return [...]string{} //strings.Split(i.(string), " ")
+	flatMap := stream.FlatMap(func(i interface{}) streaming.Slicer {
+		split := strings.Split(i.(string), " ")
+		return streaming.Strings(split)
 	})
 	flatMap.ForEach(func(i interface{}) {
 		fmt.Printf("%v\n", i)
@@ -214,20 +215,6 @@ func Test_FindFirst(t *testing.T) {
 	stream := streaming.Of(ints)
 	first := stream.FindFirst()
 	fmt.Printf("%v\n", first)
-}
-
-func Test_FlatMapX(t *testing.T) {
-	stream := streaming.Of(ints)
-	slice := stream.FlatMap(func(i interface{}) interface{} {
-		switch reflect.TypeOf(i).Kind() {
-		case reflect.Int:
-			return i.(int) * 2
-		case reflect.Slice, reflect.Array:
-			return i
-		}
-		return nil
-	}).Collect()
-	fmt.Printf("%v\n", slice)
 }
 
 func Test_Copy(t *testing.T) {

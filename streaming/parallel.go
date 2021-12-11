@@ -2,7 +2,6 @@ package streaming
 
 import (
 	"github.com/gocurr/partition"
-	"reflect"
 	"runtime"
 	"sort"
 	"sync"
@@ -140,41 +139,51 @@ func (s *ParallelStream) Map(apply func(interface{}) interface{}) *ParallelStrea
 
 // FlatMap returns a stream consisting of the results
 // of replacing each element of this stream
-func (s *ParallelStream) FlatMap(apply func(interface{}) interface{}) *ParallelStream {
-	stream := s.Map(apply)
-	slice := stream.slice
-	if slice == nil || slice.Len() == 0 {
+func (s *ParallelStream) FlatMap(apply func(interface{}) Slicer) *ParallelStream {
+	if s.slice == nil || s.slice.Len() == 0 {
 		return parallelEmpty
 	}
 
-	for i := 0; i < slice.Len(); i++ {
-		_slice := slice.Index(i)
-		if _slice == nil {
-			return stream
-		}
-		switch reflect.TypeOf(_slice).Kind() {
-		case reflect.Slice, reflect.Array:
-		default:
-			return stream
+	var mapSlice = make(map[int]Slice, cpu)
+	for i, r := range s.ranges {
+		s.wg.Add(1)
+		r := r
+		go func(i int) {
+			var slice Slice
+			for j := r.From; j < r.To; j++ {
+				v := apply(s.slice.Index(j))
+				if v == nil {
+					continue
+				}
+				for k := 0; k < v.Len(); k++ {
+					ele := v.Index(k)
+					slice = append(slice, ele)
+				}
+			}
+
+			s.mu.Lock()
+			mapSlice[i] = slice
+			s.mu.Unlock()
+
+			s.wg.Done()
+		}(i)
+	}
+	s.wg.Wait()
+
+	var slice Slice
+	for i := 0; i < cpu; i++ {
+		for _, e := range mapSlice[i] {
+			slice = append(slice, e)
 		}
 	}
 
-	var r Slice
-	for i := 0; i < slice.Len(); i++ {
-		_slice := slice.Index(i)
-		value := reflect.ValueOf(_slice)
-		for i := 0; i < value.Len(); i++ {
-			ele := value.Index(i)
-			r = append(r, ele.Interface())
-		}
-	}
-	var rLen int
-	if r != nil {
-		rLen = r.Len()
+	var sliceLen int
+	if slice != nil {
+		sliceLen = slice.Len()
 	}
 	return &ParallelStream{
-		Stream: &Stream{slice: r},
-		ranges: split(rLen),
+		Stream: &Stream{slice: slice},
+		ranges: split(sliceLen),
 	}
 }
 

@@ -1,7 +1,6 @@
 package streaming
 
 import (
-	"reflect"
 	"sort"
 )
 
@@ -151,7 +150,7 @@ func (s *Stream) Map(apply func(interface{}) interface{}) *Stream {
 
 // FlatMap returns a stream consisting of the results
 // of replacing each element of this stream
-func (s *Stream) FlatMap(apply func(interface{}) interface{}) *Stream {
+func (s *Stream) FlatMap(apply func(interface{}) Slicer) *Stream {
 	if s.slice == nil || s.slice.Len() == 0 {
 		return empty
 	}
@@ -159,19 +158,13 @@ func (s *Stream) FlatMap(apply func(interface{}) interface{}) *Stream {
 	var slice Slice
 	for i := 0; i < s.slice.Len(); i++ {
 		v := apply(s.slice.Index(i))
-		switch reflect.TypeOf(v).Kind() {
-		case reflect.Slice, reflect.Array:
-		default:
-			return empty
-		}
 		if v == nil {
-			return empty
+			continue
 		}
 
-		vv := reflect.ValueOf(v)
-		for i := 0; i < vv.Len(); i++ {
-			ele := vv.Index(i)
-			slice = append(slice, ele.Interface())
+		for i := 0; i < v.Len(); i++ {
+			ele := v.Index(i)
+			slice = append(slice, ele)
 		}
 	}
 

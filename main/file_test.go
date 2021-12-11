@@ -24,8 +24,9 @@ func Test_File(t *testing.T) {
 
 	since := time.Now()
 	count := parallelStream.
-		FlatMap(func(i interface{}) interface{} {
-			return strings.Split(i.(string), " ")
+		FlatMap(func(i interface{}) streaming.Slicer {
+			split := strings.Split(i.(string), " ")
+			return streaming.Strings(split)
 		}).Filter(func(i interface{}) bool {
 		return len(i.(string)) > wordLen
 	}).Distinct().Count()
@@ -33,8 +34,9 @@ func Test_File(t *testing.T) {
 
 	since = time.Now()
 	count = stream.
-		FlatMap(func(i interface{}) interface{} {
-			return strings.Split(i.(string), " ")
+		FlatMap(func(i interface{}) streaming.Slicer {
+			split := strings.Split(i.(string), " ")
+			return streaming.Strings(split)
 		}).Filter(func(i interface{}) bool {
 		return len(i.(string)) > wordLen
 	}).Distinct().Count()
