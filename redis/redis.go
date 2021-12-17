@@ -11,12 +11,12 @@ import (
 	"reflect"
 )
 
-var redisErr = errors.New("bad redis configuration")
+var err = errors.New("bad redis configuration")
 
 // New returns *redis.Client and error
 func New(i interface{}, _db ...int) (*redis.Client, error) {
 	if i == nil {
-		return nil, redisErr
+		return nil, err
 	}
 
 	var c reflect.Value
@@ -37,24 +37,24 @@ func New(i interface{}, _db ...int) (*redis.Client, error) {
 
 	redisField := c.FieldByName(pre.Redis)
 	if !redisField.IsValid() {
-		return nil, redisErr
+		return nil, err
 	}
 
 	hostField := redisField.FieldByName(consts.Host)
 	if !hostField.IsValid() {
-		return nil, redisErr
+		return nil, err
 	}
 	host := hostField.String()
 
 	portField := redisField.FieldByName(consts.Port)
 	if !portField.IsValid() {
-		return nil, redisErr
+		return nil, err
 	}
 	port := portField.Int()
 
 	passwordField := redisField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
-		return nil, redisErr
+		return nil, err
 	}
 	password := passwordField.String()
 
@@ -62,7 +62,7 @@ func New(i interface{}, _db ...int) (*redis.Client, error) {
 	if len(_db) == 0 {
 		dbField := redisField.FieldByName(consts.DB)
 		if !dbField.IsValid() {
-			return nil, redisErr
+			return nil, err
 		}
 		db = int(dbField.Int())
 	} else {

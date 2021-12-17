@@ -11,7 +11,10 @@ import (
 	"sync"
 )
 
-var crontabErr = errors.New("cannot Bind after Start")
+var (
+	errCrontab = errors.New("bad crontab configuration")
+	errBind    = errors.New("cannot Bind after Start")
+)
 
 // Crontab jobs wrapper
 type Crontab struct {
@@ -24,7 +27,7 @@ type Crontab struct {
 // New Crontab constructor
 func New(i interface{}) (*Crontab, error) {
 	if i == nil {
-		return nil, crontabErr
+		return nil, errCrontab
 	}
 
 	var c reflect.Value
@@ -36,7 +39,7 @@ func New(i interface{}) (*Crontab, error) {
 
 	crontabField := c.FieldByName(pre.Crontab)
 	if !crontabField.IsValid() {
-		return nil, crontabErr
+		return nil, errCrontab
 	}
 
 	var enable bool
@@ -96,7 +99,7 @@ func (c *Crontab) Bind(name string, fn func()) error {
 		return nil
 	}
 	if c.done {
-		return crontabErr
+		return errBind
 	}
 
 	job, ok := c.jobs[name]

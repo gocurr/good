@@ -16,12 +16,12 @@ const (
 	disable  = "disable"
 )
 
-var postgresErr = errors.New("bad postgres configuration")
+var err = errors.New("bad postgres configuration")
 
 // Open returns *sql.DB and error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
-		return nil, postgresErr
+		return nil, err
 	}
 
 	var c reflect.Value
@@ -42,36 +42,36 @@ func Open(i interface{}) (*sql.DB, error) {
 
 	postgresField := c.FieldByName(pre.Postgres)
 	if !postgresField.IsValid() {
-		return nil, postgresErr
+		return nil, err
 	}
 
 	hostField := postgresField.FieldByName(consts.Host)
 	if !hostField.IsValid() {
-		return nil, postgresErr
+		return nil, err
 	}
 	host := hostField.String()
 
 	portField := postgresField.FieldByName(consts.Port)
 	if !portField.IsValid() {
-		return nil, postgresErr
+		return nil, err
 	}
 	port := portField.Int()
 
 	userField := postgresField.FieldByName(consts.User)
 	if !userField.IsValid() {
-		return nil, postgresErr
+		return nil, err
 	}
 	user := userField.String()
 
 	passwordField := postgresField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
-		return nil, postgresErr
+		return nil, err
 	}
 	password := passwordField.String()
 
 	dbField := postgresField.FieldByName(consts.DB)
 	if !dbField.IsValid() {
-		return nil, postgresErr
+		return nil, err
 	}
 	db := dbField.String()
 

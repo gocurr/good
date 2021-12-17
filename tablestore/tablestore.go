@@ -9,12 +9,12 @@ import (
 	"reflect"
 )
 
-var tablestoreErr = errors.New("bad tablestore configuration")
+var err = errors.New("bad tablestore configuration")
 
 // New returns *tablestore.TableStoreClient and error
 func New(i interface{}) (*tablestore.TableStoreClient, error) {
 	if i == nil {
-		return nil, tablestoreErr
+		return nil, err
 	}
 
 	var c reflect.Value
@@ -35,30 +35,30 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 
 	tablestoreField := c.FieldByName(pre.TableStore)
 	if !tablestoreField.IsValid() {
-		return nil, tablestoreErr
+		return nil, err
 	}
 
 	endPointField := tablestoreField.FieldByName(consts.EndPoint)
 	if !endPointField.IsValid() {
-		return nil, tablestoreErr
+		return nil, err
 	}
 	endPoint := endPointField.String()
 
 	instanceNameField := tablestoreField.FieldByName(consts.InstanceName)
 	if !instanceNameField.IsValid() {
-		return nil, tablestoreErr
+		return nil, err
 	}
 	instanceName := instanceNameField.String()
 
 	accessKeyIdField := tablestoreField.FieldByName(consts.AccessKeyId)
 	if !accessKeyIdField.IsValid() {
-		return nil, tablestoreErr
+		return nil, err
 	}
 	accessKeyId := accessKeyIdField.String()
 
 	accessKeySecretField := tablestoreField.FieldByName(consts.AccessKeySecret)
 	if !accessKeySecretField.IsValid() {
-		return nil, tablestoreErr
+		return nil, err
 	}
 	accessKeySecret := accessKeySecretField.String()
 

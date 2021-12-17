@@ -12,7 +12,7 @@ import (
 	"reflect"
 )
 
-var rocketmqErr = errors.New("bad rocketmq configuration")
+var err = errors.New("bad rocketmq configuration")
 
 // NewProducer returns rocketmq.Producer and error
 func NewProducer(i interface{}) (rocketmq.Producer, error) {
@@ -51,7 +51,7 @@ func NewConsumer(i interface{}, group string) (rocketmq.PushConsumer, error) {
 // decrypt returns decrypted attributes
 func decrypt(i interface{}) (string, string, []string, int, error) {
 	if i == nil {
-		return "", "", nil, 0, rocketmqErr
+		return "", "", nil, 0, err
 	}
 
 	var c reflect.Value
@@ -72,12 +72,12 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 
 	rocketmqField := c.FieldByName(pre.RocketMq)
 	if !rocketmqField.IsValid() {
-		return "", "", nil, 0, rocketmqErr
+		return "", "", nil, 0, err
 	}
 
 	addrsField := rocketmqField.FieldByName(consts.Addrs)
 	if !addrsField.IsValid() {
-		return "", "", nil, 0, rocketmqErr
+		return "", "", nil, 0, err
 	}
 	var addrs []string
 	for i := 0; i < addrsField.Len(); i++ {

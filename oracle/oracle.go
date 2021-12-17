@@ -13,12 +13,12 @@ import (
 
 const godror = "godror"
 
-var oracleErr = errors.New("bad oracle configuration")
+var err = errors.New("bad oracle configuration")
 
 // Open returns *sql.DB and error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
-		return nil, oracleErr
+		return nil, err
 	}
 
 	var c reflect.Value
@@ -39,24 +39,24 @@ func Open(i interface{}) (*sql.DB, error) {
 
 	oracleField := c.FieldByName(pre.Oracle)
 	if !oracleField.IsValid() {
-		return nil, oracleErr
+		return nil, err
 	}
 
 	userField := oracleField.FieldByName(consts.User)
 	if !userField.IsValid() {
-		return nil, oracleErr
+		return nil, err
 	}
 	user := userField.String()
 
 	passwordField := oracleField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
-		return nil, oracleErr
+		return nil, err
 	}
 	password := passwordField.String()
 
 	datasourceField := oracleField.FieldByName(consts.Datasource)
 	if !datasourceField.IsValid() {
-		return nil, oracleErr
+		return nil, err
 	}
 	datasource := datasourceField.String()
 
