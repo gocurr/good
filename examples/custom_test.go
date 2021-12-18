@@ -1,4 +1,4 @@
-package main
+package examples
 
 import (
 	"github.com/gocurr/good/conf"
@@ -79,7 +79,7 @@ type Msg struct {
 	Text string `json:"text"`
 }
 
-func Test_Main(t *testing.T) {
+func Test_Custom(t *testing.T) {
 	var c Custom
 	err := conf.Read("../app.yaml", &c)
 	Panic(err)
