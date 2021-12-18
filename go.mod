@@ -9,7 +9,7 @@ require (
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gocurr/cronctl v0.0.0-20211130130706-16679f22aa48
+	github.com/gocurr/cronctl v0.0.0-20211218054438-2e0382e72c03
 	github.com/godror/godror v0.29.0
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/flatbuffers v2.0.0+incompatible // indirect
@@ -19,6 +19,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
 	github.com/tidwall/gjson v1.12.1 // indirect
-	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )

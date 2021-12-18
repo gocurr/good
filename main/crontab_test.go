@@ -20,7 +20,7 @@ func Test_Crontab(t *testing.T) {
 	_ = crons.Bind("demo1", func() {
 		log.Info("demo1")
 	})
-	crons.Register("hello", "*/3 * * * * ?", func() {
+	_ = crons.Register("hello", "*/3 * * * * ?", func() {
 		time.Sleep(9 * time.Second)
 		log.Info("hello...")
 	})

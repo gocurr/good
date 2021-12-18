@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	errCrontab = errors.New("bad crontab configuration")
-	errBind    = errors.New("cannot Bind after Start")
+	errCrontab  = errors.New("bad crontab configuration")
+	errBind     = errors.New("cannot Bind after Start")
+	errRegister = errors.New("cannot Register after Start")
 )
 
 // Crontab jobs wrapper
@@ -80,7 +81,7 @@ func (c *Crontab) Start() {
 		}
 
 		// create a crontab
-		crontab, err := cronctl.Create(goodJobs, cronctl.DefaultLogger{})
+		crontab, err := cronctl.Create(goodJobs, cronctl.Logrus)
 		if err != nil {
 			log.Errorf("%v", err)
 			return
@@ -115,16 +116,17 @@ func (c *Crontab) Bind(name string, fn func()) error {
 }
 
 // Register registers a new cron
-func (c *Crontab) Register(name, spec string, fn func()) {
+func (c *Crontab) Register(name, spec string, fn func()) error {
 	if !c.enable {
-		return
+		return nil
 	}
 	if c.done {
-		return
+		return errRegister
 	}
 
 	c.jobs[name] = cronctl.Job{
 		Spec: spec,
 		Fn:   fn,
 	}
+	return nil
 }
