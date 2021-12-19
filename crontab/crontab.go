@@ -19,14 +19,15 @@ var (
 
 // Crontab jobs wrapper
 type Crontab struct {
-	enable bool                   // enable to Start
-	jobs   map[string]cronctl.Job // name-job mapping
-	once   sync.Once              // for Start
-	done   bool                   // reports Start invoked
+	enable  bool                   // enable to Start
+	jobs    map[string]cronctl.Job // name-job mapping
+	once    sync.Once              // for Start
+	done    bool                   // reports Start invoked
+	discard bool                   // discard log
 }
 
 // New Crontab constructor
-func New(i interface{}) (*Crontab, error) {
+func New(i interface{}, discard ...bool) (*Crontab, error) {
 	if i == nil {
 		return nil, errCrontab
 	}
@@ -61,7 +62,13 @@ func New(i interface{}) (*Crontab, error) {
 			}
 		}
 	}
-	return &Crontab{enable: enable, jobs: jobs}, nil
+
+	var _discard bool
+	if len(discard) > 0 {
+		_discard = discard[0]
+	}
+
+	return &Crontab{enable: enable, jobs: jobs, discard: _discard}, nil
 }
 
 // Start starts up crontab
@@ -81,7 +88,13 @@ func (c *Crontab) Start() {
 		}
 
 		// create a crontab
-		crontab, err := cronctl.Create(goodJobs, cronctl.Logrus)
+		var err error
+		var crontab *cronctl.Crontab
+		if c.discard {
+			crontab, err = cronctl.Create(goodJobs, cronctl.Discard)
+		} else {
+			crontab, err = cronctl.Create(goodJobs, cronctl.Logrus)
+		}
 		if err != nil {
 			log.Errorf("%v", err)
 			return
