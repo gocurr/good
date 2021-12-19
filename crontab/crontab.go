@@ -6,7 +6,6 @@ import (
 	"github.com/gocurr/cronctl"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/pre"
-	log "github.com/sirupsen/logrus"
 	"reflect"
 	"sync"
 )
@@ -72,10 +71,12 @@ func New(i interface{}, discard ...bool) (*Crontab, error) {
 }
 
 // Start starts up crontab
-func (c *Crontab) Start() {
+func (c *Crontab) Start() error {
 	if !c.enable {
-		return
+		return nil
 	}
+
+	var err error
 	c.once.Do(func() {
 		c.done = true // set done
 
@@ -88,23 +89,20 @@ func (c *Crontab) Start() {
 		}
 
 		// create a crontab
-		var err error
 		var crontab *cronctl.Crontab
 		if c.discard {
 			crontab, err = cronctl.Create(goodJobs, cronctl.Discard)
 		} else {
 			crontab, err = cronctl.Create(goodJobs, cronctl.Logrus)
 		}
-		if err != nil {
-			log.Errorf("%v", err)
-			return
-		}
 
-		// startup crontab
-		if err := crontab.Startup(); err != nil {
-			log.Errorf("%v", err)
+		if err == nil {
+			// startup crontab
+			err = crontab.Startup()
 		}
 	})
+
+	return err
 }
 
 // Bind binds name to function
