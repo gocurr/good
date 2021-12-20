@@ -15,7 +15,7 @@ const godror = "godror"
 
 var err = errors.New("bad oracle configuration")
 
-// Open returns *sql.DB and error
+// Open returns an oracle DB and reports error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
 		return nil, err

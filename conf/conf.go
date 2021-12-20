@@ -2,7 +2,6 @@ package conf
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gocurr/good/consts"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
@@ -41,7 +40,7 @@ func Filename() string {
 	return ""
 }
 
-// ReadDefault read default configuration into custom
+// ReadDefault reads default configuration into custom
 func ReadDefault(custom interface{}) error {
 	filename := Filename()
 	if filename == "" {
@@ -50,24 +49,24 @@ func ReadDefault(custom interface{}) error {
 	return Read(filename, custom)
 }
 
-// Read filename-configuration into custom
+// Read reads filename-configuration into custom
 func Read(filename string, custom interface{}) error {
 	if custom == nil {
-		return errors.New("input is nil")
+		return errors.New("custom is nil")
 	}
 
 	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
-		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(custom).Name())
+		return errors.New("custom is not a pointer")
 	}
 
-	bytes, err := ioutil.ReadFile(filename)
+	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
 	}
-	return yaml.Unmarshal(bytes, custom)
+	return yaml.Unmarshal(file, custom)
 }
 
-// NewDefault returns a default configuration
+// NewDefault returns default configuration
 func NewDefault() (*Configuration, error) {
 	filename := Filename()
 	if filename == "" {
@@ -76,17 +75,17 @@ func NewDefault() (*Configuration, error) {
 	return New(filename)
 }
 
-// New returns *Configuration and error
+// New returns a configuration
 func New(filename string) (*Configuration, error) {
-	bytes, err := ioutil.ReadFile(filename)
+	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
 	var c Configuration
-	err = yaml.Unmarshal(bytes, &c)
+	err = yaml.Unmarshal(file, &c)
 
-	// cache bytes
-	c.cache = bytes
+	// cache file bytes
+	c.cache = file
 	return &c, err
 }

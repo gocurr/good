@@ -15,7 +15,7 @@ const mysql = "mysql"
 
 var err = errors.New("bad mysql configuration")
 
-// Open returns *sql.DB and error
+// Open returns a mysql DB and reports error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
 		return nil, err

@@ -10,22 +10,18 @@ import (
 	"sync"
 )
 
-var (
-	errCrontab  = errors.New("bad crontab configuration")
-	errBind     = errors.New("cannot Bind after Start")
-	errRegister = errors.New("cannot Register after Start")
-)
+var errCrontab = errors.New("bad crontab configuration")
 
 // Crontab jobs wrapper
 type Crontab struct {
 	enable  bool                   // enable to Start
-	jobs    map[string]cronctl.Job // name-job mapping
-	once    sync.Once              // for Start
+	jobs    map[string]cronctl.Job // name:job mapping
+	once    sync.Once              // start once
 	done    bool                   // reports Start invoked
 	discard bool                   // discard log
 }
 
-// New Crontab constructor
+// New returns a new Crontab
 func New(i interface{}, discard ...bool) (*Crontab, error) {
 	if i == nil {
 		return nil, errCrontab
@@ -111,7 +107,7 @@ func (c *Crontab) Bind(name string, fn func()) error {
 		return nil
 	}
 	if c.done {
-		return errBind
+		return errors.New("cannot Bind after Start")
 	}
 
 	job, ok := c.jobs[name]
@@ -132,7 +128,7 @@ func (c *Crontab) Register(name, spec string, fn func()) error {
 		return nil
 	}
 	if c.done {
-		return errRegister
+		return errors.New("cannot Register after Start")
 	}
 
 	c.jobs[name] = cronctl.Job{

@@ -10,7 +10,7 @@ import (
 )
 
 // handleResp handles http-response
-// to return byte slice and error encountered
+// to return byte slice and reports error
 func handleResp(r *http.Response) ([]byte, error) {
 	defer func() { _ = r.Body.Close() }()
 
@@ -26,7 +26,7 @@ func handleResp(r *http.Response) ([]byte, error) {
 }
 
 // PostJSONRaw calls http.Post
-// to return byte slice and error encountered
+// to return byte slice and reports error
 func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 	all, err := json.Marshal(in)
 	if err != nil {
@@ -54,7 +54,7 @@ func PostJSON(url string, in interface{}, out interface{}) error {
 }
 
 // GetRaw calls http.Get to the given url
-// to return byte slice and error encountered
+// to return byte slice and reports error
 func GetRaw(url string) ([]byte, error) {
 	response, err := http.Get(url)
 	if err != nil {

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Decrypt decrypts encrypted string
+// Decrypt decrypts e through the given key
 func Decrypt(key, e string) (string, error) {
 	if !isEnc(e) {
 		return e, nil
@@ -33,7 +33,8 @@ func isEnc(e string) bool {
 		strings.HasSuffix(lower, ")")
 }
 
-// decrypt returns decrypted string
+// decrypt returns the decrypted string
+// through the given key and the encrypted e
 func decrypt(key, e string) (string, error) {
 	keyBytes, _ := hex.DecodeString(key)
 	ciphertext, _ := hex.DecodeString(e)
@@ -55,7 +56,8 @@ func decrypt(key, e string) (string, error) {
 	return fmt.Sprintf("%s", ciphertext), nil
 }
 
-// Encrypt returns encrypted string
+// Encrypt returns an encrypted string
+// through the given key and the plain text
 func Encrypt(key, plain string) (string, error) {
 	keyBytes, _ := hex.DecodeString(key)
 	plaintext := []byte(plain)

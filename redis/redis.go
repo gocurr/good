@@ -13,7 +13,7 @@ import (
 
 var err = errors.New("bad redis configuration")
 
-// New returns *redis.Client and error
+// New returns a redis client and reports error
 func New(i interface{}, _db ...int) (*redis.Client, error) {
 	if i == nil {
 		return nil, err

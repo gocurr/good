@@ -11,7 +11,7 @@ import (
 
 var err = errors.New("bad tablestore configuration")
 
-// New returns *tablestore.TableStoreClient and error
+// New returns a tablestore client and reports error
 func New(i interface{}) (*tablestore.TableStoreClient, error) {
 	if i == nil {
 		return nil, err
