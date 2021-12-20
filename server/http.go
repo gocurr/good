@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// Parameter returns string via name from http.Request
+// Parameter returns a string parameter in URL
 func Parameter(name string, r *http.Request) string {
 	values := r.URL.Query()
 	v, ok := values[name]
@@ -20,7 +20,7 @@ func Parameter(name string, r *http.Request) string {
 	return ""
 }
 
-// Parameters returns []string via name from http.Request
+// Parameters returns string slice in URL
 func Parameters(name string, r *http.Request) []string {
 	values := r.URL.Query()
 	v, ok := values[name]
@@ -31,7 +31,8 @@ func Parameters(name string, r *http.Request) []string {
 }
 
 // JSON unmarshal body of http.Request into out.
-// Assert out is a pointer
+//
+// Assert out is a pointer or else it will PANIC
 func JSON(r *http.Request, out interface{}) error {
 	defer func() { _ = r.Body.Close() }()
 	all, err := ioutil.ReadAll(r.Body)
@@ -41,13 +42,14 @@ func JSON(r *http.Request, out interface{}) error {
 	return json.Unmarshal(all, out)
 }
 
-// ErrMsg error message
+// ErrMsg represents an error message
 type ErrMsg struct {
 	Err string `json:"err"`
 }
 
 // HandleErr handles error
-// Assert err is none-nil or else it will PANIC
+//
+// Assert err is non-nil or else it will PANIC
 func HandleErr(err error, w http.ResponseWriter, status ...int) {
 	if len(status) > 0 {
 		w.WriteHeader(status[0])
@@ -58,7 +60,8 @@ func HandleErr(err error, w http.ResponseWriter, status ...int) {
 	}
 }
 
-// JSONHeader adds JSON to response headers
+// JSONHeader adds content-type:"application/json; charset=UTF-8"
+// to response headers
 func JSONHeader(w http.ResponseWriter) {
 	w.Header().Add(consts.ContentType, consts.ApplicationJSON)
 }

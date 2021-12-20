@@ -9,7 +9,8 @@ import (
 	"net/http"
 )
 
-// handleResp handles response to return []byte and error
+// handleResp handles http-response
+// to return byte slice and error encountered
 func handleResp(r *http.Response) ([]byte, error) {
 	defer func() { _ = r.Body.Close() }()
 
@@ -24,7 +25,8 @@ func handleResp(r *http.Response) ([]byte, error) {
 	return all, nil
 }
 
-// PostJSONRaw calls http.Post to return []byte and error
+// PostJSONRaw calls http.Post
+// to return byte slice and error encountered
 func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 	all, err := json.Marshal(in)
 	if err != nil {
@@ -38,8 +40,9 @@ func PostJSONRaw(url string, in interface{}) ([]byte, error) {
 	return handleResp(response)
 }
 
-// PostJSON posts JSON format data to the given url
-// Unmarshal body of response into out and reports error
+// PostJSON posts JSON format data to the given url,
+// then unmarshal body of response into out and reports error
+//
 // Assert out is a pointer
 func PostJSON(url string, in interface{}, out interface{}) error {
 	raw, err := PostJSONRaw(url, in)
@@ -50,7 +53,8 @@ func PostJSON(url string, in interface{}, out interface{}) error {
 	return json.Unmarshal(raw, out)
 }
 
-// GetRaw calls http.Get to return []byte and error
+// GetRaw calls http.Get to the given url
+// to return byte slice and error encountered
 func GetRaw(url string) ([]byte, error) {
 	response, err := http.Get(url)
 	if err != nil {
@@ -59,8 +63,9 @@ func GetRaw(url string) ([]byte, error) {
 	return handleResp(response)
 }
 
-// GetJSON calls http.Get via given url
-// Unmarshal body of response into out and reports error
+// GetJSON calls http.Get to the given url,
+// then unmarshal body of response into out and reports error
+//
 // Assert out is a pointer
 func GetJSON(url string, out interface{}) error {
 	raw, err := GetRaw(url)
