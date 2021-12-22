@@ -9,7 +9,6 @@ import (
 	"testing"
 )
 
-var err error
 var db *sql.DB
 
 func Test_Mysql(t *testing.T) {
@@ -50,7 +49,7 @@ func query() {
 
 	for rows.Next() {
 		var name string
-		err := rows.Scan(&name)
+		err = rows.Scan(&name)
 		Panic(err)
 		names = append(names, name)
 	}
@@ -63,6 +62,7 @@ func del(name string) {
 	defer func() { _ = tx.Rollback() }()
 
 	_, err = db.Exec("delete from names where name = ?", name)
+	Panic(err)
 	err = tx.Commit()
 	Panic(err)
 }

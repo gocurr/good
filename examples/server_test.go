@@ -9,9 +9,7 @@ import (
 
 func Test_Server(t *testing.T) {
 	_, err := conf.New("../app.yaml")
-	if err != nil {
-		panic(err)
-	}
+	Panic(err)
 
 	type Msg struct {
 		Text string

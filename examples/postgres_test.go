@@ -2,17 +2,13 @@ package examples
 
 import (
 	"github.com/gocurr/good/conf"
-	"github.com/gocurr/good/logger"
 	"github.com/gocurr/good/postgres"
 	"testing"
 )
 
 func TestPostgres(t *testing.T) {
 	c, err := conf.New("../app.yaml")
-	if err != nil {
-		panic(err)
-	}
-	_ = logger.Set(c)
+	Panic(err)
 
 	_, err = postgres.Open(c)
 	if err != nil {

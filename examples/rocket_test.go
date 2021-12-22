@@ -8,12 +8,8 @@ import (
 
 func Test_Rocket(t *testing.T) {
 	c, err := conf.New("../app.yaml")
-	if err != nil {
-		return
-	}
+	Panic(err)
 
 	_, err = rocketmq.NewProducer(c)
-	if err != nil {
-		panic(err)
-	}
+	Panic(err)
 }

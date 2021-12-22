@@ -6,26 +6,26 @@ import (
 	"github.com/gocurr/good/logger"
 	log "github.com/sirupsen/logrus"
 	"testing"
-	"time"
 )
 
 func Test_Crontab(t *testing.T) {
-	c, _ := conf.New("../app.yaml")
-	_ = logger.Set(c)
+	c, err := conf.New("../app.yaml")
+	Panic(err)
+	err = logger.Set(c)
+	Panic(err)
 
 	crons, err := crontab.New(c)
-	if err != nil {
-		Panic(err)
-	}
-	_ = crons.Bind("demo1", func() {
+	Panic(err)
+	err = crons.Bind("demo1", func() {
 		log.Info("demo1")
 	})
-	_ = crons.Register("hello", "*/3 * * * * ?", func() {
+	Panic(err)
+	err = crons.Register("hello", "*/3 * * * * ?", func() {
 		log.Info("hello...")
 	})
-	if err := crons.Start(); err != nil {
-		panic(err)
-	}
+	Panic(err)
+	//err = crons.Start()
+	//Panic(err)
 
-	time.Sleep(10 * time.Second)
+	//time.Sleep(10 * time.Second)
 }

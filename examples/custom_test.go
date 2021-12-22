@@ -2,14 +2,10 @@ package examples
 
 import (
 	"github.com/gocurr/good/conf"
-	"github.com/gocurr/good/consts"
-	"github.com/gocurr/good/httpclient"
 	"github.com/gocurr/good/logger"
 	"github.com/gocurr/good/server"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"testing"
-	"time"
 )
 
 func Panic(err error) {
@@ -83,24 +79,12 @@ func Test_Custom(t *testing.T) {
 	var c Custom
 	err := conf.Read("../app.yaml", &c)
 	Panic(err)
+
 	err = logger.Set(&c)
 	Panic(err)
 
 	server.Route("/", func(w http.ResponseWriter, r *http.Request) {
-		hi := server.Parameter("hi", r)
-		log.Infof("%s", hi)
-		url := "http://127.0.0.1:9091"
-		raw, err := httpclient.GetRaw(url)
-		if err != nil {
-			return
-		}
-		var out Msg
-		if err = httpclient.PostJSON(url, nil, &out); err != nil {
-			log.Errorf("%v", err)
-		}
-		out.Text = time.Now().Format(consts.DefaultTimeFormat)
-		log.Infof("%v", out)
-		_, _ = w.Write(raw)
+		_, _ = w.Write([]byte("hello better"))
 	})
 	// server.Fire(9090)
 }
