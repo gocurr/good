@@ -60,7 +60,7 @@ func HandleErr(err error, w http.ResponseWriter, status ...int) {
 	}
 }
 
-// JSONHeader sets response header content-type:"application/json; charset=UTF-8"
+// JSONHeader sets response header content-type:"application/json; charset=utf-8"
 func JSONHeader(w http.ResponseWriter) {
 	w.Header().Set(consts.ContentType, consts.ApplicationJSON)
 }
