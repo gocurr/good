@@ -20,7 +20,7 @@ const (
 	JSONContentType = "Content-Type:application/json"
 
 	ContentType     = "Content-Type"
-	ApplicationJSON = "application/json; charset=UTF-8"
+	ApplicationJSON = "application/json; charset=utf-8"
 
 	TimeFormat = "TimeFormat"
 	TTYDiscard = "TTYDiscard"

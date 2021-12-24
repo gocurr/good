@@ -60,10 +60,9 @@ func HandleErr(err error, w http.ResponseWriter, status ...int) {
 	}
 }
 
-// JSONHeader adds content-type:"application/json; charset=UTF-8"
-// to response headers
+// JSONHeader sets response header content-type:"application/json; charset=UTF-8"
 func JSONHeader(w http.ResponseWriter) {
-	w.Header().Add(consts.ContentType, consts.ApplicationJSON)
+	w.Header().Set(consts.ContentType, consts.ApplicationJSON)
 }
 
 // WriteJSON marshals data and write to the connection
