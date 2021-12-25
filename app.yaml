@@ -18,9 +18,9 @@ oracle:
   datasource: 127.0.0.1:1521/testdb
 
 mysql:
-  user: abc
-  password: enc(dfdf920e95c3565b95749dd03e788fd486f489e72094)
-  datasource: tcp(127.0.0.1:3306)/testdb
+  user: root
+  password: 123456
+  datasource: tcp(127.0.0.1:3306)/t1
 
 postgres:
   host: 127.0.0.1
