@@ -11,7 +11,7 @@ import (
 
 var errConf = errors.New("configuration not found")
 
-// Filename returns a configuration name
+// Filename returns a builtin configuration filename.
 func Filename() string {
 	if _, err := os.Stat(consts.AppYaml); err == nil {
 		return consts.AppYaml
