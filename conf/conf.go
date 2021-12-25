@@ -42,7 +42,7 @@ func Filename() string {
 
 // ReadDefault reads default configuration into custom.
 //
-// Note: custom must be a pointer type.
+// Note: custom must be a pointer.
 func ReadDefault(custom interface{}) error {
 	filename := Filename()
 	if filename == "" {
@@ -53,7 +53,7 @@ func ReadDefault(custom interface{}) error {
 
 // Read reads configuration into custom by the given filename.
 //
-// Note: custom must be a pointer type.
+// Note: custom must be a pointer.
 func Read(filename string, custom interface{}) error {
 	if custom == nil {
 		return errors.New("custom is nil")
