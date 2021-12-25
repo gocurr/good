@@ -14,7 +14,7 @@ var hexes = []rune{
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
 }
 
-// newKey returns a key
+// newKey returns a random 32bits cipher-key.
 func newKey() string {
 	rand.Seed(time.Now().UnixNano())
 	var builder strings.Builder
@@ -25,7 +25,7 @@ func newKey() string {
 	return builder.String()
 }
 
-// PrintKeyEnc prints key and encrypted string
+// PrintKeyEnc prints cipher-key and encrypted text.
 func PrintKeyEnc(pw, filename string, reset ...bool) {
 	var key string
 	if len(reset) > 0 && reset[0] {

@@ -9,47 +9,51 @@ import (
 	"reflect"
 )
 
-var confErr = errors.New("configuration not found")
+var errConf = errors.New("configuration not found")
 
 // Filename returns a configuration name
 func Filename() string {
-	if _, err := os.Stat(consts.AppYml); err == nil {
-		return consts.AppYml
-	}
 	if _, err := os.Stat(consts.AppYaml); err == nil {
 		return consts.AppYaml
 	}
-	if _, err := os.Stat(consts.ApplicationYml); err == nil {
-		return consts.ApplicationYml
+	if _, err := os.Stat(consts.AppYml); err == nil {
+		return consts.AppYml
 	}
 	if _, err := os.Stat(consts.ApplicationYaml); err == nil {
 		return consts.ApplicationYaml
 	}
-	if _, err := os.Stat(consts.ConfAppYml); err == nil {
-		return consts.ConfAppYml
+	if _, err := os.Stat(consts.ApplicationYml); err == nil {
+		return consts.ApplicationYml
 	}
 	if _, err := os.Stat(consts.ConfAppYaml); err == nil {
 		return consts.ConfAppYaml
 	}
-	if _, err := os.Stat(consts.ConfApplicationYml); err == nil {
-		return consts.ConfApplicationYml
+	if _, err := os.Stat(consts.ConfAppYml); err == nil {
+		return consts.ConfAppYml
 	}
 	if _, err := os.Stat(consts.ConfApplicationYaml); err == nil {
+		return consts.ConfApplicationYaml
+	}
+	if _, err := os.Stat(consts.ConfApplicationYml); err == nil {
 		return consts.ConfApplicationYml
 	}
 	return ""
 }
 
-// ReadDefault reads default configuration into custom
+// ReadDefault reads default configuration into custom.
+//
+// Note: custom must be a pointer type.
 func ReadDefault(custom interface{}) error {
 	filename := Filename()
 	if filename == "" {
-		return confErr
+		return errConf
 	}
 	return Read(filename, custom)
 }
 
-// Read reads filename-configuration into custom
+// Read reads configuration into custom by the given filename.
+//
+// Note: custom must be a pointer type.
 func Read(filename string, custom interface{}) error {
 	if custom == nil {
 		return errors.New("custom is nil")
@@ -66,16 +70,16 @@ func Read(filename string, custom interface{}) error {
 	return yaml.Unmarshal(file, custom)
 }
 
-// NewDefault returns default configuration
+// NewDefault returns default configuration.
 func NewDefault() (*Configuration, error) {
 	filename := Filename()
 	if filename == "" {
-		return nil, confErr
+		return nil, errConf
 	}
 	return New(filename)
 }
 
-// New returns a configuration
+// New returns a configuration by the given filename.
 func New(filename string) (*Configuration, error) {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {

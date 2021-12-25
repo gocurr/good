@@ -9,7 +9,7 @@ import (
 	"reflect"
 )
 
-var err = errors.New("bad server configuration")
+var errServer = errors.New("bad server configuration")
 
 // serverMux the global multiplexer
 var serverMux *http.ServeMux
@@ -30,7 +30,7 @@ func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
 // Fire http server entry
 func Fire(i interface{}, callbacks ...func()) {
 	if i == nil {
-		panic(err)
+		panic(errServer)
 	}
 
 	var c reflect.Value
@@ -48,12 +48,12 @@ func Fire(i interface{}, callbacks ...func()) {
 	default:
 		serverField := c.FieldByName(consts.Server)
 		if !serverField.IsValid() {
-			panic(err)
+			panic(errServer)
 		}
 
 		portField := serverField.FieldByName(consts.Port)
 		if !portField.IsValid() {
-			panic(err)
+			panic(errServer)
 		}
 		// port server bound port
 		port = portField.Int()

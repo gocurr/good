@@ -8,7 +8,7 @@ import (
 
 // Configuration represents a yaml file
 type Configuration struct {
-	cache []byte `yaml:"-"` // cached yaml-bytes
+	cache []byte `yaml:"-"` // caches yaml-bytes
 
 	Server struct {
 		Port int `yaml:"port,omitempty"`
@@ -80,7 +80,7 @@ type Configuration struct {
 	Reserved map[string]interface{} `yaml:"reserved,omitempty"` // reserved area for users
 }
 
-// Fill fills custom struct
+// Fill fills the given custom which must be a pointer.
 func (c *Configuration) Fill(custom interface{}) error {
 	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
 		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(custom).Name())
@@ -88,7 +88,7 @@ func (c *Configuration) Fill(custom interface{}) error {
 	return yaml.Unmarshal(c.cache, custom)
 }
 
-// ReservedString returns string field in reserved
+// ReservedString returns string field in reserved.
 func (c *Configuration) ReservedString(field string) (string, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -101,7 +101,7 @@ func (c *Configuration) ReservedString(field string) (string, error) {
 	return fmt.Sprintf("%v", i), nil
 }
 
-// ReservedInt returns int field in reserved
+// ReservedInt returns int field in reserved.
 func (c *Configuration) ReservedInt(field string) (int, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -113,7 +113,7 @@ func (c *Configuration) ReservedInt(field string) (int, error) {
 	return 0, fmt.Errorf("%v is not 'int' type", i)
 }
 
-// ReservedFloat64 returns float64 field in reserved
+// ReservedFloat64 returns float64 field in reserved.
 func (c *Configuration) ReservedFloat64(field string) (float64, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -125,7 +125,7 @@ func (c *Configuration) ReservedFloat64(field string) (float64, error) {
 	return 0, fmt.Errorf("%v is not 'float64' type", i)
 }
 
-// ReservedFloat32 returns float32 field in reserved
+// ReservedFloat32 returns float32 field in reserved.
 func (c *Configuration) ReservedFloat32(field string) (float32, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -137,17 +137,17 @@ func (c *Configuration) ReservedFloat32(field string) (float32, error) {
 	return 0, fmt.Errorf("%v is not 'float32' type", i)
 }
 
-// ReservedFloat returns float64 field in reserved
+// ReservedFloat returns float64 field in reserved.
 func (c *Configuration) ReservedFloat(field string) (float64, error) {
 	return c.ReservedFloat64(field)
 }
 
-// ReservedInterface returns interface{} field in reserved
+// ReservedInterface returns interface{} field in reserved.
 func (c *Configuration) ReservedInterface(field string) interface{} {
 	return c.Reserved[field]
 }
 
-// ReservedSlice returns slice field in reserved
+// ReservedSlice returns slice field in reserved.
 func (c *Configuration) ReservedSlice(field string) ([]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
@@ -159,7 +159,7 @@ func (c *Configuration) ReservedSlice(field string) ([]interface{}, error) {
 	return nil, fmt.Errorf("%v is not '[]interface{}' type", i)
 }
 
-// ReservedMap returns map field in reserved
+// ReservedMap returns map field in reserved.
 func (c *Configuration) ReservedMap(field string) (map[string]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {

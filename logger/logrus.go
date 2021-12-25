@@ -15,14 +15,14 @@ import (
 const timestamp = "timestamp"
 
 var (
-	LogrusErr  = errors.New("bad logrus configuration")
-	GraylogErr = errors.New("bad graylog configuration")
+	ErrLogrus  = errors.New("bad logrus configuration")
+	ErrGraylog = errors.New("bad graylog configuration")
 )
 
 // Set configures logrus
 func Set(i interface{}) error {
 	if i == nil {
-		return LogrusErr
+		return ErrLogrus
 	}
 
 	var c reflect.Value
@@ -34,7 +34,7 @@ func Set(i interface{}) error {
 
 	logrusField := c.FieldByName(pre.Logrus)
 	if !logrusField.IsValid() {
-		return LogrusErr
+		return ErrLogrus
 	}
 
 	var timeFormat = consts.DefaultTimeFormat
@@ -67,21 +67,21 @@ func Set(i interface{}) error {
 			if enable {
 				hostField := graylogField.FieldByName(consts.Host)
 				if !hostField.IsValid() {
-					return GraylogErr
+					return ErrGraylog
 				}
 				portField := graylogField.FieldByName(consts.Port)
 				if !portField.IsValid() {
-					return GraylogErr
+					return ErrGraylog
 				}
 				extraField := graylogField.FieldByName(consts.Extra)
 				if !extraField.IsValid() {
-					return GraylogErr
+					return ErrGraylog
 				}
 
 				host := hostField.String()
 				port := portField.Int()
 				if host == "" || port == 0 {
-					return GraylogErr
+					return ErrGraylog
 				}
 
 				var extra = make(map[string]interface{})

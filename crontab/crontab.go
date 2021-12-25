@@ -12,7 +12,6 @@ import (
 
 var errCrontab = errors.New("bad crontab configuration")
 
-// Crontab jobs wrapper
 type Crontab struct {
 	enable  bool                   // enable to Start
 	jobs    map[string]cronctl.Job // name:job mapping
@@ -21,7 +20,7 @@ type Crontab struct {
 	discard bool                   // discard log
 }
 
-// New returns a new Crontab
+// New returns a new Crontab.
 func New(i interface{}, discard ...bool) (*Crontab, error) {
 	if i == nil {
 		return nil, errCrontab
@@ -66,7 +65,7 @@ func New(i interface{}, discard ...bool) (*Crontab, error) {
 	return &Crontab{enable: enable, jobs: jobs, discard: _discard}, nil
 }
 
-// Start starts up crontab
+// Start starts up crontab.
 func (c *Crontab) Start() error {
 	if !c.enable {
 		return nil
@@ -101,7 +100,7 @@ func (c *Crontab) Start() error {
 	return err
 }
 
-// Bind binds name to function
+// Bind binds name to function.
 func (c *Crontab) Bind(name string, fn func()) error {
 	if !c.enable {
 		return nil
@@ -122,7 +121,7 @@ func (c *Crontab) Bind(name string, fn func()) error {
 	return nil
 }
 
-// Register registers a new cron
+// Register registers a new cron.
 func (c *Crontab) Register(name, spec string, fn func()) error {
 	if !c.enable {
 		return nil

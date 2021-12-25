@@ -13,12 +13,12 @@ import (
 
 const mysql = "mysql"
 
-var err = errors.New("bad mysql configuration")
+var errMysql = errors.New("bad mysql configuration")
 
 // Open returns a mysql DB and reports error
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
-		return nil, err
+		return nil, errMysql
 	}
 
 	var c reflect.Value
@@ -39,24 +39,24 @@ func Open(i interface{}) (*sql.DB, error) {
 
 	mysqlField := c.FieldByName(pre.Mysql)
 	if !mysqlField.IsValid() {
-		return nil, err
+		return nil, errMysql
 	}
 
 	userField := mysqlField.FieldByName(consts.User)
 	if !userField.IsValid() {
-		return nil, err
+		return nil, errMysql
 	}
 	user := userField.String()
 
 	passwordField := mysqlField.FieldByName(consts.Password)
 	if !passwordField.IsValid() {
-		return nil, err
+		return nil, errMysql
 	}
 	password := passwordField.String()
 
 	datasourceField := mysqlField.FieldByName(consts.Datasource)
 	if !datasourceField.IsValid() {
-		return nil, err
+		return nil, errMysql
 	}
 	datasource := datasourceField.String()
 

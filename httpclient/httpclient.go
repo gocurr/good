@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-// handleResp handles http-response
-// to return byte slice and reports error
+// handleResp returns byte-slice and reports error encountered
+// by the given http-response
 func handleResp(r *http.Response) ([]byte, error) {
 	defer func() { _ = r.Body.Close() }()
 
@@ -27,8 +27,10 @@ func handleResp(r *http.Response) ([]byte, error) {
 	return all, nil
 }
 
-// PostJSONRaw calls http.Post
-// to return byte slice and reports error
+// PostJSONRaw marshals the input value and issues a POST to the specified URL,
+// then it'll return byte-slice and report error encountered.
+//
+// The timeout parameter is optional.
 func PostJSONRaw(url string, in interface{}, timeout ...time.Duration) ([]byte, error) {
 	all, errMarshal := json.Marshal(in)
 	if errMarshal != nil {
@@ -58,10 +60,10 @@ func PostJSONRaw(url string, in interface{}, timeout ...time.Duration) ([]byte, 
 	return handleResp(resp)
 }
 
-// PostJSON posts JSON format data to the given url,
-// then unmarshal body of response into out and reports error
+// PostJSON marshals the input value and issues a POST to the specified URL,
+// then it'll unmarshal response into out(must be a pointer) and report error encountered.
 //
-// Assert out is a pointer
+// The timeout parameter is optional.
 func PostJSON(url string, in interface{}, out interface{}, timeout ...time.Duration) error {
 	raw, err := PostJSONRaw(url, in, timeout...)
 	if err != nil {
@@ -71,8 +73,10 @@ func PostJSON(url string, in interface{}, out interface{}, timeout ...time.Durat
 	return json.Unmarshal(raw, out)
 }
 
-// GetRaw calls http.Get to the given url
-// to return byte slice and reports error
+// GetRaw issues a GET to the specified URL,
+// then it'll return byte-slice and report error encountered.
+//
+// The timeout parameter is optional.
 func GetRaw(url string, timeout ...time.Duration) ([]byte, error) {
 	var err error
 	var resp *http.Response
@@ -96,10 +100,10 @@ func GetRaw(url string, timeout ...time.Duration) ([]byte, error) {
 	return handleResp(resp)
 }
 
-// GetJSON calls http.Get to the given url,
-// then unmarshal body of response into out and reports error
+// GetJSON issues a GET to the specified URL,
+// then it'll unmarshal response into out(must be a pointer) and report error encountered.
 //
-// Assert out is a pointer
+// The timeout parameter is optional.
 func GetJSON(url string, out interface{}, timeout ...time.Duration) error {
 	raw, err := GetRaw(url, timeout...)
 	if err != nil {
