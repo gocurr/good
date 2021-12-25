@@ -1,6 +1,6 @@
-# The Go App Boot Framework
+# GO boot layer Of frameworks for Developers
 
-`good` is a `Go` framework that makes developers write go applications much easier.
+`good` is a `Go` boot layer of frameworks that makes developers write applications much easier.
 
 ## Download and Install
 
