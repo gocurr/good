@@ -5,14 +5,14 @@ go 1.11
 require (
 	github.com/aliyun/aliyun-tablestore-go-sdk v1.7.1
 	github.com/apache/rocketmq-client-go/v2 v2.1.0
-	github.com/gemnasium/logrus-graylog-hook/v3 v3.0.3
+	github.com/gemnasium/logrus-graylog-hook/v3 v3.1.0
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gocurr/cronctl v0.0.0-20211219115810-1da6741d4175
+	github.com/gocurr/cronctl v0.0.0-20211226081125-e399c0085b39
 	github.com/godror/godror v0.29.0
 	github.com/golang/mock v1.6.0 // indirect
-	github.com/google/flatbuffers v2.0.0+incompatible // indirect
+	github.com/google/flatbuffers v2.0.5+incompatible // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/lib/pq v1.10.4
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
