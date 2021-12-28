@@ -14,10 +14,10 @@ var errCrontab = errors.New("bad crontab configuration")
 
 type Crontab struct {
 	enable  bool                   // enable to Start
-	jobs    map[string]cronctl.Job // name:job mapping
+	jobs    map[string]cronctl.Job // name-job mapping
 	once    sync.Once              // start once
 	done    bool                   // reports Start invoked
-	discard bool                   // discard log
+	discard bool                   // discards logs
 }
 
 // New returns a new Crontab.
@@ -65,7 +65,7 @@ func New(i interface{}, discard ...bool) (*Crontab, error) {
 	return &Crontab{enable: enable, jobs: jobs, discard: _discard}, nil
 }
 
-// Start starts up crontab.
+// Start starts up the crontab.
 func (c *Crontab) Start() error {
 	if !c.enable {
 		return nil
@@ -73,9 +73,8 @@ func (c *Crontab) Start() error {
 
 	var err error
 	c.once.Do(func() {
-		c.done = true // set done
+		c.done = true // Set done.
 
-		// filter bad jobs
 		var goodJobs = make(map[string]cronctl.Job)
 		for k, v := range c.jobs {
 			if k != "" && v.Spec != "" && v.Fn != nil {
@@ -83,7 +82,7 @@ func (c *Crontab) Start() error {
 			}
 		}
 
-		// create a crontab
+		// Create a crontab.
 		var crontab *cronctl.Crontab
 		if c.discard {
 			crontab, err = cronctl.Create(goodJobs, cronctl.Discard)
@@ -92,7 +91,7 @@ func (c *Crontab) Start() error {
 		}
 
 		if err == nil {
-			// startup crontab
+			// Startup the crontab
 			err = crontab.Startup()
 		}
 	})
@@ -100,7 +99,7 @@ func (c *Crontab) Start() error {
 	return err
 }
 
-// Bind binds name to function.
+// Bind binds the specific name to the given function.
 func (c *Crontab) Bind(name string, fn func()) error {
 	if !c.enable {
 		return nil
@@ -121,7 +120,7 @@ func (c *Crontab) Bind(name string, fn func()) error {
 	return nil
 }
 
-// Register registers a new cron.
+// Register registers a new cron by the given name, spec and function.
 func (c *Crontab) Register(name, spec string, fn func()) error {
 	if !c.enable {
 		return nil

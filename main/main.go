@@ -18,7 +18,7 @@ import (
 	_ "time"
 )
 
-// for pkg-updates only
+// For pkg-updates only.
 func main() {
 
 }

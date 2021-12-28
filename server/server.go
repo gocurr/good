@@ -11,23 +11,23 @@ import (
 
 var errServer = errors.New("bad server configuration")
 
-// serverMux the global multiplexer
+// serverMux the global multiplexer.
 var serverMux *http.ServeMux
 
-// Mux set serverMux
+// Mux sets the serverMux.
 func Mux(mux *http.ServeMux) {
 	serverMux = mux
 }
 
-// routeFns represents route-fn pairs
+// routeFns represents route-function pairs.
 var routeFns = make(map[string]func(http.ResponseWriter, *http.Request))
 
-// Route binds route-path to fn
+// Route binds the specific route-path to the given function.
 func Route(route string, fn func(http.ResponseWriter, *http.Request)) {
 	routeFns[route] = fn
 }
 
-// Fire http server entry
+// Fire the http server entry.
 func Fire(i interface{}, callbacks ...func()) {
 	if i == nil {
 		panic(errServer)

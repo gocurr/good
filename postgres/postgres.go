@@ -18,7 +18,7 @@ const (
 
 var errPostgres = errors.New("bad postgres configuration")
 
-// Open returns a postgres DB and reports error
+// Open returns a postgres database and reports error encountered.
 func Open(i interface{}) (*sql.DB, error) {
 	if i == nil {
 		return nil, errPostgres

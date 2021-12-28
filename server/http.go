@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// Parameter returns a string parameter in URL
+// Parameter returns a string parameter in url.
 func Parameter(name string, r *http.Request) string {
 	values := r.URL.Query()
 	v, ok := values[name]
@@ -20,7 +20,7 @@ func Parameter(name string, r *http.Request) string {
 	return ""
 }
 
-// Parameters returns string slice in URL
+// Parameters returns string slice in url.
 func Parameters(name string, r *http.Request) []string {
 	values := r.URL.Query()
 	v, ok := values[name]
@@ -32,7 +32,7 @@ func Parameters(name string, r *http.Request) []string {
 
 // JSON unmarshal body of http.Request into out.
 //
-// Assert out is a pointer or else it will PANIC
+// Assert out is a pointer or else it will panic.
 func JSON(r *http.Request, out interface{}) error {
 	defer func() { _ = r.Body.Close() }()
 	all, err := ioutil.ReadAll(r.Body)
@@ -42,14 +42,14 @@ func JSON(r *http.Request, out interface{}) error {
 	return json.Unmarshal(all, out)
 }
 
-// ErrMsg represents an error message
+// ErrMsg represents an error message.
 type ErrMsg struct {
 	Err string `json:"err"`
 }
 
-// HandleErr handles error
+// HandleErr handles http error.
 //
-// Assert err is non-nil or else it will PANIC
+// Assert err is non-nil or else it will panic.
 func HandleErr(err error, w http.ResponseWriter, status ...int) {
 	if len(status) > 0 {
 		w.WriteHeader(status[0])
@@ -60,12 +60,12 @@ func HandleErr(err error, w http.ResponseWriter, status ...int) {
 	}
 }
 
-// JSONHeader sets response header content-type:"application/json; charset=utf-8"
+// JSONHeader sets "application/json" content-type to the response header.
 func JSONHeader(w http.ResponseWriter) {
 	w.Header().Set(consts.ContentType, consts.ApplicationJSON)
 }
 
-// WriteJSON marshals data and write to the connection
+// WriteJSON marshals data and write to the connection.
 func WriteJSON(w http.ResponseWriter, data interface{}) (int, error) {
 	marshal, err := json.Marshal(data)
 	if err != nil {

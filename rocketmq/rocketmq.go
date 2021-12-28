@@ -14,7 +14,7 @@ import (
 
 var errRocketmq = errors.New("bad rocketmq configuration")
 
-// NewProducer returns a rocketmq producer and reports error
+// NewProducer returns a rocketmq producer and reports error encountered.
 func NewProducer(i interface{}) (rocketmq.Producer, error) {
 	accessKey, secretKey, addrs, retry, err := decrypt(i)
 	if err != nil {
@@ -30,7 +30,7 @@ func NewProducer(i interface{}) (rocketmq.Producer, error) {
 		}))
 }
 
-// NewConsumer returns a rocketmq push consumer and reports error
+// NewConsumer returns a rocketmq push consumer and reports error encountered.
 func NewConsumer(i interface{}, group string) (rocketmq.PushConsumer, error) {
 	accessKey, secretKey, addrs, retry, err := decrypt(i)
 	if err != nil {

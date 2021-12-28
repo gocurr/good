@@ -19,7 +19,7 @@ var (
 	ErrGraylog = errors.New("bad graylog configuration")
 )
 
-// Set configures logrus
+// Set configures logrus.
 func Set(i interface{}) error {
 	if i == nil {
 		return ErrLogrus
