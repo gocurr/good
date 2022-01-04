@@ -14,8 +14,6 @@ import (
 	_ "github.com/gocurr/good/server"
 	_ "github.com/gocurr/good/sugar"
 	_ "github.com/gocurr/good/tablestore"
-	_ "testing"
-	_ "time"
 )
 
 // For pkg-updates only.

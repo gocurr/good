@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-// Configuration represents a yaml file
+// Configuration represents a yaml file.
 type Configuration struct {
 	cache []byte `yaml:"-"` // caches yaml-bytes
 
