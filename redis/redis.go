@@ -14,7 +14,7 @@ import (
 var errRedis = errors.New("bad redis configuration")
 
 // New returns a redis client and reports error encountered.
-func New(i interface{}, _db ...int) (*redis.Client, error) {
+func New(i interface{}) (*redis.Client, error) {
 	if i == nil {
 		return nil, errRedis
 	}
@@ -58,16 +58,11 @@ func New(i interface{}, _db ...int) (*redis.Client, error) {
 	}
 	password := passwordField.String()
 
-	var db int
-	if len(_db) == 0 {
-		dbField := redisField.FieldByName(consts.DB)
-		if !dbField.IsValid() {
-			return nil, errRedis
-		}
-		db = int(dbField.Int())
-	} else {
-		db = _db[0]
+	dbField := redisField.FieldByName(consts.DB)
+	if !dbField.IsValid() {
+		return nil, errRedis
 	}
+	db := int(dbField.Int())
 
 	var err error
 	if key != "" {

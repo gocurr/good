@@ -51,6 +51,7 @@ tablestore:
 
 crontab:
   enable: true
+  log-discard: false
   specs:
     demo1: "*/1 * * * * ?"
     hello: "*/5 * * * * ?"

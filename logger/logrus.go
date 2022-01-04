@@ -54,7 +54,7 @@ func Set(i interface{}) error {
 	ttyDiscardField := logrusField.FieldByName(consts.TTYDiscard)
 	if ttyDiscardField.IsValid() {
 		if ttyDiscardField.Bool() {
-			// discard
+			// Discard logs.
 			log.SetOutput(ioutil.Discard)
 		}
 	}

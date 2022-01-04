@@ -10,7 +10,6 @@ import (
 	"github.com/gocurr/good/rocketmq"
 	"github.com/gocurr/good/tablestore"
 	"testing"
-	"time"
 )
 
 func Panic(err error) {
@@ -52,15 +51,15 @@ func Test_All(t *testing.T) {
 	}
 	url := "http://127.0.0.1:9090"
 	var out msg
-	_ = httpclient.PostJSON(url, msg{Text: "great"}, &out, time.Second)
-	_, _ = httpclient.GetRaw(url, time.Millisecond)
+	_ = httpclient.PostJSON(url, msg{Text: "great"}, &out)
+	_, _ = httpclient.GetRaw(url)
 
 	// mysql
 	_, err = mysql.Open(c)
 	Panic(err)
 
 	// redis
-	_, err = redis.New(c, 1)
+	_, err = redis.New(c)
 	Panic(err)
 
 	// postgres

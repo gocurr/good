@@ -49,5 +49,6 @@ const (
 	InstanceName = "InstanceName"
 	Port         = "Port"
 
-	Specs = "Specs"
+	Specs      = "Specs"
+	LogDiscard = "LogDiscard"
 )

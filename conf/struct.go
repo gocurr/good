@@ -69,8 +69,9 @@ type Configuration struct {
 	} `yaml:"tablestore,omitempty"`
 
 	Crontab struct {
-		Enable bool              `yaml:"enable,omitempty"`
-		Specs  map[string]string `yaml:"specs,omitempty"`
+		Enable     bool              `yaml:"enable,omitempty"`
+		LogDiscard bool              `yaml:"log-discard,omitempty"`
+		Specs      map[string]string `yaml:"specs,omitempty"`
 	} `yaml:"crontab,omitempty"`
 
 	Secure struct {

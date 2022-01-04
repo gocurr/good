@@ -11,17 +11,19 @@ import (
 )
 
 var errCrontab = errors.New("bad crontab configuration")
+var errStart = errors.New("start failed")
 
 type Crontab struct {
 	enable  bool                   // enable to Start
+	mu      sync.Mutex             // protects the remaining
 	jobs    map[string]cronctl.Job // name-job mapping
-	once    sync.Once              // start once
-	done    bool                   // reports Start invoked
+	done    bool                   // reports state
 	discard bool                   // discards logs
+	crontab *cronctl.Crontab       // the cron entity
 }
 
 // New returns a new Crontab.
-func New(i interface{}, discard ...bool) (*Crontab, error) {
+func New(i interface{}) (*Crontab, error) {
 	if i == nil {
 		return nil, errCrontab
 	}
@@ -44,6 +46,12 @@ func New(i interface{}, discard ...bool) (*Crontab, error) {
 		enable = enableField.Bool()
 	}
 
+	var logDiscard bool
+	logDiscardField := crontabField.FieldByName(consts.LogDiscard)
+	if logDiscardField.IsValid() {
+		logDiscard = logDiscardField.Bool()
+	}
+
 	var jobs = make(map[string]cronctl.Job)
 	specsField := crontabField.FieldByName(consts.Specs)
 	if specsField.IsValid() {
@@ -57,50 +65,58 @@ func New(i interface{}, discard ...bool) (*Crontab, error) {
 		}
 	}
 
-	var _discard bool
-	if len(discard) > 0 {
-		_discard = discard[0]
-	}
-
-	return &Crontab{enable: enable, jobs: jobs, discard: _discard}, nil
+	return &Crontab{enable: enable, jobs: jobs, discard: logDiscard}, nil
 }
 
 // Start starts up the crontab.
 func (c *Crontab) Start() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if !c.enable {
 		return nil
 	}
 
+	if c.done {
+		return errors.New("already started")
+	}
+
+	c.done = true // Set done.
+
+	var goodJobs = make(map[string]cronctl.Job)
+	for k, v := range c.jobs {
+		if k != "" && v.Spec != "" && v.Fn != nil {
+			goodJobs[k] = v
+		}
+	}
+
+	// Create a crontab.
+	var crontab *cronctl.Crontab
 	var err error
-	c.once.Do(func() {
-		c.done = true // Set done.
+	if c.discard {
+		crontab, err = cronctl.Create(goodJobs, cronctl.Discard)
+	} else {
+		crontab, err = cronctl.Create(goodJobs, cronctl.Logrus)
+	}
+	if err != nil {
+		return err
+	}
 
-		var goodJobs = make(map[string]cronctl.Job)
-		for k, v := range c.jobs {
-			if k != "" && v.Spec != "" && v.Fn != nil {
-				goodJobs[k] = v
-			}
-		}
+	// Startup the crontab.
+	if err = crontab.Startup(); err != nil {
+		return err
+	}
 
-		// Create a crontab.
-		var crontab *cronctl.Crontab
-		if c.discard {
-			crontab, err = cronctl.Create(goodJobs, cronctl.Discard)
-		} else {
-			crontab, err = cronctl.Create(goodJobs, cronctl.Logrus)
-		}
-
-		if err == nil {
-			// Startup the crontab
-			err = crontab.Startup()
-		}
-	})
-
-	return err
+	// Set crontab entity.
+	c.crontab = crontab
+	return nil
 }
 
 // Bind binds the specific name to the given function.
 func (c *Crontab) Bind(name string, fn func()) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if !c.enable {
 		return nil
 	}
@@ -122,6 +138,9 @@ func (c *Crontab) Bind(name string, fn func()) error {
 
 // Register registers a new cron by the given name, spec and function.
 func (c *Crontab) Register(name, spec string, fn func()) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if !c.enable {
 		return nil
 	}
@@ -134,4 +153,62 @@ func (c *Crontab) Register(name, spec string, fn func()) error {
 		Fn:   fn,
 	}
 	return nil
+}
+
+// Suspend suspends the crontab.
+func (c *Crontab) Suspend() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if !c.enable {
+		return nil
+	}
+	if !c.done {
+		return errors.New("cannot Suspend before Start")
+	}
+
+	if c.crontab == nil {
+		return errStart
+	}
+
+	return c.crontab.Suspend()
+}
+
+// Stop stops the job by the given name.
+func (c *Crontab) Stop(name string) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if !c.enable {
+		return nil
+	}
+	if !c.done {
+		return errors.New("cannot Stop before Start")
+	}
+
+	if c.crontab == nil {
+		return errStart
+	}
+
+	return c.crontab.Disable(name)
+}
+
+// Continue restarts the crontab.
+func (c *Crontab) Continue() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if !c.enable {
+		return nil
+	}
+
+	if !c.done {
+		return errors.New("cannot Continue before Start")
+	}
+
+	if c.crontab == nil {
+		return errStart
+	}
+
+	return c.crontab.Continue()
 }
