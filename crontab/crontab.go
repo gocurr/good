@@ -174,8 +174,8 @@ func (c *Crontab) Suspend() error {
 	return c.crontab.Suspend()
 }
 
-// Stop stops the job by the given name.
-func (c *Crontab) Stop(name string) error {
+// Disable stops the given job.
+func (c *Crontab) Disable(name string) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -183,7 +183,7 @@ func (c *Crontab) Stop(name string) error {
 		return nil
 	}
 	if !c.done {
-		return errors.New("cannot Stop before Start")
+		return errors.New("cannot Disable before Start")
 	}
 
 	if c.crontab == nil {
@@ -191,6 +191,25 @@ func (c *Crontab) Stop(name string) error {
 	}
 
 	return c.crontab.Disable(name)
+}
+
+// Enable restarts the given job.
+func (c *Crontab) Enable(name string) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if !c.enable {
+		return nil
+	}
+	if !c.done {
+		return errors.New("cannot Enable before Start")
+	}
+
+	if c.crontab == nil {
+		return errStart
+	}
+
+	return c.crontab.Enable(name)
 }
 
 // Continue restarts the crontab.
