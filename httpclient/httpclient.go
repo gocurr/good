@@ -27,6 +27,23 @@ func handleResp(r *http.Response) ([]byte, error) {
 	return all, nil
 }
 
+// PostJSONRaw marshals the input value and issues a POST to the specified URL,
+// then it'll return byte-slice and report error encountered.
+func PostJSONRaw(url string, in interface{}) ([]byte, error) {
+	all, errMarshal := json.Marshal(in)
+	if errMarshal != nil {
+		return nil, errMarshal
+	}
+	body := bytes.NewReader(all)
+
+	resp, err := http.Post(url, consts.JSONContentType, body)
+	if err != nil {
+		return nil, err
+	}
+
+	return handleResp(resp)
+}
+
 // PostJSONRawTimeout marshals the input value and issues a POST to the specified URL,
 // then it'll return byte-slice and report error encountered.
 //
@@ -53,27 +70,8 @@ func PostJSONRawTimeout(url string, in interface{}, timeout time.Duration) ([]by
 	return handleResp(resp)
 }
 
-// PostJSONRaw marshals the input value and issues a POST to the specified URL,
-// then it'll return byte-slice and report error encountered.
-func PostJSONRaw(url string, in interface{}) ([]byte, error) {
-	all, errMarshal := json.Marshal(in)
-	if errMarshal != nil {
-		return nil, errMarshal
-	}
-	body := bytes.NewReader(all)
-
-	resp, err := http.Post(url, consts.JSONContentType, body)
-	if err != nil {
-		return nil, err
-	}
-
-	return handleResp(resp)
-}
-
 // PostJSON marshals the input value and issues a POST to the specified URL,
 // then it'll unmarshal response into out(must be a pointer) and report error encountered.
-//
-// The timeout parameter is optional.
 func PostJSON(url string, in interface{}, out interface{}) error {
 	raw, err := PostJSONRaw(url, in)
 	if err != nil {
