@@ -84,7 +84,7 @@ type Configuration struct {
 // Fill fills the given custom which must be a pointer.
 func (c *Configuration) Fill(custom interface{}) error {
 	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
-		return fmt.Errorf("%s is not a pointer", reflect.TypeOf(custom).Name())
+		return fmt.Errorf("conf: %s must be a pointer", reflect.TypeOf(custom).Name())
 	}
 	return yaml.Unmarshal(c.cache, custom)
 }
@@ -93,7 +93,7 @@ func (c *Configuration) Fill(custom interface{}) error {
 func (c *Configuration) ReservedString(field string) (string, error) {
 	i := c.Reserved[field]
 	if i == nil {
-		return "", fmt.Errorf("'%s' not found in configuration", field)
+		return "", fmt.Errorf("conf: '%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.String {
 		return i.(string), nil
@@ -106,36 +106,36 @@ func (c *Configuration) ReservedString(field string) (string, error) {
 func (c *Configuration) ReservedInt(field string) (int, error) {
 	i := c.Reserved[field]
 	if i == nil {
-		return 0, fmt.Errorf("'%s' not found in configuration", field)
+		return 0, fmt.Errorf("conf: '%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Int {
 		return i.(int), nil
 	}
-	return 0, fmt.Errorf("%v is not 'int' type", i)
+	return 0, fmt.Errorf("conf: %v must be 'int' type", i)
 }
 
 // ReservedFloat64 returns float64 field in reserved.
 func (c *Configuration) ReservedFloat64(field string) (float64, error) {
 	i := c.Reserved[field]
 	if i == nil {
-		return 0, fmt.Errorf("'%s' not found in configuration", field)
+		return 0, fmt.Errorf("conf: '%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Float64 {
 		return i.(float64), nil
 	}
-	return 0, fmt.Errorf("%v is not 'float64' type", i)
+	return 0, fmt.Errorf("conf: %v must be 'float64' type", i)
 }
 
 // ReservedFloat32 returns float32 field in reserved.
 func (c *Configuration) ReservedFloat32(field string) (float32, error) {
 	i := c.Reserved[field]
 	if i == nil {
-		return 0, fmt.Errorf("'%s' not found in configuration", field)
+		return 0, fmt.Errorf("conf: '%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Float32 {
 		return i.(float32), nil
 	}
-	return 0, fmt.Errorf("%v is not 'float32' type", i)
+	return 0, fmt.Errorf("conf: %v must be 'float32' type", i)
 }
 
 // ReservedFloat returns float64 field in reserved.
@@ -152,22 +152,22 @@ func (c *Configuration) ReservedInterface(field string) interface{} {
 func (c *Configuration) ReservedSlice(field string) ([]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
-		return nil, fmt.Errorf("'%s' not found in configuration", field)
+		return nil, fmt.Errorf("conf: '%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Slice {
 		return i.([]interface{}), nil
 	}
-	return nil, fmt.Errorf("%v is not '[]interface{}' type", i)
+	return nil, fmt.Errorf("conf: %v must be '[]interface{}' type", i)
 }
 
 // ReservedMap returns map field in reserved.
 func (c *Configuration) ReservedMap(field string) (map[string]interface{}, error) {
 	i := c.Reserved[field]
 	if i == nil {
-		return nil, fmt.Errorf("'%s' not found in configuration", field)
+		return nil, fmt.Errorf("conf: '%s' not found in configuration", field)
 	}
 	if reflect.TypeOf(i).Kind() == reflect.Map {
 		return i.(map[string]interface{}), nil
 	}
-	return nil, fmt.Errorf("%v is not 'map[string]interface{}' type", i)
+	return nil, fmt.Errorf("conf: %v must be 'map[string]interface{}' type", i)
 }

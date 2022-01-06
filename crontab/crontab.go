@@ -10,8 +10,8 @@ import (
 	"sync"
 )
 
-var errCrontab = errors.New("bad crontab configuration")
-var errStart = errors.New("start failed")
+var errCrontab = errors.New("crontab: bad crontab configuration")
+var errStart = errors.New("crontab: start failed")
 
 type Crontab struct {
 	crontab *cronctl.Crontab // the crontab entity
@@ -79,7 +79,7 @@ func (c *Crontab) Start() error {
 	}
 
 	if c.started {
-		return errors.New("already started")
+		return errors.New("crontab: started already")
 	}
 
 	c.started = true // Set the state.
@@ -122,12 +122,12 @@ func (c *Crontab) Bind(name string, fn func()) error {
 		return nil
 	}
 	if c.started {
-		return errors.New("cannot Bind after Start")
+		return errors.New("crontab: cannot Bind after Start")
 	}
 
 	job, ok := c.jobs[name]
 	if !ok {
-		return fmt.Errorf("cannot find '%s' in configuration", name)
+		return fmt.Errorf("crontab: cannot find '%s' in configuration", name)
 	}
 
 	c.jobs[name] = cronctl.Job{
@@ -146,7 +146,7 @@ func (c *Crontab) Register(name, spec string, fn func()) error {
 		return nil
 	}
 	if c.started {
-		return errors.New("cannot Register after Start")
+		return errors.New("crontab: cannot Register after Start")
 	}
 
 	c.jobs[name] = cronctl.Job{
@@ -165,7 +165,7 @@ func (c *Crontab) Suspend() error {
 		return nil
 	}
 	if !c.started {
-		return errors.New("cannot Suspend before Start")
+		return errors.New("crontab: cannot Suspend before Start")
 	}
 
 	if c.crontab == nil {
@@ -184,7 +184,7 @@ func (c *Crontab) Disable(name string) error {
 		return nil
 	}
 	if !c.started {
-		return errors.New("cannot Disable before Start")
+		return errors.New("crontab: cannot Disable before Start")
 	}
 
 	if c.crontab == nil {
@@ -203,7 +203,7 @@ func (c *Crontab) Enable(name string) error {
 		return nil
 	}
 	if !c.started {
-		return errors.New("cannot Enable before Start")
+		return errors.New("crontab: cannot Enable before Start")
 	}
 
 	if c.crontab == nil {
@@ -223,7 +223,7 @@ func (c *Crontab) Continue() error {
 	}
 
 	if !c.started {
-		return errors.New("cannot Continue before Start")
+		return errors.New("crontab: cannot Continue before Start")
 	}
 
 	if c.crontab == nil {

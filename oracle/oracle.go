@@ -13,7 +13,7 @@ import (
 
 const godror = "godror"
 
-var errOracle = errors.New("bad oracle configuration")
+var errOracle = errors.New("oracle: bad oracle configuration")
 
 // Open returns an oracle database and reports error encountered.
 func Open(i interface{}) (*sql.DB, error) {

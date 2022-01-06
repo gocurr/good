@@ -44,7 +44,7 @@ func decrypt(key, enc string) (string, error) {
 	}
 
 	if len(ciphertext) < aes.BlockSize {
-		return "", errors.New("ciphertext too short")
+		return "", errors.New("crypto: ciphertext too short")
 	}
 	iv := ciphertext[:aes.BlockSize]
 	ciphertext = ciphertext[aes.BlockSize:]

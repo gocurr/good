@@ -15,8 +15,8 @@ import (
 const timestamp = "timestamp"
 
 var (
-	ErrLogrus  = errors.New("bad logrus configuration")
-	ErrGraylog = errors.New("bad graylog configuration")
+	ErrLogrus  = errors.New("logger: bad logrus configuration")
+	ErrGraylog = errors.New("logger: bad graylog configuration")
 )
 
 // Set configures logrus.

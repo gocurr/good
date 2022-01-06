@@ -16,7 +16,7 @@ const (
 	disable  = "disable"
 )
 
-var errPostgres = errors.New("bad postgres configuration")
+var errPostgres = errors.New("postgres: bad postgres configuration")
 
 // Open returns a postgres database and reports error encountered.
 func Open(i interface{}) (*sql.DB, error) {

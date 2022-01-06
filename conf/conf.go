@@ -9,7 +9,7 @@ import (
 	"reflect"
 )
 
-var errConf = errors.New("configuration not found")
+var errConf = errors.New("conf: configuration not found")
 
 // Filename returns a builtin configuration filename.
 func Filename() string {
@@ -55,12 +55,15 @@ func ReadDefault(custom interface{}) error {
 //
 // Note: custom must be a pointer.
 func Read(filename string, custom interface{}) error {
+	if filename == "" {
+		return errors.New("conf: filename must be non-empty")
+	}
 	if custom == nil {
-		return errors.New("custom is nil")
+		return errors.New("conf: custom must be non-nil")
 	}
 
 	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
-		return errors.New("custom is not a pointer")
+		return errors.New("conf: custom must be a pointer")
 	}
 
 	file, err := ioutil.ReadFile(filename)

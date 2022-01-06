@@ -13,7 +13,7 @@ import (
 
 const mysql = "mysql"
 
-var errMysql = errors.New("bad mysql configuration")
+var errMysql = errors.New("mysql: bad mysql configuration")
 
 // Open returns a mysql database and reports error encountered.
 func Open(i interface{}) (*sql.DB, error) {

@@ -9,7 +9,7 @@ import (
 	"reflect"
 )
 
-var errTablestore = errors.New("bad tablestore configuration")
+var errTablestore = errors.New("tablestore: bad tablestore configuration")
 
 // New returns a tablestore client and reports error
 func New(i interface{}) (*tablestore.TableStoreClient, error) {

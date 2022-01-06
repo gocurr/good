@@ -11,7 +11,7 @@ import (
 	"reflect"
 )
 
-var errRedis = errors.New("bad redis configuration")
+var errRedis = errors.New("redis: bad redis configuration")
 
 // New returns a redis client and reports error encountered.
 func New(i interface{}) (*redis.Client, error) {

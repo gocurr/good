@@ -12,7 +12,7 @@ import (
 	"reflect"
 )
 
-var errRocketmq = errors.New("bad rocketmq configuration")
+var errRocketmq = errors.New("rocketmq: bad rocketmq configuration")
 
 // NewProducer returns a rocketmq producer and reports error encountered.
 func NewProducer(i interface{}) (rocketmq.Producer, error) {

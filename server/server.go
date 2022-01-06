@@ -9,7 +9,7 @@ import (
 	"reflect"
 )
 
-var errServer = errors.New("bad server configuration")
+var errServer = errors.New("server: bad server configuration")
 
 // serverMux the global multiplexer.
 var serverMux *http.ServeMux
