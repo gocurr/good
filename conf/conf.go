@@ -10,6 +10,7 @@ import (
 )
 
 var errConf = errors.New("conf: configuration not found")
+var errFilename = errors.New("conf: filename must be non-empty")
 
 // Filename returns a builtin configuration filename.
 func Filename() string {
@@ -56,8 +57,9 @@ func ReadDefault(custom interface{}) error {
 // Note: custom must be a pointer.
 func Read(filename string, custom interface{}) error {
 	if filename == "" {
-		return errors.New("conf: filename must be non-empty")
+		return errFilename
 	}
+
 	if custom == nil {
 		return errors.New("conf: custom must be non-nil")
 	}
@@ -84,6 +86,10 @@ func NewDefault() (*Configuration, error) {
 
 // New returns a configuration by the given filename.
 func New(filename string) (*Configuration, error) {
+	if filename == "" {
+		return nil, errFilename
+	}
+
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
