@@ -14,12 +14,13 @@ var errCrontab = errors.New("bad crontab configuration")
 var errStart = errors.New("start failed")
 
 type Crontab struct {
-	enable  bool                   // enable to Start
-	mu      sync.Mutex             // protects the remaining
+	crontab *cronctl.Crontab // the crontab entity
+	enable  bool             // enable to Start
+	discard bool             // discards logs
+
+	mu      sync.Mutex             // protects the remaining fields
 	jobs    map[string]cronctl.Job // name-job mapping
-	done    bool                   // reports state
-	discard bool                   // discards logs
-	crontab *cronctl.Crontab       // the cron entity
+	started bool                   // state of the crontab
 }
 
 // New returns a new Crontab.
@@ -65,7 +66,7 @@ func New(i interface{}) (*Crontab, error) {
 		}
 	}
 
-	return &Crontab{enable: enable, jobs: jobs, discard: logDiscard}, nil
+	return &Crontab{enable: enable, discard: logDiscard, jobs: jobs}, nil
 }
 
 // Start starts up the crontab.
@@ -77,11 +78,11 @@ func (c *Crontab) Start() error {
 		return nil
 	}
 
-	if c.done {
+	if c.started {
 		return errors.New("already started")
 	}
 
-	c.done = true // Set done.
+	c.started = true // Set the state.
 
 	var goodJobs = make(map[string]cronctl.Job)
 	for k, v := range c.jobs {
@@ -120,7 +121,7 @@ func (c *Crontab) Bind(name string, fn func()) error {
 	if !c.enable {
 		return nil
 	}
-	if c.done {
+	if c.started {
 		return errors.New("cannot Bind after Start")
 	}
 
@@ -144,7 +145,7 @@ func (c *Crontab) Register(name, spec string, fn func()) error {
 	if !c.enable {
 		return nil
 	}
-	if c.done {
+	if c.started {
 		return errors.New("cannot Register after Start")
 	}
 
@@ -163,7 +164,7 @@ func (c *Crontab) Suspend() error {
 	if !c.enable {
 		return nil
 	}
-	if !c.done {
+	if !c.started {
 		return errors.New("cannot Suspend before Start")
 	}
 
@@ -182,7 +183,7 @@ func (c *Crontab) Disable(name string) error {
 	if !c.enable {
 		return nil
 	}
-	if !c.done {
+	if !c.started {
 		return errors.New("cannot Disable before Start")
 	}
 
@@ -201,7 +202,7 @@ func (c *Crontab) Enable(name string) error {
 	if !c.enable {
 		return nil
 	}
-	if !c.done {
+	if !c.started {
 		return errors.New("cannot Enable before Start")
 	}
 
@@ -221,7 +222,7 @@ func (c *Crontab) Continue() error {
 		return nil
 	}
 
-	if !c.done {
+	if !c.started {
 		return errors.New("cannot Continue before Start")
 	}
 

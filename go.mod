@@ -10,7 +10,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gocurr/cronctl v0.0.0-20211226085603-0ff0f34213fa
-	github.com/godror/godror v0.29.0
+	github.com/godror/godror v0.30.1
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/flatbuffers v2.0.5+incompatible // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
