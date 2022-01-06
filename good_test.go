@@ -1,6 +1,7 @@
 package good_test
 
 import (
+	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
 	"github.com/gocurr/good/httpclient"
@@ -12,28 +13,28 @@ import (
 	"testing"
 )
 
-func Panic(err error) {
+func handleErr(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
 
 func Test_All(t *testing.T) {
 	// configuration
 	c, err := conf.NewDefault()
-	Panic(err)
+	handleErr(err)
 
 	// crontab
 	crons, err := crontab.New(c)
-	Panic(err)
+	handleErr(err)
 	err = crons.Bind("demo1", func() {
 		t.Log("demo1")
 	})
-	Panic(err)
+	handleErr(err)
 	err = crons.Register("hello", "*/3 * * * * ?", func() {
 		t.Log("hello...")
 	})
-	Panic(err)
+	handleErr(err)
 
 	// Custom struct
 	type Custom struct {
@@ -43,7 +44,7 @@ func Test_All(t *testing.T) {
 	}
 	var custom Custom
 	err = conf.ReadDefault(&custom)
-	Panic(err)
+	handleErr(err)
 
 	// httpclient
 	type msg struct {
@@ -56,21 +57,21 @@ func Test_All(t *testing.T) {
 
 	// mysql
 	_, err = mysql.Open(c)
-	Panic(err)
+	handleErr(err)
 
 	// redis
 	_, err = redis.New(c)
-	Panic(err)
+	handleErr(err)
 
 	// postgres
 	_, err = postgres.Open(c)
-	Panic(err)
+	handleErr(err)
 
 	// rocketmq
 	_, err = rocketmq.NewProducer(c)
-	Panic(err)
+	handleErr(err)
 
 	// tablestore
 	_, err = tablestore.New(c)
-	Panic(err)
+	handleErr(err)
 }
