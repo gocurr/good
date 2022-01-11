@@ -11,26 +11,27 @@ import (
 	"strings"
 )
 
+const encLen = len("enc(")
+
 // Decrypt returns a decrypted string by the given key and text.
 func Decrypt(key, text string) (string, error) {
 	if !isEnc(text) {
 		return text, nil
 	}
 
-	enc := text[len("enc[") : len(text)-1]
+	enc := text[encLen : len(text)-1]
 	return decrypt(key, enc)
 }
 
 // isEnc reports whether text is encrypted.
 func isEnc(text string) bool {
-	if text == "" {
+	if len(text) <= len("enc()") {
 		return false
 	}
 
-	lower := strings.ToLower(text)
-	return len(lower) > len("enc()") &&
-		strings.HasPrefix(lower, "enc(") &&
-		strings.HasSuffix(lower, ")")
+	prefix := text[:encLen]
+	return (prefix == "enc(" || prefix == "ENC(") &&
+		strings.HasSuffix(text, ")")
 }
 
 // decrypt returns the decrypted string by the given key and enc.
