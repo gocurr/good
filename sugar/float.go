@@ -26,5 +26,9 @@ func FloorFloat(f, n float64) float64 {
 
 // FloatQuotient returns quotient of two integers.
 func FloatQuotient(a, b int) float64 {
+	// Avoid NaN error.
+	if b == 0 {
+		return 0
+	}
 	return float64(a) / float64(b)
 }
