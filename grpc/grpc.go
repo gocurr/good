@@ -1,11 +1,15 @@
-package grpcconf
+package grpc
 
 import (
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/pre"
+	"os"
 	"reflect"
+	"strings"
 )
 
+// ServerPort returns server.port in grpc field and
+// reports the state of process which must be checked.
 func ServerPort(i interface{}) (bool, int) {
 	if i == nil {
 		return false, 0
@@ -51,6 +55,8 @@ func ServerPort(i interface{}) (bool, int) {
 	return true, int(port)
 }
 
+// ClientAddrTimeout returns client.addr and client.timeout in grpc field and
+// reports the state of process which must be checked.
 func ClientAddrTimeout(i interface{}) (bool, string, int) {
 	if i == nil {
 		return false, "", 0
@@ -100,5 +106,21 @@ func ClientAddrTimeout(i interface{}) (bool, string, int) {
 
 	timeout := timeoutField.Int()
 
+	if ok, a := addrFromEnv(); ok {
+		addr = a
+	}
+
 	return true, addr, int(timeout)
+}
+
+// addrFromEnv returns a new addr from environment variables.
+func addrFromEnv() (bool, string) {
+	const separator = "_"
+	key := strings.ToUpper(strings.Join([]string{pre.GRPC, consts.Addr}, separator))
+	newVal := os.Getenv(key)
+	if newVal == "" {
+		return false, ""
+
+	}
+	return true, newVal
 }
