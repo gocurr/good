@@ -8,6 +8,7 @@ import (
 	"github.com/gocurr/good/pre"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
+	"os"
 	"reflect"
 	"time"
 )
@@ -93,6 +94,8 @@ func Set(i interface{}) error {
 				}
 				extra[timestamp] = time.Now().Format(timeFormat)
 
+				overrideExtraByEnv(extra)
+
 				hook := graylog.NewAsyncGraylogHook(fmt.Sprintf("%s:%d", host, port), extra)
 				defer hook.Flush()
 				log.AddHook(hook)
@@ -101,4 +104,14 @@ func Set(i interface{}) error {
 	}
 
 	return nil
+}
+
+// overrideExtraByEnv overrides extra by environment variables.
+func overrideExtraByEnv(extra map[string]interface{}) {
+	for name := range extra {
+		newVal := os.Getenv(name)
+		if newVal != "" {
+			extra[name] = newVal
+		}
+	}
 }
