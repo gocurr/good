@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"strings"
 	"time"
 )
 
@@ -108,8 +109,10 @@ func Set(i interface{}) error {
 
 // overrideExtraByEnv overrides extra by environment variables.
 func overrideExtraByEnv(extra map[string]interface{}) {
+	const separator = "_"
 	for name := range extra {
-		newVal := os.Getenv(name)
+		key := strings.ToUpper(strings.Join([]string{consts.Graylog, consts.Extra, name}, separator))
+		newVal := os.Getenv(key)
 		if newVal != "" {
 			extra[name] = newVal
 		}
