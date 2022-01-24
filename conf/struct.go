@@ -74,6 +74,17 @@ type Configuration struct {
 		Specs      map[string]string `yaml:"specs,omitempty"`
 	} `yaml:"crontab,omitempty"`
 
+	GRPC struct {
+		Enable bool `yaml:"enable,omitempty"`
+		Server struct {
+			Port int `yaml:"port,omitempty"`
+		} `yaml:"server,omitempty"`
+		Client struct {
+			Addr    string `yaml:"addr,omitempty"`
+			Timeout int    `yaml:"timeout,omitempty"` // seconds
+		} `yaml:"client,omitempty"`
+	} `yaml:"grpc,omitempty"`
+
 	Secure struct {
 		Key string `yaml:"key,omitempty"`
 	} `yaml:"secure,omitempty"`

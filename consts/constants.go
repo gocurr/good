@@ -43,11 +43,15 @@ const (
 	Key    = "Key"
 
 	Server       = "Server"
+	Client       = "Client"
 	Host         = "Host"
+	Addr         = "Addr"
 	Addrs        = "Addrs"
 	EndPoint     = "EndPoint"
 	InstanceName = "InstanceName"
 	Port         = "Port"
+
+	Timeout = "Timeout"
 
 	Specs      = "Specs"
 	LogDiscard = "LogDiscard"

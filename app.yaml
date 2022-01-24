@@ -57,6 +57,14 @@ crontab:
     hello: "*/5 * * * * ?"
     demo3: "*/1 * * * * ?"
 
+grpc:
+  enable: true
+  server:
+    port: 50051
+  client:
+    addr: 127.0.0.1:50051
+    timeout: 3 # seconds
+
 secure:
   key: 6c841a6c8b9e3b42dfd30dc950da0382
 
