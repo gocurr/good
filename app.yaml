@@ -62,8 +62,9 @@ grpc:
   server:
     port: 50051
   client:
-    addr: 127.0.0.1:50051
-    timeout: 3 # seconds
+    # addr,timeout(seconds)
+    c1: 127.0.0.1:50051,3
+    c2: 127.0.0.1:50052,5
 
 secure:
   key: 6c841a6c8b9e3b42dfd30dc950da0382

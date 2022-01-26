@@ -79,10 +79,7 @@ type Configuration struct {
 		Server struct {
 			Port int `yaml:"port,omitempty"`
 		} `yaml:"server,omitempty"`
-		Client struct {
-			Addr    string `yaml:"addr,omitempty"`
-			Timeout int    `yaml:"timeout,omitempty"` // seconds
-		} `yaml:"client,omitempty"`
+		Client map[string]string `yaml:"client,omitempty"`
 	} `yaml:"grpc,omitempty"`
 
 	Secure struct {

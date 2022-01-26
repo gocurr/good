@@ -5,6 +5,7 @@ import (
 	"github.com/gocurr/good/pre"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -55,11 +56,17 @@ func ServerPort(i interface{}) (bool, int) {
 	return true, int(port)
 }
 
+// AddrTimeout wraps Addr and Timeout of Client configuration.
+type AddrTimeout struct {
+	Addr    string
+	Timeout int
+}
+
 // ClientAddrTimeout returns client.addr and client.timeout in grpc field and
 // reports the state of process which must be checked.
-func ClientAddrTimeout(i interface{}) (bool, string, int) {
+func ClientAddrTimeout(i interface{}) (bool, map[string]AddrTimeout) {
 	if i == nil {
-		return false, "", 0
+		return false, nil
 	}
 
 	var c reflect.Value
@@ -71,56 +78,53 @@ func ClientAddrTimeout(i interface{}) (bool, string, int) {
 
 	grpcField := c.FieldByName(pre.GRPC)
 	if !grpcField.IsValid() {
-		return false, "", 0
+		return false, nil
 	}
 
 	enableField := grpcField.FieldByName(consts.Enable)
 	if !enableField.IsValid() {
-		return false, "", 0
+		return false, nil
 	}
 
 	enable := enableField.Bool()
 	if !enable {
-		return false, "", 0
+		return false, nil
 	}
 
 	clientField := grpcField.FieldByName(consts.Client)
 	if !clientField.IsValid() {
-		return false, "", 0
+		return false, nil
 	}
 
-	addrField := clientField.FieldByName(consts.Addr)
-	if !addrField.IsValid() {
-		return false, "", 0
+	var result = make(map[string]AddrTimeout)
+	iter := clientField.MapRange()
+	for iter.Next() {
+		name := iter.Key().String()
+		c := iter.Value().String()
+
+		split := strings.Split(c, ",")
+		if len(split) == 2 {
+			timeout, err := strconv.Atoi(split[1])
+			if err != nil {
+				continue
+			}
+			result[name] = AddrTimeout{
+				Addr:    addrFromEnv(name, split[0]),
+				Timeout: timeout,
+			}
+		}
 	}
 
-	addr := addrField.String()
-	if addr == "" {
-		return false, "", 0
-	}
-
-	timeoutField := clientField.FieldByName(consts.Timeout)
-	if !timeoutField.IsValid() {
-		return false, "", 0
-	}
-
-	timeout := timeoutField.Int()
-
-	if ok, a := addrFromEnv(); ok {
-		addr = a
-	}
-
-	return true, addr, int(timeout)
+	return true, result
 }
 
 // addrFromEnv returns a new addr from environment variables.
-func addrFromEnv() (bool, string) {
+func addrFromEnv(name, old string) string {
 	const separator = "_"
-	key := strings.ToUpper(strings.Join([]string{pre.GRPC, consts.Addr}, separator))
+	key := strings.ToUpper(strings.Join([]string{pre.GRPC, name, consts.Addr}, separator))
 	newVal := os.Getenv(key)
 	if newVal == "" {
-		return false, ""
-
+		return old
 	}
-	return true, newVal
+	return newVal
 }

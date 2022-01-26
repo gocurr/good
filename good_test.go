@@ -25,9 +25,11 @@ func Test_All(t *testing.T) {
 	c, err := conf.NewDefault()
 	handleErr(err)
 
-	ok, addr, timeout := grpc.ClientAddrTimeout(c)
+	ok, ats := grpc.ClientAddrTimeout(c)
 	if ok {
-		fmt.Println(addr, timeout)
+		for name, at := range ats {
+			fmt.Println(name, at.Addr, at.Timeout)
+		}
 	}
 
 	ok, port := grpc.ServerPort(c)
