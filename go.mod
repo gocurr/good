@@ -1,6 +1,6 @@
 module github.com/gocurr/good
 
-go 1.11
+go 1.13
 
 require (
 	github.com/aliyun/aliyun-tablestore-go-sdk v1.7.3
