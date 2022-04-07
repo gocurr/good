@@ -4,11 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
+	"time"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
 	"github.com/gocurr/good/pre"
-	"reflect"
 )
 
 var errRedis = errors.New("redis: bad redis configuration")
@@ -64,6 +66,18 @@ func New(i interface{}) (*redis.Client, error) {
 	}
 	db := int(dbField.Int())
 
+	readTimeoutField := redisField.FieldByName(consts.ReadTimeout)
+	if !readTimeoutField.IsValid() {
+		return nil, errRedis
+	}
+	readTimeout := time.Duration(readTimeoutField.Int()) * time.Second
+
+	writeTimeoutField := redisField.FieldByName(consts.WriteTimeout)
+	if !writeTimeoutField.IsValid() {
+		return nil, errRedis
+	}
+	writeTimeout := time.Duration(writeTimeoutField.Int()) * time.Second
+
 	var err error
 	if key != "" {
 		password, err = crypto.Decrypt(key, password)
@@ -73,9 +87,11 @@ func New(i interface{}) (*redis.Client, error) {
 	}
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", host, port),
-		Password: password,
-		DB:       db,
+		Addr:         fmt.Sprintf("%s:%d", host, port),
+		Password:     password,
+		DB:           db,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
 	})
 	_, err = rdb.Ping(context.Background()).Result()
 	return rdb, err

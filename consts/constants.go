@@ -51,7 +51,9 @@ const (
 	InstanceName = "InstanceName"
 	Port         = "Port"
 
-	Timeout = "Timeout"
+	Timeout      = "Timeout"
+	ReadTimeout  = "ReadTimeout"
+	WriteTimeout = "WriteTimeout"
 
 	Specs      = "Specs"
 	LogDiscard = "LogDiscard"

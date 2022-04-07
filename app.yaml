@@ -35,6 +35,8 @@ redis:
   port: 6379
   db: 0
   password: enc(436c7849214555123a97c132730d70538e23554583ed70be)
+  read-timeout: 20 # seconds
+  write-timeout: 20 # seconds
 
 rocketmq:
   addrs:

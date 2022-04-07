@@ -47,11 +47,13 @@ type Configuration struct {
 	} `yaml:"postgres,omitempty"`
 
 	Redis struct {
-		Host     string `yaml:"host,omitempty"`
-		Port     int    `yaml:"port,omitempty"`
-		Password string `yaml:"password,omitempty"`
-		DB       int    `yaml:"db,omitempty"`
-		SSL      bool   `yaml:"ssl,omitempty"`
+		Host         string `yaml:"host,omitempty"`
+		Port         int    `yaml:"port,omitempty"`
+		Password     string `yaml:"password,omitempty"`
+		DB           int    `yaml:"db,omitempty"`
+		SSL          bool   `yaml:"ssl,omitempty"`
+		ReadTimeout  int    `yaml:"read-timeout,omitempty"`
+		WriteTimeout int    `yaml:"write-timeout,omitempty"`
 	} `yaml:"redis,omitempty"`
 
 	RocketMq struct {
