@@ -2,11 +2,13 @@ package tablestore
 
 import (
 	"errors"
+	"reflect"
+
 	"github.com/aliyun/aliyun-tablestore-go-sdk/tablestore"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/env"
 	"github.com/gocurr/good/pre"
-	"reflect"
 )
 
 var errTablestore = errors.New("tablestore: bad tablestore configuration")
@@ -31,6 +33,9 @@ func New(i interface{}) (*tablestore.TableStoreClient, error) {
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
+	}
+	if key == "" {
+		key = env.GoodSecureKey()
 	}
 
 	tablestoreField := c.FieldByName(pre.TableStore)

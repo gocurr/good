@@ -10,6 +10,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/env"
 	"github.com/gocurr/good/pre"
 )
 
@@ -35,6 +36,9 @@ func New(i interface{}) (*redis.Client, error) {
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
+	}
+	if key == "" {
+		key = env.GoodSecureKey()
 	}
 
 	redisField := c.FieldByName(pre.Redis)

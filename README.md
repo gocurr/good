@@ -1,4 +1,4 @@
-# GO boot layer Of frameworks for Developers
+# Go boot layer of frameworks for developers
 
 `good` is a `Go` boot layer of frameworks that makes developers write applications much easier.
 
@@ -9,6 +9,18 @@ go get -u github.com/gocurr/good
 ```
 
 ## Usage
+
+#### Use environment variable to set secure key
+```bash
+export GOOD_SECURE_KEY=6c841a6c8b9e3b42dfd30dc950da0382
+```
+Or
+
+### Use yaml configuration to set secure key
+```yaml
+secure:
+  key: 6c841a6c8b9e3b42dfd30dc950da0382
+```
 
 ### Default
 

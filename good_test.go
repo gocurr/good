@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gocurr/good/conf"
 	"github.com/gocurr/good/crontab"
-	"github.com/gocurr/good/grpc"
 	"github.com/gocurr/good/httpclient"
 	"github.com/gocurr/good/mysql"
 	"github.com/gocurr/good/postgres"
@@ -24,18 +23,6 @@ func Test_All(t *testing.T) {
 	// configuration
 	c, err := conf.NewDefault()
 	handleErr(err)
-
-	ok, ats := grpc.ClientAddrTimeout(c)
-	if ok {
-		for name, at := range ats {
-			fmt.Println(name, at.Addr, at.Timeout)
-		}
-	}
-
-	ok, port := grpc.ServerPort(c)
-	if ok {
-		fmt.Println(port)
-	}
 
 	// crontab
 	crons, err := crontab.New(c)

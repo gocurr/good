@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"reflect"
+
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/env"
 	"github.com/gocurr/good/pre"
 	_ "github.com/lib/pq"
-	"reflect"
 )
 
 const (
@@ -38,6 +40,9 @@ func Open(i interface{}) (*sql.DB, error) {
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
+	}
+	if key == "" {
+		key = env.GoodSecureKey()
 	}
 
 	postgresField := c.FieldByName(pre.Postgres)

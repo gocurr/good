@@ -2,14 +2,16 @@ package rocketmq
 
 import (
 	"errors"
+	"reflect"
+
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/consumer"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/apache/rocketmq-client-go/v2/producer"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/env"
 	"github.com/gocurr/good/pre"
-	"reflect"
 )
 
 var errRocketmq = errors.New("rocketmq: bad rocketmq configuration")
@@ -68,6 +70,9 @@ func decrypt(i interface{}) (string, string, []string, int, error) {
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
+	}
+	if key == "" {
+		key = env.GoodSecureKey()
 	}
 
 	rocketmqField := c.FieldByName(pre.RocketMq)

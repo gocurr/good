@@ -4,11 +4,13 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"reflect"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gocurr/good/consts"
 	"github.com/gocurr/good/crypto"
+	"github.com/gocurr/good/env"
 	"github.com/gocurr/good/pre"
-	"reflect"
 )
 
 const mysql = "mysql"
@@ -35,6 +37,9 @@ func Open(i interface{}) (*sql.DB, error) {
 		if keyField.IsValid() {
 			key = keyField.String()
 		}
+	}
+	if key == "" {
+		key = env.GoodSecureKey()
 	}
 
 	mysqlField := c.FieldByName(pre.Mysql)
