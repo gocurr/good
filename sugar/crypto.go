@@ -10,19 +10,17 @@ import (
 	"time"
 )
 
-var hexes = []rune{
-	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
-}
+var hexes = []rune("0123456789abcdefABCDEF")
 
 // newKey returns a random 32bits cipher-key.
 func newKey() string {
-	rand.Seed(time.Now().UnixNano())
-	var builder strings.Builder
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	var b strings.Builder
 	for i := 0; i < 32; i++ {
-		a := rand.Intn(len(hexes))
-		builder.WriteRune(hexes[a])
+		a := r.Intn(len(hexes))
+		b.WriteRune(hexes[a])
 	}
-	return builder.String()
+	return b.String()
 }
 
 // PrintKeyEnc prints cipher-key and encrypted text.

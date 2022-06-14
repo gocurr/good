@@ -1,9 +1,11 @@
 package conf
 
 import (
+	"errors"
 	"fmt"
-	"gopkg.in/yaml.v3"
 	"reflect"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Configuration represents a yaml file.
@@ -76,14 +78,6 @@ type Configuration struct {
 		Specs      map[string]string `yaml:"specs,omitempty"`
 	} `yaml:"crontab,omitempty"`
 
-	GRPC struct {
-		Enable bool `yaml:"enable,omitempty"`
-		Server struct {
-			Port int `yaml:"port,omitempty"`
-		} `yaml:"server,omitempty"`
-		Client map[string]string `yaml:"client,omitempty"`
-	} `yaml:"grpc,omitempty"`
-
 	Secure struct {
 		Key string `yaml:"key,omitempty"`
 	} `yaml:"secure,omitempty"`
@@ -91,12 +85,21 @@ type Configuration struct {
 	Reserved map[string]interface{} `yaml:"reserved,omitempty"` // reserved area for users
 }
 
+var errFillCustomFields = errors.New("conf: cannot fill custom fields")
+
 // Fill fills the given custom which must be a pointer.
 func (c *Configuration) Fill(custom interface{}) error {
 	if reflect.TypeOf(custom).Kind() != reflect.Ptr {
 		return fmt.Errorf("conf: %s must be a pointer", reflect.TypeOf(custom).Name())
 	}
-	return yaml.Unmarshal(c.cache, custom)
+	if err := yaml.Unmarshal(c.cache, custom); err != nil {
+		return err
+	}
+
+	if reflect.ValueOf(custom).Elem().IsZero() {
+		return errFillCustomFields
+	}
+	return nil
 }
 
 // ReservedString returns string field in reserved.

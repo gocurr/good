@@ -57,4 +57,17 @@ const (
 
 	Specs      = "Specs"
 	LogDiscard = "LogDiscard"
+
+	GoodSecureKey = "GOOD_SECURE_KEY"
+
+	NacosIp          = "NACOS_IP"
+	NacosPort        = "NACOS_PORT"
+	NacosDataId      = "NACOS_DATA_ID"
+	NacosGroup       = "NACOS_GROUP"
+	NacosNamespaceId = "NACOS_NAMESPACE_ID"
+
+	NacosTimeoutMs        = "NACOS_TIMEOUT_MS"
+	NacosScheme           = "NACOS_SCHEME"
+	NacosContextPath      = "NACOS_CONTEXT_PATH"
+	NacosLoadCacheAtStart = "NACOS_LOAD_CACHE_AT_START"
 )

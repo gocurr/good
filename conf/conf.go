@@ -96,9 +96,11 @@ func New(filename string) (*Configuration, error) {
 	}
 
 	var c Configuration
-	err = yaml.Unmarshal(file, &c)
+	if err := yaml.Unmarshal(file, &c); err != nil {
+		return nil, err
+	}
 
 	// cache file bytes
 	c.cache = file
-	return &c, err
+	return &c, nil
 }

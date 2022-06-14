@@ -10,7 +10,6 @@ var (
 	Postgres   = "Postgres"
 	RocketMq   = "RocketMq"
 	TableStore = "TableStore"
-	GRPC       = "GRPC"
 )
 
 func ChangeCrontab(v string) {
@@ -43,8 +42,4 @@ func ChangeRocketMq(v string) {
 
 func ChangeTableStore(v string) {
 	TableStore = v
-}
-
-func ChangeGRPC(v string) {
-	GRPC = v
 }

@@ -3,7 +3,7 @@ module github.com/gocurr/good
 go 1.13
 
 require (
-	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1633 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1639 // indirect
 	github.com/aliyun/aliyun-tablestore-go-sdk v1.7.6
 	github.com/apache/rocketmq-client-go/v2 v2.1.0
 	github.com/emirpasic/gods v1.18.1 // indirect
@@ -24,7 +24,7 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
-	golang.org/x/sys v0.0.0-20220608164250-635b8c9b7f68 // indirect
+	golang.org/x/sys v0.0.0-20220610221304-9f5ed59c137d // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1
